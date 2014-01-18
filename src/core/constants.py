@@ -1,8 +1,6 @@
-'''
-Created on 17.1.2014
-
-@author: Hynek
-'''
+"""
+@author DannyUfonek
+"""
 
 import pygame
 import os

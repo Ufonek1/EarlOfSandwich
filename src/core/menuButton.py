@@ -1,7 +1,5 @@
 '''
-Created on 18.1.2014
-
-@author: Hynek
+@author DannyUfonek
 '''
 import pygame
 import pygame.locals as pl

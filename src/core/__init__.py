@@ -1,7 +1,5 @@
-'''
-Created on 17.1.2014
-
-@author: Hynek
+'''This is, for now, the core of the program
+@author DannyUfonek
 '''
 
 import pygame

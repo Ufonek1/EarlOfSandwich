@@ -1,5 +1,4 @@
 '''
-Created on 17.1.2014
 
 ripped from http://programarcadegames.com/python_examples/sprite_sheets/
 '''
