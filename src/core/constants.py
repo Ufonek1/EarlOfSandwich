@@ -1,6 +1,8 @@
-"""
-@author DannyUfonek
-"""
+'''
+Created on 17.1.2014
+
+@author: Hynek
+'''
 
 import pygame
 import os
@@ -14,7 +16,6 @@ and with _
 
 # general paths
 RESOURCES_PATH = os.getcwd().rpartition(os.path.normcase('/src'))[0] #this splits the current directory and outputs first part of the 3-tuple
-print ("located game directory at " + RESOURCES_PATH)
 
 SPRITESHEET_PATH = os.path.join(RESOURCES_PATH, os.path.normcase('resources/spritesheets'))
 
@@ -30,3 +31,6 @@ FULL_RED = (255,0,0)
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+"""----------------------------------MISC-------------------------------"""
+MENU_BACKGROUND = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+MENU_BACKGROUND.fill(BLACK)
