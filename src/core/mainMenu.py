@@ -11,7 +11,7 @@ from core.constants import *
 from menuButton import menuButton
 
     
-def start(self):
+def start():
     
     buttons = pygame.sprite.Group()
     pygame.init()
