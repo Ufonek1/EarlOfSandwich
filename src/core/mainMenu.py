@@ -10,10 +10,10 @@ import pygame.mouse as mouse
 from core.constants import *
 from menuButton import menuButton
 
-buttons = pygame.sprite.Group()
-
-def start():
-
+    
+def start(self):
+    
+    buttons = pygame.sprite.Group()
     pygame.init()
     
     screensize = pl.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
@@ -46,7 +46,10 @@ def start():
     button3.rect.y = (100)
     button3.add(buttons)
     
-    print ("buttons created")
+    buttons.draw(screen)
+    pygame.display.flip()
+    
+    print ("buttons created and drawn on screen")
     
 
     # Draw all the spites
@@ -77,7 +80,7 @@ def start():
         buttons.update(event)
         buttons.draw(screen)
         pygame.display.flip()
-        
+'''      
 def updateButtons(event, screen):
     """Method for updating buttons externally"""
     buttons.update(event)
@@ -91,5 +94,4 @@ def closeMenu():
     print("main menu closed")
     pygame.display.flip()
     return
-
-
+'''

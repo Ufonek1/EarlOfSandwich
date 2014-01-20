@@ -7,10 +7,11 @@
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
-import core.mainMenu as mainMenu
+from core import mainMenu
 from constants import *
 
 pygame.init()
+
 
 mainMenu.start()
 
