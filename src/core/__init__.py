@@ -12,6 +12,9 @@ from constants import *
 
 pygame.init()
 
+mainMenu.start()
+
+'''
 screensize = pl.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
 screen = pygame.display.set_mode(screensize.size) 
 pygame.display.set_caption("Yet another pygame window")
@@ -22,7 +25,8 @@ screen.blit(background, (0,0))
 
 clock = pygame.time.Clock()
 
-mainMenu.start()
+
+
 mainMenu.buttons.draw(screen)
 pygame.display.flip()
 print ("written on screen")
@@ -48,8 +52,12 @@ while alive:
     mainMenu.updateButtons(event, screen)
     pygame.display.flip()
 #mainMenu.closeMenu()
+
+'''
+
+
+
 print("Quitting")
 pygame.quit()
-
-    
+ 
         

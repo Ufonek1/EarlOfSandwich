@@ -13,8 +13,20 @@ from menuButton import menuButton
 buttons = pygame.sprite.Group()
 
 def start():
-    
+
     pygame.init()
+    
+    screensize = pl.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
+    screen = pygame.display.set_mode(screensize.size) 
+    pygame.display.set_caption("Yet another pygame window")
+
+    
+    background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    background.fill(BLACK)
+    screen.blit(background, (0,0))
+
+    clock = pygame.time.Clock()
+
     #create all the buttons
     button1 = menuButton()
     button1.__init__
@@ -35,6 +47,7 @@ def start():
     button3.add(buttons)
     
     print ("buttons created")
+    
 
     # Draw all the spites
     # Go ahead and update the screen with what we've drawn.
@@ -42,31 +55,29 @@ def start():
 
         
     #screen.blit(background, (0,0))
-"""    while menuRunning:
+    menuRunning = True
+    
+    while menuRunning:
         for event in pygame.event.get():
             print ("something happened")
-            '''if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
+            if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
+                print("quitting")
                 menuRunning = False
-                break'''
             if event.type == pl.MOUSEBUTTONDOWN:
                 buttons.update(event)
                 buttons.draw(screen)
                 pygame.display.flip()
-                closeMenu()
-                menuRunning = False
-                break
             if event.type == pl.MOUSEMOTION:
                 #screen.blit(background2, (0,0))
                 buttons.update(event)
                 buttons.draw(screen)
                 pygame.display.flip()
-                break
         clock.tick(30)
         #we update twice, so that the button doesn't freeze after pressing           
         buttons.update(event)
         buttons.draw(screen)
         pygame.display.flip()
-        """
+        
 def updateButtons(event, screen):
     """Method for updating buttons externally"""
     buttons.update(event)
