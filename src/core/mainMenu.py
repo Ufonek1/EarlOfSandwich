@@ -20,25 +20,35 @@ def start(screen):
     clock = GAME_CLOCK   
     #create all the buttons
     button1 = menuButton()
-    button1.__init__
+    button1.text = "Play"    
+    button1.__init__()
     button1.rect.x  = (100)
     button1.rect.y = (300)
     button1.add(buttons)
+    textSurface1 = button1.button_font.render(button1.text, True, BLACK)
+    screen.blit(textSurface1, (button1.rect.x, button1.rect.y))
     
     button2 = menuButton()
-    button2.__init__
+    button2.text = "Options"
+    button2.__init__()
     button2.rect.x  = (100)
     button2.rect.y = (200)
     button2.add(buttons)
+    textSurface2 = button2.button_font.render(button2.text, True, BLACK)
+    screen.blit(textSurface2, (button2.rect.x, button2.rect.y))
     
     button3 = menuButton()
-    button3.__init__
+    button3.text = "Extras"
+    button3.__init__()
     button3.rect.x  = (150)
     button3.rect.y = (100)
     button3.add(buttons)
+    textSurface3 = button3.button_font.render(button3.text, True, BLACK)
+    screen.blit(textSurface3, (button3.rect.x, button3.rect.y))
     
     # draw them on screen and update
     buttons.draw(screen)
+
     pygame.display.flip()
     
     print ("buttons created and drawn on screen")

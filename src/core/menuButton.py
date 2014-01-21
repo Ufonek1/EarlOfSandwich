@@ -1,15 +1,22 @@
 
+#import os
+#os.putenv('PYGAME_FREETYPE', "1")
 import pygame
+#import pygame.freetype
 import pygame.locals as pl
 import pygame.mouse as mouse
-from core.constants import BUTTON_SPRITESHEET_PATH
+from core.constants import *
 from core.spritesheet_functions import SpriteSheet
 
 class menuButton (pygame.sprite.Sprite):
-    
+    #pygame.freetype.init()
+    #pygame.ftfont.init()
+    pygame.font.init()
     #the array in which we will load the sprite sheet
     button_frame = []
+    # text of button and its font
     text = ""
+    button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 12)
     
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -32,6 +39,7 @@ class menuButton (pygame.sprite.Sprite):
         #reference to image rect
         self.rect = self.image.get_rect()
         
+
     def update(self, event):
         if self.rect.collidepoint(mouse.get_pos()):
             if event.type == pl.MOUSEBUTTONDOWN:
