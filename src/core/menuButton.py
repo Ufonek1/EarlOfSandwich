@@ -1,16 +1,15 @@
-'''
-@author DannyUfonek
-'''
+
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
-from constants import BUTTON_SPRITESHEET_PATH
-from spritesheet_functions import SpriteSheet
+from core.constants import BUTTON_SPRITESHEET_PATH
+from core.spritesheet_functions import SpriteSheet
 
 class menuButton (pygame.sprite.Sprite):
     
     #the array in which we will load the sprite sheet
     button_frame = []
+    text = ""
     
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -37,9 +36,11 @@ class menuButton (pygame.sprite.Sprite):
         if self.rect.collidepoint(mouse.get_pos()):
             if event.type == pl.MOUSEBUTTONDOWN:
                 self.image = self.button_frame[3]
+                print (str(self) + " was clicked")
                 return
             else:
                 self.image = self.button_frame[1]
+                #print ("cursor is on " + str(self))
                 return
         else:
             self.image = self.button_frame[0]
