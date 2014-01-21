@@ -36,7 +36,7 @@ class menuButton (pygame.sprite.Sprite):
         if self.rect.collidepoint(mouse.get_pos()):
             if event.type == pl.MOUSEBUTTONDOWN:
                 self.image = self.button_frame[3]
-                #print (str(self) + " was clicked")
+                print (str(self) + " was clicked")
                 return
             else:
                 self.image = self.button_frame[1]

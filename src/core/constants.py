@@ -33,3 +33,7 @@ SCREEN_HEIGHT = 600
 """----------------------------------MISC-------------------------------"""
 MENU_BACKGROUND = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 MENU_BACKGROUND.fill(BLACK)
+
+GAME_CLOCK = pygame.time.Clock()
+
+
