@@ -8,3 +8,6 @@ written in eclipse with PyDev
 
 Homunculus is based on pygame.
 
+
+Homunculus uses the cranberry gin font from Typodermic Fonts
+http://typodermicfonts.com/
