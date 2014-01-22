@@ -24,9 +24,8 @@ def start(screen):
        
     #create all the buttons
     button1 = menuButton()
-    button1.button_id = 1
-    button1.text = "I like peanuts"
-    button1.__init__()
+    #button1.text = "I like peanuts"
+    button1.start("I like peanuts", 1)
     button1.rect.x  = (100)
     button1.rect.y = (300)
     button1.add(buttons)
@@ -35,8 +34,8 @@ def start(screen):
     
     button2 = menuButton()
     button2.button_id = 2
-    button2.text = "I like blackberries"
-    button2.__init__()
+    #button2.text = "I like blackberries"
+    button2.start("I like blackberries", 2)
     button2.rect.x  = (100)
     button2.rect.y = (200)
     button2.add(buttons)
@@ -44,9 +43,8 @@ def start(screen):
     #allSprites.add(button2, 0)
     
     button3 = menuButton()
-    button3.button_id = 3
-    button3.text = "I like tea"
-    button3.__init__()
+    #button3.text = "I like tea"
+    button3.start("I like tea", 3)
     button3.rect.x  = (100)
     button3.rect.y = (100)
     button3.add(buttons)
