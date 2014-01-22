@@ -8,29 +8,34 @@ import pygame.mouse as mouse
 from core.constants import *
 from core.spritesheet_functions import SpriteSheet
 
-class menuButton (pygame.sprite.Sprite):
-    #pygame.freetype.init()
-    #pygame.ftfont.init()
+class menuButton (pygame.sprite.DirtySprite):
+
     pygame.font.init()
-    #the array in which we will load the sprite sheet
+    #the array into which we will load the sprite sheet
     button_frame = []
     # text of button and its font
-    text = ""
-    button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 12)
+    button_id = 0
     
+    button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 35)
+    text = "placeholder"
+    '''@TODO figure out a way how to be able to change the button's text from the outside'''   
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         #create the spritesheet
         sprite_sheet = SpriteSheet(BUTTON_SPRITESHEET_PATH)
        
-        #load all appropriate images
+        #load all appropriate images and write text over them
         image = sprite_sheet.getImage(0, 0, 450, 68)
+        image.blit(self.button_font.render(self.text, True, FULL_RED), (49,7))
         self.button_frame.append(image)
         image = sprite_sheet.getImage(0, 68, 450, 68)
+        image.blit(self.button_font.render(self.text, True, FULL_RED), (49,7))
         self.button_frame.append(image)
         image = sprite_sheet.getImage(0, 136, 450, 68)
+        image.blit(self.button_font.render(self.text, True, FULL_RED), (49,7))
         self.button_frame.append(image)
         image = sprite_sheet.getImage(0, 204, 450, 68)
+        image.blit(self.button_font.render(self.text, True, FULL_RED), (56,14))
         self.button_frame.append(image)
         
         #set starting image

@@ -11,7 +11,6 @@ and with _
 """
 
 """----------------------------------PATHS-------------------------------"""
-'''This is a bit problematic, as the paths have to be found first'''
 
 # general paths
 PROJECT_PATH = os.getcwd().rpartition(os.path.normcase('/src'))[0] #this splits the current directory and outputs first part of the 3-tuple

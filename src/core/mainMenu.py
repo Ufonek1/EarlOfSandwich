@@ -12,46 +12,76 @@ from core.constants import *
 from menuButton import menuButton
 
 buttons = pygame.sprite.Group()
+buttonLabels = pygame.sprite.Group()
+allSprites = pygame.sprite.LayeredUpdates(layer = 5)
 
 def start(screen):
     
     pygame.init()
- 
-    clock = GAME_CLOCK   
+    
+    #for fps control
+    clock = GAME_CLOCK
+       
     #create all the buttons
     button1 = menuButton()
-    button1.text = "Play"    
+    button1.button_id = 1
+    button1.text = "I like peanuts"
     button1.__init__()
     button1.rect.x  = (100)
     button1.rect.y = (300)
     button1.add(buttons)
-    textSurface1 = button1.button_font.render(button1.text, True, BLACK)
-    screen.blit(textSurface1, (button1.rect.x, button1.rect.y))
+    button1.add(allSprites)
+    #allSprites.add(button1, 0)
     
     button2 = menuButton()
-    button2.text = "Options"
+    button2.button_id = 2
+    button2.text = "I like blackberries"
     button2.__init__()
     button2.rect.x  = (100)
     button2.rect.y = (200)
     button2.add(buttons)
-    textSurface2 = button2.button_font.render(button2.text, True, BLACK)
-    screen.blit(textSurface2, (button2.rect.x, button2.rect.y))
+    button2.add(allSprites)
+    #allSprites.add(button2, 0)
     
     button3 = menuButton()
-    button3.text = "Extras"
+    button3.button_id = 3
+    button3.text = "I like tea"
     button3.__init__()
-    button3.rect.x  = (150)
+    button3.rect.x  = (100)
     button3.rect.y = (100)
     button3.add(buttons)
-    textSurface3 = button3.button_font.render(button3.text, True, BLACK)
-    screen.blit(textSurface3, (button3.rect.x, button3.rect.y))
+    button3.add(allSprites)
     
-    # draw them on screen and update
-    buttons.draw(screen)
+    #add buttons to bottom layer
+    allSprites.add(buttons, layer = 0)
 
+    # draw them on screen and update
+    #buttons.draw(screen)
+    
+    # load font for labels
+    button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 72)
+    
+    #create the labels as sprites with text as their source image
+    label1 = pygame.sprite.DirtySprite() 
+    text1 = (button_font.render("Goodbye", True, FULL_RED))
+    label1.image = text1
+    label1.rect = label1.image.get_rect()
+    label1.rect.x = 100
+    label1.rect.y = 10
+    #label1.add(buttonLabels)
+    label1.add(allSprites)
+    
+    #draw sprites
+    allSprites.change_layer(label1, 1)
+    allSprites.move_to_front(label1)
+    print allSprites.get_top_layer()
+    print allSprites.get_bottom_layer()
+    allSprites.draw(screen)
+    #buttonLabels.draw(screen)    
+    #screen.blit(button_font.render("Is this ok?", True, FULL_RED), (100,190))
     pygame.display.flip()
     
-    print ("buttons created and drawn on screen")
+    print ("sprites created and drawn on screen")
     
     
     # Main Menu event loop
@@ -64,16 +94,16 @@ def start(screen):
                 menuRunning = False
             if event.type == pl.MOUSEBUTTONDOWN:
                 buttons.update(event)
-                buttons.draw(screen)
+                allSprites.draw(screen)
                 pygame.display.flip()
             if event.type == pl.MOUSEMOTION:
                 buttons.update(event)
-                buttons.draw(screen)
+                allSprites.draw(screen)
                 pygame.display.flip()
         clock.tick(30)
         #we update twice, so that the button doesn't freeze after pressing           
         buttons.update(event)
-        buttons.draw(screen)
+        allSprites.draw(screen)
         pygame.display.flip()
     
 ''' 
