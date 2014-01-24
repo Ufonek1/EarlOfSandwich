@@ -17,10 +17,12 @@ PROJECT_PATH = os.getcwd().rpartition(os.path.normcase('/src'))[0] #this splits 
 
 SPRITESHEET_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/spritesheets'))
 FONT_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/fonts'))
+BACKGROUND_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/backgrounds'))
 
 # specific paths
 BUTTON_SPRITESHEET_PATH = os.path.join(SPRITESHEET_PATH, 'buttonsprite.png')
 MAIN_MENU_FONT_PATH = os.path.join(FONT_PATH, 'Polentical Neon Regular.ttf')
+MAIN_MENU_BACKGROUND_PATH = os.path.join(BACKGROUND_PATH, 'IMG_2905.PNG')
 
 """----------------------------------COLOURS-------------------------------"""
 BLACK = (0 ,0, 0)

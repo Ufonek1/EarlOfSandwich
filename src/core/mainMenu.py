@@ -59,8 +59,8 @@ def start(screen):
     button4.add(allSprites)
     
     #add buttons to bottom layer
-    allSprites.add(buttons, layer = 0)
-    print "buttons created on layer 0"
+    allSprites.add(buttons, layer = 1)
+    print "buttons created on layer 1"
     # draw them on screen and update
     #buttons.draw(screen)
     

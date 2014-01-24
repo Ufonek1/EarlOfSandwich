@@ -19,10 +19,14 @@ screen = pygame.display.set_mode(screensize.size)
 pygame.display.set_caption("Yet another pygame window")
 print "window fired up"
 
-#background = pygame.Surface(screensize.size)
-#background.fill(BLACK)
-#screen.blit(background, (0,0))
+gameBackground = pygame.sprite.GroupSingle()
 
+#background
+background = pygame.sprite.Sprite()
+background.image = pygame.image.load(MAIN_MENU_BACKGROUND_PATH).convert_alpha()
+background.rect = screensize
+background.add(gameBackground)
+gameBackground.draw(screen)
 # start main menu and wait for response, which gets saved
 menuOutput = mainMenu.start(screen)
 '''
