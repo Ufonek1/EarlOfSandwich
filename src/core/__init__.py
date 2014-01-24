@@ -17,16 +17,34 @@ pygame.init()
 screensize = pl.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
 screen = pygame.display.set_mode(screensize.size) 
 pygame.display.set_caption("Yet another pygame window")
+print "window fired up"
 
 #background = pygame.Surface(screensize.size)
 #background.fill(BLACK)
 #screen.blit(background, (0,0))
 
-# start main menu
-mainMenu.start(screen)
+# start main menu and wait for response, which gets saved
+menuOutput = mainMenu.start(screen)
+'''
+now check the value and forward elsewhere
+button destinations are self-explanatory
+btw, they're set in mainMenu.start()
+'''
+if menuOutput == "QUIT":
+    print ("game closed from MAIN MENU")
+elif menuOutput == "GAME":
+    print ("Start game button was clicked")
+elif menuOutput == "OPTIONS":
+    print ("Options button was clicked")
+elif menuOutput == "EXTRAS":
+    print ("Some other button was clicked")
+else:
+    print ("Somebody didn't specify the button destination or destination handling right")
+
 
 # when that is done, quit
-print("Quitting")
+print(" ")
+print("Quitting, nothing left to do")
 pygame.quit()
 sys.exit()
  

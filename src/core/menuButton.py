@@ -1,8 +1,9 @@
+'''
 
-#import os
-#os.putenv('PYGAME_FREETYPE', "1")
+@author: DannyUfonek
+'''
+
 import pygame
-#import pygame.freetype
 import pygame.locals as pl
 import pygame.mouse as mouse
 from core.constants import *
@@ -15,7 +16,7 @@ class menuButton (pygame.sprite.DirtySprite):
     button_frame = []
     
     #destination to which button leads
-    destination = 0
+    destination = ""
     
     # font of buttons
     button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 35)
@@ -46,22 +47,30 @@ class menuButton (pygame.sprite.DirtySprite):
         #reference to image rect
         self.rect = self.image.get_rect()
         
-        #set them up as the object's properties
+        #set them up as the button's properties (so that they don't stay stucked in the function only)
         self.button_frame = button_frame
         self.destination = destination
+        print ("created menuButton with destination " + str(self.destination))
 
     def update(self, event):
         if self.rect.collidepoint(mouse.get_pos()):
-            if event.type == pl.MOUSEBUTTONDOWN:
+            if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
                 self.image = self.button_frame[3]
-                print (str(self) + " was clicked")
                 # this will point Main menu somewhere else (depends on the destination, ofc)
-                if self.destination != 0:
-                    return self.destination
+                #if self.destination != 0:
+                #   print ("returning self.destination")
+                #   return self.destination
             else:
                 self.image = self.button_frame[1]
                 #print ("cursor is on " + str(self))
-                return
         else:
             self.image = self.button_frame[0]
-            return 
+            
+    def getMouseOver(self):
+        #simple method for getting is the mouse is on the button
+        if self.rect.collidepoint(mouse.get_pos()):
+            return True
+        else:
+            return False
+        
+
