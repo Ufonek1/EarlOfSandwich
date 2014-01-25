@@ -10,6 +10,8 @@ import os
 and with _
 """
 
+pygame.init()
+
 """----------------------------------PATHS-------------------------------"""
 
 # general paths
@@ -28,14 +30,21 @@ MAIN_MENU_BACKGROUND_PATH = os.path.join(BACKGROUND_PATH, 'IMG_2905.PNG')
 BLACK = (0 ,0, 0)
 WHITE = (255,255,255)
 FULL_RED = (255,0,0)
+FULL_MAGENTA = (255,0,255)
 
 """----------------------------------RESOLUTION-------------------------------"""
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 750
 
 """----------------------------------MISC-------------------------------"""
-MENU_BACKGROUND = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-MENU_BACKGROUND.fill(BLACK)
+def menuBackgroundInit():
+    menubg = pygame.image.load(MAIN_MENU_BACKGROUND_PATH)
+    menubg = pygame.transform.scale(menubg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    
+    return menubg
+
+MENU_BACKGROUND = menuBackgroundInit()
+GAME_FPS = 30
 
 
 

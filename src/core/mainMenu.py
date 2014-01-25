@@ -64,12 +64,12 @@ def start(screen):
     # draw them on screen and update
     #buttons.draw(screen)
     
-    # load font for labels
-    button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
+    # load font for title
+    title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
     
-    #create the labels as sprites with text as their source image
+    #create the title as sprites with text as their source image
     title1 = pygame.sprite.DirtySprite() 
-    text1 = (button_font.render("THE GAME", True, FULL_RED))
+    text1 = (title_font.render("THE GAME", True, FULL_RED))
     title1.image = text1
     title1.rect = title1.image.get_rect()
     title1._layer = 5
@@ -91,7 +91,7 @@ def start(screen):
     # Main Menu event loop
     menuRunning = True
     
-    print ("menu running........")
+    print ("main menu running........")
     
     while menuRunning:
         for event in pygame.event.get():
@@ -100,6 +100,7 @@ def start(screen):
                 print("game closed from main menu")
                 return 0
             if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
+                screen.blit(MENU_BACKGROUND, (0,0))
                 buttons.update(event)
                 allSprites.draw(screen)
                 pygame.display.flip()
@@ -117,18 +118,21 @@ def start(screen):
                 for button in buttons:
                     if button.getMouseOver():
                         return button.destination
-                
             if event.type == pl.MOUSEMOTION:
                 #update buttons for mouseover, we can afford to do it every time the mouse moves and reload all sprites
+                screen.blit(MENU_BACKGROUND, (0,0))
                 buttons.update(event)
                 allSprites.draw(screen)
                 pygame.display.flip()
-            clock.tick(30)
-            #we update twice, so that the button doesn't freeze after pressing           
+            clock.tick(GAME_FPS)
+            #we update twice, so that the button doesn't freeze after pressing         
+            screen.blit(MENU_BACKGROUND, (0,0))  
             buttons.update(event)
             allSprites.draw(screen)
             pygame.display.flip()
 
-
+    #clear the screen
+    screen.blit(MENU_BACKGROUND, (0,0))
+    pygame.display.flip()
     print "menu closing"
 

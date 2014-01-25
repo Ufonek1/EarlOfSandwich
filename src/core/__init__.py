@@ -8,6 +8,7 @@ import sys
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
+import pregameMenu
 from core import mainMenu
 from constants import *
 
@@ -19,31 +20,46 @@ screen = pygame.display.set_mode(screensize.size)
 pygame.display.set_caption("Yet another pygame window")
 print "window fired up"
 
-gameBackground = pygame.sprite.GroupSingle()
-
 #background
-background = pygame.sprite.Sprite()
-background.image = pygame.image.load(MAIN_MENU_BACKGROUND_PATH).convert_alpha()
-background.rect = screensize
-background.add(gameBackground)
-gameBackground.draw(screen)
+screen.blit(MENU_BACKGROUND, (0,0))
+pygame.display.flip()
+
+alive = True
 # start main menu and wait for response, which gets saved
+
 menuOutput = mainMenu.start(screen)
+pygame.display.flip()
 '''
 now check the value and forward elsewhere
 button destinations are self-explanatory
 btw, they're set in mainMenu.start()
+
+anyway, this has to be a loop, otherwise the player won't be able to go back and forth between menus
 '''
-if menuOutput == "QUIT":
-    print ("game closed from MAIN MENU")
-elif menuOutput == "GAME":
-    print ("Start game button was clicked")
-elif menuOutput == "OPTIONS":
-    print ("Options button was clicked")
-elif menuOutput == "EXTRAS":
-    print ("Some other button was clicked")
-else:
-    print ("Somebody didn't specify the button destination or destination handling right")
+while alive:
+    if menuOutput == "QUIT":
+        print ("game closed from MAIN MENU")
+        alive = False
+    elif menuOutput == "GAME":
+        print ("Start game button was clicked")
+        screen.blit(MENU_BACKGROUND, (0,0))
+        pygame.display.flip()
+        menuOutput = pregameMenu.start(screen)
+    elif menuOutput == "OPTIONS":
+        print ("Options button was clicked")
+        break
+    elif menuOutput == "EXTRAS":
+        print ("Some other button was clicked")
+        break
+    elif menuOutput == "BACKTOMAIN":
+        print ("The back to main menu button was clicked")
+        print ("Returning to main menu")
+        screen.blit(MENU_BACKGROUND, (0,0))
+        pygame.display.flip()
+        menuOutput = mainMenu.start(screen)
+    else:
+        print ("Somebody didn't specify the button destination or destination handling right")
+        break
 
 
 # when that is done, quit

@@ -20,25 +20,41 @@ class menuButton (pygame.sprite.DirtySprite):
     
     # font of buttons
     button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 35)
-    '''@TODO figure out a way how to be able to change the button's text from the outside'''   
-    def start(self, text, destination):
+
+    def start(self, text, destination, relativescale = 1):
         pygame.sprite.Sprite.__init__(self)
         #create the spritesheet
         sprite_sheet = SpriteSheet(BUTTON_SPRITESHEET_PATH)
        
+        buttonColorkey = WHITE
         button_frame = []
-        #load all appropriate images and write text over them
-        image = sprite_sheet.getImage(0, 0, 450, 68)
+        '''
+        load all appropriate images and write text over them
+        
+        basic recipe:
+        1. find and load the desired area of the spritesheet
+        2. render text over that
+        3. apply any scaling, if there is any
+        4. append to main frame array
+        '''
+        image = sprite_sheet.getImage(0, 0, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
+        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
         button_frame.append(image)
-        image = sprite_sheet.getImage(0, 68, 450, 68)
+        
+        image = sprite_sheet.getImage(0, 68, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
+        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
         button_frame.append(image)
-        image = sprite_sheet.getImage(0, 136, 450, 68)
+        
+        image = sprite_sheet.getImage(0, 136, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
+        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
         button_frame.append(image)
-        image = sprite_sheet.getImage(0, 204, 450, 68)
+        
+        image = sprite_sheet.getImage(0, 204, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (56,14))
+        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
         button_frame.append(image)
         
         #set starting image
@@ -56,18 +72,13 @@ class menuButton (pygame.sprite.DirtySprite):
         if self.rect.collidepoint(mouse.get_pos()):
             if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
                 self.image = self.button_frame[3]
-                # this will point Main menu somewhere else (depends on the destination, ofc)
-                #if self.destination != 0:
-                #   print ("returning self.destination")
-                #   return self.destination
             else:
                 self.image = self.button_frame[1]
-                #print ("cursor is on " + str(self))
         else:
             self.image = self.button_frame[0]
             
     def getMouseOver(self):
-        #simple method for getting is the mouse is on the button
+        #simple method for getting if the mouse is on the button
         if self.rect.collidepoint(mouse.get_pos()):
             return True
         else:
