@@ -29,6 +29,9 @@ def start(screen):
     buttonColumnTop = 200
     buttonColumnLeft = 200
     
+    #background from background collection
+    MENU_BACKGROUND = BACKGROUND_COLLECTION.menubackground
+    
     #for fps control
     clock = pygame.time.Clock()
        
@@ -64,8 +67,9 @@ def start(screen):
     #add buttons to bottom layer
     allSprites.add(buttons, layer = 1)
     print "buttons created on layer 1"
-    # draw them on screen and update
-    #buttons.draw(screen)
+    
+    #the group which holds the button to be drawn (for optimisation)
+    buttonToDraw = pygame.sprite.GroupSingle()
     
     # load font for title
     title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
@@ -94,49 +98,68 @@ def start(screen):
     # Main Menu event loop
     pregameMenuRunning = True
     
-    print ("pregame menu running........")
+    print ("pregame menu waiting........")
     
     while pregameMenuRunning:
         for event in pygame.event.get():
             if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
                 pregameMenuRunning = False
                 print("game closed from pregame menu")
-                return 0
-            if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
+                '''
+                clean up the screen before leaving (like a good module!)
+                '''
                 screen.blit(MENU_BACKGROUND, (0,0))
-                buttons.update(event)
-                allSprites.draw(screen)
                 pygame.display.flip()
+                return "PREGAMEQUIT"
+            if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
                 '''
                 This is where the button's destination kicks in
                 Unfortunately, we have to check each button separately,
                 as the pygame.sprite.Group.update() can't return sprites' .update()
                 return values.
                 What happens here:
-                When the user clicks a button, all buttons are checked to see which one the mouse is on,
-                then the destination is outputted to core.init, which then decides based on that where
+                When the user clicks a button: 
+                1. all buttons are checked (one by one) to see which one the mouse is on,
+                2. the background is drawn over it (and only it)
+                3. the button updates
+                4. the button gets put into the buttonToDraw one-sprite-only group
+                5. buttonToDraw draws it onto the screen
+                6. the display updates only on it
+                7. then the destination is outputted to core.init, which then decides based on that where
                 to go or what to do next.
+                8. then clean up the screen.
+                The same thing happens when the button is mouseovered or something else,
+                only steps 7, 8, and/or 1 are skipped.
+                KEYWORD: OPTIMISATION
                 '''
-                print("A button was clicked, checking which one it was")
                 for button in buttons:
                     if button.getMouseOver():
+                        screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
+                        button.update(event)
+                        buttonToDraw.add(button)
+                        buttonToDraw.draw(screen)
+                        pygame.display.update(button.rect)
+                        '''
+                        clean up the screen before leaving (like a good module!) (but only on the buttons area)
+                        '''
+                        screen.blit(MENU_BACKGROUND, (buttonColumnLeft, buttonColumnTop), (buttonColumnLeft, buttonColumnTop, 1000, 1000))
+                        pygame.display.flip()
                         return button.destination
-                
             if event.type == pl.MOUSEMOTION:
-                #update buttons for mouseover, we can afford to do it every time the mouse moves and reload all sprites
-                screen.blit(MENU_BACKGROUND, (0,0))
-                buttons.update(event)
-                allSprites.draw(screen)
-                pygame.display.flip()
+                for button in buttons:
+                    if button.getMouseOver():
+                        screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
+                        button.update(event)
+                        buttonToDraw.add(button)
+                        buttonToDraw.draw(screen)
+                        pygame.display.update((button.rect))
             clock.tick(GAME_FPS)
-            #we update twice, so that the button doesn't freeze after pressing  
-            screen.blit(MENU_BACKGROUND, (0,0))         
-            buttons.update(event)
-            allSprites.draw(screen)
-            pygame.display.flip()
+            #we update twice, so that the button doesn't freeze after mouseover/pressing  
+            for button in buttons:
+                screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
+                button.update(event)
+                buttonToDraw.add(button)
+                buttonToDraw.draw(screen)
+                pygame.display.update((button.rect))
 
-    #clear the screen
-    screen.blit(MENU_BACKGROUND, (0,0))
-    pygame.display.flip()
-    print "pregame menu closing"
 

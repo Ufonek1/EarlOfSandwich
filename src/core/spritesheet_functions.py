@@ -5,14 +5,18 @@ ripped from http://programarcadegames.com/python_examples/sprite_sheets/
 '''
 
 import pygame
+from resourceLoader import ImageLoader
 from constants import *
 
 class SpriteSheet():
 # This points to our sprite sheet image
     sprite_sheet = None
-    def __init__(self, file_name):
-    # Load the sprite sheet.
-        self.sprite_sheet = pygame.image.load(file_name).convert()
+    def __init__(self, image_name_in_collection):
+        ''' 
+        Load the sprite sheet from the spritesheet collection. As image_name_in_collection is a variable,
+        we have to call the resourceLoader's __getattr__ method, rather than just GAME_SPRITESHEET_COLLECTION.image_name_in_collection
+        '''
+        self.sprite_sheet = GAME_SPRITESHEET_COLLECTION.__getattr__(image_name_in_collection)
         
     def getImage(self, x, y, width, height, colorkey):
         """ Grab a single image out of a larger spritesheet

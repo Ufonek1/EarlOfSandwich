@@ -24,7 +24,7 @@ class menuButton (pygame.sprite.DirtySprite):
     def start(self, text, destination, relativescale = 1):
         pygame.sprite.Sprite.__init__(self)
         #create the spritesheet
-        sprite_sheet = SpriteSheet(BUTTON_SPRITESHEET_PATH)
+        sprite_sheet = SpriteSheet(BUTTON_SPRITESHEET_NAME)
        
         buttonColorkey = WHITE
         button_frame = []
@@ -32,7 +32,7 @@ class menuButton (pygame.sprite.DirtySprite):
         load all appropriate images and write text over them
         
         basic recipe:
-        1. find and load the desired area of the spritesheet
+        1. find and load the desired area of the spritesheet and make any pixels of the colorkey transparent
         2. render text over that
         3. apply any scaling, if there is any
         4. append to main frame array
@@ -78,7 +78,7 @@ class menuButton (pygame.sprite.DirtySprite):
             self.image = self.button_frame[0]
             
     def getMouseOver(self):
-        #simple method for getting if the mouse is on the button
+        #simple method for getting if the mouse is on the button (for outside/public use)
         if self.rect.collidepoint(mouse.get_pos()):
             return True
         else:

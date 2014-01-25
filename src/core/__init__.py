@@ -21,6 +21,7 @@ pygame.display.set_caption("Yet another pygame window")
 print "window fired up"
 
 #background
+MENU_BACKGROUND = BACKGROUND_COLLECTION.menubackground
 screen.blit(MENU_BACKGROUND, (0,0))
 pygame.display.flip()
 
@@ -35,15 +36,22 @@ button destinations are self-explanatory
 btw, they're set in mainMenu.start()
 
 anyway, this has to be a loop, otherwise the player won't be able to go back and forth between menus
+
+redrawing of the background shouldn't be here, as each module cleans up after itself,
+because that's what their parents taught them! 
+(well, mostly)
 '''
 while alive:
-    if menuOutput == "QUIT":
-        print ("game closed from MAIN MENU")
+    if "QUIT" in menuOutput:
+        '''
+        the middle bit is ripped from menuOutput to see from where it was
+        menuOutput is always in the form of "<something>QUIT"
+        yay! now i can use all that string indexing!
+        '''
+        print ("game closed from " + menuOutput[:menuOutput.find("QUIT")] + " MENU")
         alive = False
     elif menuOutput == "GAME":
         print ("Start game button was clicked")
-        screen.blit(MENU_BACKGROUND, (0,0))
-        pygame.display.flip()
         menuOutput = pregameMenu.start(screen)
     elif menuOutput == "OPTIONS":
         print ("Options button was clicked")
@@ -54,11 +62,9 @@ while alive:
     elif menuOutput == "BACKTOMAIN":
         print ("The back to main menu button was clicked")
         print ("Returning to main menu")
-        screen.blit(MENU_BACKGROUND, (0,0))
-        pygame.display.flip()
         menuOutput = mainMenu.start(screen)
     else:
-        print ("Somebody didn't specify the button destination or destination handling right")
+        print ("Button destination or its recognition unspecified")
         break
 
 
