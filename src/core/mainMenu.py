@@ -19,16 +19,13 @@ allSprites = pygame.sprite.LayeredUpdates(layer = 0)
 def start(screen):
     
     
-    print "Firing up menu........"
+    print("Firing up menu........")
     pygame.init()
     
     #coordinates of button column
     buttonColumnTop = 200
     buttonColumnLeft = 200
-    
-    #background from background collection
-    MENU_BACKGROUND = BACKGROUND_COLLECTION.menubackground
-    
+       
     #for fps control
     clock = pygame.time.Clock()
        
@@ -63,7 +60,7 @@ def start(screen):
     
     #add buttons to bottom layer
     allSprites.add(buttons, layer = 1)
-    print "buttons created on layer 1"
+    print("buttons created on layer 1")
     # draw them on screen and update
     #buttons.draw(screen)
     
@@ -81,7 +78,7 @@ def start(screen):
 
     #coordinates of title
     title1.rect.x = 200
-    title1.rect.y = 60
+    title1.rect.y = 20
 
     title1.add(allSprites)
     #draw sprites
@@ -139,7 +136,7 @@ def start(screen):
                         '''
                         clean up the screen before leaving (like a good module!) (but only on the buttons area)
                         '''
-                        screen.blit(MENU_BACKGROUND, (buttonColumnLeft, buttonColumnTop), (buttonColumnLeft, buttonColumnTop, 1000, 1000))
+                        screen.blit(MENU_BACKGROUND, (buttonColumnLeft, buttonColumnTop), (buttonColumnLeft, buttonColumnTop, 2000, 2000))
                         pygame.display.flip()
                         return button.destination
             if event.type == pl.MOUSEMOTION:

@@ -22,7 +22,6 @@ class menuButton (pygame.sprite.DirtySprite):
     button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 35)
 
     def start(self, text, destination, relativescale = 1):
-        pygame.sprite.Sprite.__init__(self)
         #create the spritesheet
         sprite_sheet = SpriteSheet(BUTTON_SPRITESHEET_NAME)
        
@@ -34,27 +33,27 @@ class menuButton (pygame.sprite.DirtySprite):
         basic recipe:
         1. find and load the desired area of the spritesheet and make any pixels of the colorkey transparent
         2. render text over that
-        3. apply any scaling, if there is any
+        3. apply any scaling, if there is any (multiply by that scaling, round the result, and make it into an int)
         4. append to main frame array
         '''
         image = sprite_sheet.getImage(0, 0, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
-        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
+        image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
         
         image = sprite_sheet.getImage(0, 68, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
-        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
+        image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
         
         image = sprite_sheet.getImage(0, 136, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
-        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
+        image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
         
         image = sprite_sheet.getImage(0, 204, 450, 68, buttonColorkey)
         image.blit(self.button_font.render(text, True, FULL_RED), (56,14))
-        image = pygame.transform.scale(image, (450/relativescale, 68/relativescale))
+        image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
         
         #set starting image

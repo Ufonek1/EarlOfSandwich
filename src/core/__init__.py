@@ -18,10 +18,9 @@ pygame.init()
 screensize = pl.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
 screen = pygame.display.set_mode(screensize.size) 
 pygame.display.set_caption("Yet another pygame window")
-print "window fired up"
+print("window fired up")
 
-#background
-MENU_BACKGROUND = BACKGROUND_COLLECTION.menubackground
+#background from background collection
 screen.blit(MENU_BACKGROUND, (0,0))
 pygame.display.flip()
 

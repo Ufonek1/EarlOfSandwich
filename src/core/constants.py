@@ -22,13 +22,13 @@ BUTTON_SPRITESHEET_NAME = 'buttonspritewhite'
 # general paths
 PROJECT_PATH = os.getcwd().rpartition(os.path.normcase('/src'))[0] #this splits the current directory and outputs first part of the 3-tuple
 
-SPRITESHEET_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/spritesheets'))
+SPRITES_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/sprites'))
 FONT_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/fonts'))
 BACKGROUND_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/backgrounds'))
 
 # specific paths (deprecated, to be removed in next version)
 #@TODO: remove!
-BUTTON_SPRITESHEET_PATH = os.path.join(SPRITESHEET_PATH, 'buttonsprite.png')
+BUTTON_SPRITESHEET_PATH = os.path.join(SPRITES_PATH, 'buttonsprite.png')
 MAIN_MENU_FONT_PATH = os.path.join(FONT_PATH, 'Polentical Neon Regular.ttf')
 MAIN_MENU_BACKGROUND_PATH = os.path.join(BACKGROUND_PATH, 'IMG_2905.PNG')
 
@@ -56,22 +56,24 @@ def backgroundCollectionInit():
 
 BACKGROUND_COLLECTION = backgroundCollectionInit()
 
-def gameSpritesheetCollectionInit():
+def gameSpritesCollectionInit():
     print ("creating spritesheet collection...")
-    gameSpritesheetCollection = ImageLoader()
+    gameSpritesCollection = ImageLoader()
     # find all spritesheets and add them to collection
-    for spritesheet in os.listdir(SPRITESHEET_PATH):
-        gameSpritesheetCollection.__setattr__(spritesheet.rpartition(os.path.normcase('.'))[0], os.path.join(SPRITESHEET_PATH, spritesheet))
+    for spritesheet in os.listdir(SPRITES_PATH):
+        gameSpritesCollection.__setattr__(spritesheet.rpartition(os.path.normcase('.'))[0], os.path.join(SPRITES_PATH, spritesheet))
         # add name of file (without the .png suffix) and full path to dictionary
     print ("created spritesheet collection that includes: ")
-    print gameSpritesheetCollection.names
-    return gameSpritesheetCollection
+    print gameSpritesCollection.names
+    return gameSpritesCollection
     
-GAME_SPRITESHEET_COLLECTION = gameSpritesheetCollectionInit()
+GAME_IMAGE_COLLECTION = gameSpritesCollectionInit()
 
 #@TODO: sound and font collections!
 
 """----------------------------------MISC-------------------------------"""
+#resized menu background
+MENU_BACKGROUND = pygame.transform.scale(BACKGROUND_COLLECTION.menubackground, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 GAME_FPS = 30
 
