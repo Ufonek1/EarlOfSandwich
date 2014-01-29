@@ -16,7 +16,7 @@ import pygame.locals as pl
 import pygame.mouse as mouse
 from core.constants import *
 from menuButton import menuButton
-#from colourPicker import colourPicker
+from colourPicker import ColourPicker
 
 buttons = pygame.sprite.Group()
 
@@ -41,28 +41,24 @@ def start(screen):
     button1.rect.x  = (buttonColumnLeft)
     button1.rect.y = (buttonColumnTop + 300)
     button1.add(buttons)
-    button1.add(allSprites)
     
     button2 = menuButton()
     button2.start("Load Game", "LOAD", 0.9)
     button2.rect.x  = (buttonColumnLeft)
     button2.rect.y = (buttonColumnTop + 390)
     button2.add(buttons)
-    button2.add(allSprites)
     
     button3 = menuButton()
     button3.start("Save colour", "COLOUR", 0.5)
     button3.rect.x  = (buttonColumnLeft + 500)
     button3.rect.y = (buttonColumnTop + 300)
     button3.add(buttons)
-    button3.add(allSprites)
     
     button4 = menuButton()
     button4.start("Back to menu", "BACKTOMAIN", 0.9)
     button4.rect.x  = (buttonColumnLeft)
     button4.rect.y = (buttonColumnTop + 480)
     button4.add(buttons)
-    button4.add(allSprites)
     
     #add buttons to bottom layer
     allSprites.add(buttons, layer = 1)
@@ -70,6 +66,9 @@ def start(screen):
     
     #the group which holds the button to be drawn (for optimisation)
     buttonToDraw = pygame.sprite.GroupSingle()
+    
+    #the group that holds the colourpicker output sprite
+    colourPickShow = pygame.sprite.GroupSingle()
     
     # load font for title
     title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
@@ -94,7 +93,7 @@ def start(screen):
     smalltitle1.rect = title1.image.get_rect()
     smalltitle1._layer = 5
     #coordinates of title
-    smalltitle1.rect.x = buttonColumnLeft + 500
+    smalltitle1.rect.x = buttonColumnLeft + 400
     smalltitle1.rect.y = buttonColumnTop - 50
     smalltitle1.add(allSprites)
     
@@ -108,8 +107,18 @@ def start(screen):
     spectrum.add(allSprites)
     '''
     #create a colourpicker instance and draw it on the screen
-    #ColorPicker = ColourPicker()
-    #screen.blit(ColorPicker, (buttonColumnLeft + 300, buttonColumnTop))
+    ColorPicker = ColourPicker()
+    ColorPicker.rect.x = buttonColumnLeft + 300
+    ColorPicker.rect.y = buttonColumnTop
+    allSprites.add(ColorPicker, layer = 2)
+    
+    #output of colourpicker:
+    colourOutput = pygame.sprite.DirtySprite()
+    colourOutput.image = pygame.Surface((50,50))
+    colourOutput.rect = colourOutput.image.get_rect()
+    colourOutput.rect.topleft = (buttonColumnLeft+440, buttonColumnTop+300)
+    allSprites.add(colourOutput, layer = 2)
+    colourPickShow.add(colourOutput)
     
     #draw sprites
     print("top layer of all sprites has the number " + str(allSprites.get_top_layer()))
@@ -173,7 +182,17 @@ def start(screen):
                 '''
                 Now let's check the colourPicker instance we have there:
                 '''
-                #ColorPicker.pickColour()
+                if ColorPicker.getMouseOver():
+                    '''
+                    the underlying surface of the colourOutput gets filled with the colour that is under the mouse cursor
+                    then we redraw it
+                    '''
+                    colourOutput.image.fill(ColorPicker.pickColour())
+                    screen.blit(MENU_BACKGROUND, colourOutput.rect.topleft, colourOutput.rect)
+                    colourPickShow.add(colourOutput)
+                    colourPickShow.draw(screen)
+                    pygame.display.update((colourOutput.rect))
+                    
             if event.type == pl.MOUSEMOTION:
                 for button in buttons:
                     if button.getMouseOver():

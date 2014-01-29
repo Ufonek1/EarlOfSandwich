@@ -35,28 +35,24 @@ def start(screen):
     button1.rect.x  = (buttonColumnLeft)
     button1.rect.y = (buttonColumnTop)
     button1.add(buttons)
-    button1.add(allSprites)
     
     button2 = menuButton()
     button2.start("Options", "OPTIONS")
     button2.rect.x  = (buttonColumnLeft)
     button2.rect.y = (buttonColumnTop + 100)
     button2.add(buttons)
-    button2.add(allSprites)
     
     button3 = menuButton()
     button3.start("Extras", "EXTRAS")
     button3.rect.x  = (buttonColumnLeft)
     button3.rect.y = (buttonColumnTop + 200)
     button3.add(buttons)
-    button3.add(allSprites)
     
     button4 = menuButton()
     button4.start("Exit", "MAINQUIT")
     button4.rect.x  = (buttonColumnLeft)
     button4.rect.y = (buttonColumnTop + 300)
     button4.add(buttons)
-    button4.add(allSprites)
     
     #add buttons to bottom layer
     allSprites.add(buttons, layer = 1)
