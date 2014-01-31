@@ -8,7 +8,7 @@ import sys
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
-import pregameMenu
+from core import pregameMenu
 from core import mainMenu
 from constants import *
 

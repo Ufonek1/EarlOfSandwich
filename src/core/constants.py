@@ -34,10 +34,11 @@ MAIN_MENU_BACKGROUND_PATH = os.path.join(BACKGROUND_PATH, 'IMG_2905.PNG')
 
 """----------------------------------COLOURS-------------------------------"""
 #@TODO: Add some more colours
-BLACK = (0 ,0, 0)
-WHITE = (255,255,255)
-FULL_RED = (255,0,0)
-FULL_MAGENTA = (255,0,255)
+BLACK = pygame.Color(0 ,0, 0)
+WHITE = pygame.Color(255,255,255)
+FULL_RED = pygame.Color(255,0,0)
+FULL_MAGENTA = pygame.Color(255,0,255)
+FULL_GREEN = pygame.Color(0,255,0)
 
 """----------------------------------RESOLUTION-------------------------------"""
 SCREEN_WIDTH = 1000

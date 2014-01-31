@@ -14,6 +14,7 @@ but now this module should include the colourPicker
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
+import colourPicker
 from core.constants import *
 from menuButton import menuButton
 from colourPicker import ColourPicker
@@ -50,8 +51,8 @@ def start(screen):
     
     button3 = menuButton()
     button3.start("Save colour", "COLOUR", 0.5)
-    button3.rect.x  = (buttonColumnLeft + 500)
-    button3.rect.y = (buttonColumnTop + 300)
+    button3.rect.x  = (buttonColumnLeft + 460)
+    button3.rect.y = (buttonColumnTop + 400)
     button3.add(buttons)
     
     button4 = menuButton()
@@ -66,9 +67,6 @@ def start(screen):
     
     #the group which holds the button to be drawn (for optimisation)
     buttonToDraw = pygame.sprite.GroupSingle()
-    
-    #the group that holds the colourpicker output sprite
-    colourPickShow = pygame.sprite.GroupSingle()
     
     # load font for title
     title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
@@ -97,28 +95,40 @@ def start(screen):
     smalltitle1.rect.y = buttonColumnTop - 50
     smalltitle1.add(allSprites)
     
-    #@TODO temp code for layout
-    '''
-    spectrum = pygame.sprite.Sprite()
-    spectrum.image = GAME_IMAGE_COLLECTION.spectrum
-    spectrum.rect = spectrum.image.get_rect()
-    spectrum.rect.x = buttonColumnLeft + 500
-    spectrum.rect.y = buttonColumnTop + 50
-    spectrum.add(allSprites)
-    '''
+    #the group that holds the colourpicker output sprites
+    colourPickShow = pygame.sprite.Group()
+    
     #create a colourpicker instance and draw it on the screen
     ColorPicker = ColourPicker()
-    ColorPicker.rect.x = buttonColumnLeft + 300
+    ColorPicker.rect.x = buttonColumnLeft + 400
     ColorPicker.rect.y = buttonColumnTop
     allSprites.add(ColorPicker, layer = 2)
     
     #output of colourpicker:
+    #colour square:
     colourOutput = pygame.sprite.DirtySprite()
     colourOutput.image = pygame.Surface((50,50))
     colourOutput.rect = colourOutput.image.get_rect()
-    colourOutput.rect.topleft = (buttonColumnLeft+440, buttonColumnTop+300)
-    allSprites.add(colourOutput, layer = 2)
-    colourPickShow.add(colourOutput)
+    colourOutput.rect.topleft = (buttonColumnLeft+480, buttonColumnTop+325)
+    colourOutput.add(colourPickShow)
+    #colour on ship:
+    '''
+    shipColoured = GAME_IMAGE_COLLECTION.ship.copy().convert()
+    shipColoured.set_colorkey(FULL_MAGENTA)
+    screen.blit(shipColoured, (buttonColumnLeft+440, buttonColumnTop+360))
+    '''
+
+    shipColoured = pygame.sprite.DirtySprite()
+    shipColoured.image = pygame.Surface([100,100]).convert()
+    shipColoured.image.blit(GAME_IMAGE_COLLECTION.ship.copy(), (0,0))
+    shipColoured.rect = shipColoured.image.get_rect()
+    shipColoured.rect.topleft = (buttonColumnLeft+550, buttonColumnTop+280)
+    shipColoured.image.set_colorkey(FULL_MAGENTA)
+    print("the colourkey of shipColoured.image is " + str(shipColoured.image.get_colorkey()))
+    shipColoured.add(colourPickShow)
+
+    # add the group to allSprites
+    allSprites.add(colourPickShow, layer = 2)
     
     #draw sprites
     print("top layer of all sprites has the number " + str(allSprites.get_top_layer()))
@@ -132,7 +142,7 @@ def start(screen):
     pregameMenuRunning = True
     
     print ("pregame menu waiting........")
-    click1, click2, click3 = mouse.get_pressed()
+    
     
     while pregameMenuRunning:
         for event in pygame.event.get():
@@ -145,7 +155,7 @@ def start(screen):
                 screen.blit(MENU_BACKGROUND, (0,0))
                 pygame.display.flip()
                 return "PREGAMEQUIT"
-            if event.type == pl.MOUSEBUTTONDOWN and click1:
+            if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
                 '''
                 This is where the button's destination kicks in
                 Unfortunately, we have to check each button separately,
@@ -187,11 +197,21 @@ def start(screen):
                     the underlying surface of the colourOutput gets filled with the colour that is under the mouse cursor
                     then we redraw it
                     '''
-                    colourOutput.image.fill(ColorPicker.pickColour())
+                    pickedColour = ColorPicker.pickColour()
+                    colourOutput.image.fill(pickedColour)
+                    '''
+                    1. Create a new surface by replacing the FULL_GREEN area of the displayed ship's image with the picked colour
+                    2. Blit the surface in place of the existing shipColoured.image
+                    '''
+                    shipImage = colourPicker.setColour(pickedColour)
+                    shipColoured.image.blit(shipImage, (0,0))
+                    #draw background over both
                     screen.blit(MENU_BACKGROUND, colourOutput.rect.topleft, colourOutput.rect)
-                    colourPickShow.add(colourOutput)
+                    screen.blit(MENU_BACKGROUND, shipColoured.rect.topleft, shipColoured.rect)
+                    #redraw both and update display
                     colourPickShow.draw(screen)
-                    pygame.display.update((colourOutput.rect))
+                    rectlist = [colourOutput.rect, shipColoured.rect]
+                    pygame.display.update(rectlist)
                     
             if event.type == pl.MOUSEMOTION:
                 for button in buttons:

@@ -41,15 +41,19 @@ class ColourPicker (pygame.sprite.DirtySprite):
         print("returning colour " + str(colourPicked))
         return colourPicked
     
-    def saveColour(self, entryImage, colourToChange, colourDesired):
-        '''
-        UNUSED YET
-        This is a converter of surface pixels of a given colour to a different colour
-        the return value is a surface with its pixels changed to the desired colour
-        '''
-        someotherpixels = pygame.PixelArray(entryImage)
-        someotherpixels.replace(colourToChange, colourDesired)
-        outputImage = someotherpixels.make_surface()
-        return outputImage
-    
+def setColour(colourDesired = FULL_GREEN, colourToChange = FULL_GREEN, entryImage = GAME_IMAGE_COLLECTION.ship.copy()):
+    '''setColour(pygame.Color, pygame.Color, Surface) -> Surface 
+    defaults to green
+    1. make entry image into PixelArray (with converting it first)
+    2. replace the pixels of colour colourToChange to the colour colourDesired
+    3. make the PixelArray into a Surface
+    4. set the colorkey of this surface to magenta
+    5. return the surface
+    '''
+    sourceShipPixels = pygame.PixelArray(entryImage.convert())
+    sourceShipPixels.replace(colourToChange, colourDesired)
+    print("The colour " + str(colourToChange) + " was replaced with " + str(colourDesired))
+    outImage = sourceShipPixels.make_surface()
+    outImage.set_colorkey(FULL_MAGENTA)
+    return outImage
     
