@@ -1,7 +1,7 @@
 '''
 Created on 25.1.2014
 
-@author: Hynek
+@author: DannyUfonek
 
 based on LazyImageLoading from the pygame Cookbook:
 http://www.pygame.org/wiki/LazyImageLoading?parent=CookBook

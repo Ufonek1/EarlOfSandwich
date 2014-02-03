@@ -27,7 +27,7 @@ FONT_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/fonts'))
 BACKGROUND_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/backgrounds'))
 
 # specific paths (deprecated, to be removed in next version)
-#@TODO: remove!
+#@TODO: remove and replace with appropriate resourceLoaders
 BUTTON_SPRITESHEET_PATH = os.path.join(SPRITES_PATH, 'buttonsprite.png')
 MAIN_MENU_FONT_PATH = os.path.join(FONT_PATH, 'Polentical Neon Regular.ttf')
 MAIN_MENU_BACKGROUND_PATH = os.path.join(BACKGROUND_PATH, 'IMG_2905.PNG')
