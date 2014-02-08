@@ -8,7 +8,7 @@ this module should deal with the main menu -> load, create, and do anything that
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
-import selectionTip
+import core.selectionTip as selectionTip
 from core.constants import *
 from core.menuButton import menuButton
 
@@ -133,7 +133,7 @@ def start(screen, tipField):
                         '''
                         clean up the screen before leaving (like a good module!) (but only on the buttons area)
                         '''
-                        screen.blit(MENU_BACKGROUND, (0, buttonColumnTop), (0, buttonColumnTop, 2000, 2000))
+                        screen.blit(MENU_BACKGROUND, (0, buttonColumnTop), (0, buttonColumnTop, SCREEN_WIDTH, SCREEN_HEIGHT-buttonColumnTop-50))
                         pygame.display.flip()
                         return button.destination
             if event.type == pl.MOUSEMOTION:
@@ -151,25 +151,26 @@ def start(screen, tipField):
                         
             clock.tick(GAME_FPS)
             #we update twice, so that the button doesn't freeze after mouseover/pressing
-            #tipField.blit(selectionTip.getTip(), (0,0))
-            #pygame.display.update(tipField.get_rect())
-            buttonsCursorStatus = []
+            '''
+            This updates the buttons as well as the tip Field
+            - if no button has the mouse on it, the tip field is cleared
+            '''
+            buttonsCursorStatus = {}
             for button in buttons:
                 screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
                 button.update(event)
                 buttonToDraw.add(button)
                 buttonToDraw.draw(screen)
                 pygame.display.update((button.rect))
-                buttonsCursorStatus.append(button.getMouseOver())
+                buttonsCursorStatus[button] = button.getMouseOver()
             
-            print(buttonsCursorStatus)
-            if buttonsCursorStatus.count(False) == len(buttons.sprites()):
+            if not True in buttonsCursorStatus.values():
                 #basically, if no button has the cursor on it, the tipField is cleared.
                 screen.blit(MENU_BACKGROUND, (TIP_FIELD_RECT), TIP_FIELD_RECT)
                 tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
                 screen.blit(tipField, TIP_FIELD_RECT)
                 pygame.display.update(TIP_FIELD_RECT)
-                buttonsCursorStatus = []
+                buttonsCursorStatus.clear()
                 
 
 

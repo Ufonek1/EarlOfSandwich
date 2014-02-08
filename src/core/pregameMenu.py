@@ -15,6 +15,7 @@ import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
 import core.colourPicker as colourPicker
+import core.selectionTip as selectionTip
 from core.constants import *
 from core.menuButton import menuButton
 from core.colourPicker import ColourPicker
@@ -181,7 +182,7 @@ def start(screen, tipField):
                         '''
                         clean up the screen before leaving (like a good module!) (but only on the buttons area)
                         '''
-                        screen.blit(MENU_BACKGROUND, (buttonColumnLeft, buttonColumnTop-50), (buttonColumnLeft, buttonColumnTop-50, 2000, 2000))
+                        screen.blit(MENU_BACKGROUND, (0, buttonColumnTop-50), (0, buttonColumnTop-50, SCREEN_WIDTH, SCREEN_HEIGHT-buttonColumnTop-50))
                         pygame.display.flip()
                         return button.destination
                 '''
@@ -216,13 +217,31 @@ def start(screen, tipField):
                         buttonToDraw.add(button)
                         buttonToDraw.draw(screen)
                         pygame.display.update((button.rect))
+                        #change tip according to button and blit it onto the tipField, then onto the screen, then update
+                        tipField.blit(selectionTip.getTip(button.destination), (10,10))
+                        screen.blit(tipField, (TIP_FIELD_RECT))
+                        pygame.display.update(TIP_FIELD_RECT)
             clock.tick(GAME_FPS)
-            #we update twice, so that the button doesn't freeze after mouseover/pressing  
+            #we update twice, so that the button doesn't freeze after mouseover/pressing
+            '''
+            This updates the buttons as well as the tip Field
+            - if no button has the mouse on it, the tip field is cleared
+            '''
+            buttonsCursorStatus = {}
             for button in buttons:
                 screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
                 button.update(event)
                 buttonToDraw.add(button)
                 buttonToDraw.draw(screen)
                 pygame.display.update((button.rect))
+                buttonsCursorStatus[button] = button.getMouseOver()
+            
+            if not True in buttonsCursorStatus.values():
+                #basically, if no button has the cursor on it, the tipField is cleared.
+                screen.blit(MENU_BACKGROUND, (TIP_FIELD_RECT), TIP_FIELD_RECT)
+                tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
+                screen.blit(tipField, TIP_FIELD_RECT)
+                pygame.display.update(TIP_FIELD_RECT)
+                buttonsCursorStatus.clear()
 
 
