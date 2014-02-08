@@ -6,7 +6,7 @@ import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
 from core.constants import *
-from spritesheet_functions import SpriteSheet
+from core.spritesheet_functions import SpriteSheet
 
 class playerShip(pygame.sprite.Sprite):
     

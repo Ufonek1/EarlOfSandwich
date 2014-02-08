@@ -10,7 +10,7 @@ import pygame.locals as pl
 import pygame.mouse as mouse
 from core import pregameMenu
 from core import mainMenu
-from constants import *
+from core.constants import *
 
 pygame.init()
 
@@ -24,10 +24,18 @@ print("window fired up")
 screen.blit(MENU_BACKGROUND, (0,0))
 pygame.display.flip()
 
+#Create bottom tip field
+def tipFieldInit():
+    x = pygame.Surface(TIP_FIELD_RECT.size)
+    x.fill(WHITE)
+    return x
+tipField = tipFieldInit()
+screen.blit(tipField, (TIP_FIELD_RECT))
+
 alive = True
 # start main menu and wait for response, which gets saved
 
-menuOutput = mainMenu.start(screen)
+menuOutput = mainMenu.start(screen, tipField)
 pygame.display.flip()
 '''
 now check the value and forward elsewhere
@@ -51,7 +59,7 @@ while alive:
         alive = False
     elif menuOutput == "GAME":
         print ("Start game button was clicked")
-        menuOutput = pregameMenu.start(screen)
+        menuOutput = pregameMenu.start(screen, tipField)
     elif menuOutput == "OPTIONS":
         print ("Options button was clicked")
         break
@@ -61,7 +69,7 @@ while alive:
     elif menuOutput == "BACKTOMAIN":
         print ("The back to main menu button was clicked")
         print ("Returning to main menu")
-        menuOutput = mainMenu.start(screen)
+        menuOutput = mainMenu.start(screen, tipField)
     else:
         print ("Button destination or its recognition unspecified")
         break

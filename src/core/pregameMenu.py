@@ -14,17 +14,17 @@ but now this module should include the colourPicker
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
-import colourPicker
+import core.colourPicker as colourPicker
 from core.constants import *
-from menuButton import menuButton
-from colourPicker import ColourPicker
+from core.menuButton import menuButton
+from core.colourPicker import ColourPicker
 
 buttons = pygame.sprite.Group()
 
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
 #array which holds all button destinations' values (used for acting based on them)
 
-def start(screen):
+def start(screen, tipField):
     
     print("Firing up pregame menu........")
     pygame.init()
@@ -40,13 +40,13 @@ def start(screen):
     button1 = menuButton()
     button1.start("New Game", "NEW", 0.9)
     button1.rect.x  = (buttonColumnLeft)
-    button1.rect.y = (buttonColumnTop + 300)
+    button1.rect.y = (buttonColumnTop + 100)
     button1.add(buttons)
     
     button2 = menuButton()
     button2.start("Load Game", "LOAD", 0.9)
     button2.rect.x  = (buttonColumnLeft)
-    button2.rect.y = (buttonColumnTop + 390)
+    button2.rect.y = (buttonColumnTop + 190)
     button2.add(buttons)
     
     button3 = menuButton()
@@ -58,7 +58,7 @@ def start(screen):
     button4 = menuButton()
     button4.start("Back to menu", "BACKTOMAIN", 0.9)
     button4.rect.x  = (buttonColumnLeft)
-    button4.rect.y = (buttonColumnTop + 480)
+    button4.rect.y = (buttonColumnTop + 280)
     button4.add(buttons)
     
     #add buttons to bottom layer
@@ -108,16 +108,11 @@ def start(screen):
     #colour square:
     colourOutput = pygame.sprite.DirtySprite()
     colourOutput.image = pygame.Surface((50,50))
+    colourOutput.image.fill(FULL_GREEN)
     colourOutput.rect = colourOutput.image.get_rect()
     colourOutput.rect.topleft = (buttonColumnLeft+480, buttonColumnTop+325)
     colourOutput.add(colourPickShow)
     #colour on ship:
-    '''
-    shipColoured = GAME_IMAGE_COLLECTION.ship.copy().convert()
-    shipColoured.set_colorkey(FULL_MAGENTA)
-    screen.blit(shipColoured, (buttonColumnLeft+440, buttonColumnTop+360))
-    '''
-
     shipColoured = pygame.sprite.DirtySprite()
     shipColoured.image = pygame.Surface([100,100]).convert()
     shipColoured.image.blit(GAME_IMAGE_COLLECTION.ship.copy(), (0,0))

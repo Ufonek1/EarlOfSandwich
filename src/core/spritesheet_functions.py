@@ -5,8 +5,8 @@ ripped from http://programarcadegames.com/python_examples/sprite_sheets/
 '''
 
 import pygame
-from resourceLoader import ImageLoader
-from constants import *
+from core.resourceLoader import ImageLoader
+from core.constants import *
 
 class SpriteSheet():
 # This points to our sprite sheet image

@@ -5,9 +5,9 @@
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
-from constants import *
+from core.constants import *
 
-class ColourPicker (pygame.sprite.DirtySprite):
+class ColourPicker(pygame.sprite.DirtySprite):
     
     #load spectrum.png
     spectrum = GAME_IMAGE_COLLECTION.spectrum
