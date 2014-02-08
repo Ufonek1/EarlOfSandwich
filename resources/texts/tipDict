@@ -1,8 +1,9 @@
-GAME;Start a new game or load an existing one
+PLAY;Start a new game or load an existing one
 OPTIONS;Set game options, including key bindings
 EXTRAS;If you just don't have enough
 QUIT;Exit the game
 NEW;Start a new campaign
 LOAD;Continue an existing save
 COLOUR;Save the current ship colour for your campaign
-BACKTOMAIN;Return to main menu
+MAIN;Return to main menu
+GAME;Play

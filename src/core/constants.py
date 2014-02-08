@@ -18,7 +18,6 @@ pygame.init()
 # file names
 BUTTON_SPRITESHEET_NAME = 'buttonspritewhite'
 
-
 # general paths
 PROJECT_PATH = os.getcwd().rpartition(os.path.normcase('/src'))[0] #this splits the current directory and outputs first part of the 3-tuple
 
@@ -41,9 +40,13 @@ FULL_RED = pygame.Color(255,0,0)
 FULL_MAGENTA = pygame.Color(255,0,255)
 FULL_GREEN = pygame.Color(0,255,0)
 
-"""----------------------------------RESOLUTION-------------------------------"""
+"""----------------------------------RESOLUTION & RELATED-------------------------------"""
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 750
+#coordinates of button column in menus
+BUTTON_COLUMN_TOP = 200
+BUTTON_COLUMN_LEFT = 200
+
 """----------------------------------RESOURCES-------------------------------"""
 def backgroundCollectionInit():
     print ("creating background collection...")
