@@ -168,9 +168,20 @@ def getMenu(menuName):
         shipColoured.rect.topleft = (BUTTON_COLUMN_LEFT+100, BUTTON_COLUMN_TOP+100)
         shipColoured.image.set_colorkey(FULL_MAGENTA)
         print("the colourkey of shipColoured.image is " + str(shipColoured.image.get_colorkey()))
-
+        #colour picker subtitle
+        # load font
+        title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 30)
+        #create the title as sprites with text as their source image
+        colourPickerTitle = pygame.sprite.DirtySprite() 
+        text1 = (title_font.render("Pick your colour:", True, FULL_RED))
+        colourPickerTitle.image = text1
+        colourPickerTitle.rect = colourPickerTitle.image.get_rect()
+        colourPickerTitle._layer = 2
+        colourPickerTitle.rect.x = BUTTON_COLUMN_LEFT
+        colourPickerTitle.rect.y = BUTTON_COLUMN_TOP
+        
         #add it to tuple
-        tupleOfSprites = ((buttons), ColorPicker, colourOutput, shipColoured)
+        tupleOfSprites = ((buttons), ColorPicker, colourOutput, shipColoured, colourPickerTitle)
         
         return tupleOfSprites 
     

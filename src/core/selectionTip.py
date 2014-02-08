@@ -37,7 +37,6 @@ def getTip(buttonName):
         return tipWritten
     # if it isn't there, return the default surface
     elif buttonName == "DEFAULT":
-        print("returning default tipField")
         return core.tipFieldInit()
     else:
         print("this button doesn't have a tooltip in tipDict")

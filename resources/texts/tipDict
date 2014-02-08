@@ -7,3 +7,4 @@ LOAD;Continue an existing save
 COLOUR;Save the current ship colour for your campaign
 MAIN;Return to main menu
 GAME;Play
+SAVED;Current ship colour saved

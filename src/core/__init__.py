@@ -12,8 +12,6 @@ import game.__init__
 import core.menuCreator as menuCreator
 import core.selectionTip as selectionTip
 import core.colourPicker as colourPicker
-from core import pregameMenu
-from core import mainMenu
 from core.constants import *
 
 pygame.init()
@@ -81,6 +79,9 @@ allSprites.add(buttons, layer = 3)
 print("top layer of all sprites has the number " + str(allSprites.get_top_layer()))
 print("bottom layer of all sprites has the number " + str(allSprites.get_bottom_layer()))
 
+#default ship surface
+shipSurface = GAME_IMAGE_COLLECTION.ship.convert()
+
 alive = True
 while alive:
     for event in pygame.event.get():
@@ -134,7 +135,17 @@ while alive:
                     elif button.destination == "GAME":
                         print ("Game button was clicked")
                         #start the game module
-                        game.start()
+                        allSprites.empty()
+                        game.start(shipSurface)
+                    elif button.destination == "COLOUR":
+                        ColorPicker, colourOutput, shipColoured, colourPickerTitle = allSprites.get_sprites_from_layer(layer = 2)
+                        #grab the current image of the ship and save it to the variable
+                        shipSurface = shipColoured.image
+                        #change tip according to button and blit it onto the tipField, then onto the screen, then update
+                        tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
+                        tipField.blit(selectionTip.getTip("SAVED"), (10,10))
+                        screen.blit(tipField, (TIP_FIELD_RECT))
+                        pygame.display.update(TIP_FIELD_RECT)
                     else:
                         #save button.destination
                         dest = button.destination
@@ -149,7 +160,7 @@ while alive:
                                 buttonToDraw.add(sprite)
                                 buttonToDraw.draw(screen)
                             except:
-                                pass
+                                print("this sprite is not a button")
                             pygame.display.update((button.rect))
                             sprite.kill()
                         #get new buttons for appropriate menu
@@ -160,7 +171,7 @@ while alive:
                         
                         if dest == "NEW":
                             #load colourPicker
-                            allSprites.add(menuCreator.getMenu(dest)[1:4], layer = 2)
+                            allSprites.add(menuCreator.getMenu(dest)[1:], layer = 2)
                             allSprites.draw(screen)
                         else:
                             allSprites.draw(screen)
@@ -168,7 +179,7 @@ while alive:
                         break
                 try:
                     # get sprites for colourpicker - this should equal the colourPicker sprites found there
-                    ColorPicker, colourOutput, shipColoured = allSprites.get_sprites_from_layer(layer = 2)
+                    ColorPicker, colourOutput, shipColoured, colourPickerTitle = allSprites.get_sprites_from_layer(layer = 2)
                     colourPickShow = pygame.sprite.Group(colourOutput, shipColoured) 
                     if ColorPicker.getMouseOver():
                         '''
@@ -191,7 +202,7 @@ while alive:
                         rectlist = [colourOutput.rect, shipColoured.rect]
                         pygame.display.update(rectlist)
                 except:
-                    print("allSprites does not contain ColorPicker, colourOutput, shipColoured at the moment")
+                    pass
                                             
         if event.type == pl.MOUSEMOTION:
             for button in buttons:
@@ -202,6 +213,7 @@ while alive:
                     buttonToDraw.draw(screen)
                     pygame.display.update((button.rect))
                     #change tip according to button and blit it onto the tipField, then onto the screen, then update
+                    tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
                     tipField.blit(selectionTip.getTip(button.destination), (10,10))
                     screen.blit(tipField, (TIP_FIELD_RECT))
                     pygame.display.update(TIP_FIELD_RECT)
