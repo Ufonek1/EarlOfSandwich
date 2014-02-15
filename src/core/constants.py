@@ -16,7 +16,7 @@ pygame.init()
 
 """----------------------------------PATHS & FILE NAMES-------------------------------"""
 # file names
-BUTTON_SPRITESHEET_NAME = 'buttonspritewhite'
+BUTTON_SPRITESHEET_NAME = 'buttonsprite'
 
 # general paths
 PROJECT_PATH = os.getcwd().rpartition(os.path.normcase('/src'))[0] #this splits the current directory and outputs first part of the 3-tuple
@@ -41,6 +41,7 @@ WHITE = pygame.Color(255,255,255)
 FULL_RED = pygame.Color(255,0,0)
 FULL_MAGENTA = pygame.Color(255,0,255)
 FULL_GREEN = pygame.Color(0,255,0)
+SHINY_CYAN = pygame.Color(100,240,255)
 
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
 SCREEN_WIDTH = 1000
@@ -82,7 +83,7 @@ GAME_IMAGE_COLLECTION = gameSpritesCollectionInit()
 #resized menu background
 MENU_BACKGROUND = pygame.transform.scale(BACKGROUND_COLLECTION.menubackground, (SCREEN_WIDTH, SCREEN_HEIGHT))
 TIP_FIELD_RECT = pygame.Rect(0, SCREEN_HEIGHT-50, SCREEN_WIDTH, 50)
-GAME_FPS = 60
+GAME_FPS = 30
 
 print(" ")
 

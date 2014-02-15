@@ -14,7 +14,7 @@ from core.constants import *
 
 def getLevel(levelNumber):
     """
-    getLevel(int) --> [pygame.sprite.Group, pygame.sprite.Group, pygame.sprite.Group, ...], pygame.sprite.Surface, pygame.sprite.Surface
+    getLevel(int) --> [pygame.sprite.Group, ...], pygame.sprite.Surface, pygame.sprite.Surface
     getLevel(levelNumber) --> enemies, background, backgroundOverlay
     """
     print("getting level " + str(levelNumber))
@@ -41,5 +41,5 @@ def getLevel(levelNumber):
         print("loaded level {0} from file, which is the following:".format(levelNumber))
         print(enemies, background, backgroundOverlay)
     
-        
+
                 
