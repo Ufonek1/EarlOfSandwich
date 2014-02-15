@@ -1,0 +1,12 @@
+"comment, maybe level name"
+
+/enemy
+#list enemies here in this format (new line signifies new wave):
+enemy,enemy,enemy...
+enemy,enemy...
+enemy,enemy...
+
+/background
+#first line is background image, second line is anything to be animated on top (both in the backgrounds folder)
+sea
+clouds

@@ -25,7 +25,9 @@ SPRITES_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/sprites'))
 FONT_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/fonts'))
 BACKGROUND_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/backgrounds'))
 TEXTS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/texts'))
-# specific paths (deprecated, to be removed in next version)
+SAVE_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/save'))
+LEVELS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/levels'))
+
 #@TODO: remove and replace with appropriate resourceLoaders
 BUTTON_SPRITESHEET_PATH = os.path.join(SPRITES_PATH, 'buttonsprite.png')
 MAIN_MENU_FONT_PATH = os.path.join(FONT_PATH, 'Polentical Neon Regular.ttf')
@@ -34,7 +36,7 @@ TIPDICT_PATH = os.path.join(TEXTS_PATH, 'tipDict')
 
 """----------------------------------COLOURS-------------------------------"""
 #@TODO: Add some more colours
-BLACK = pygame.Color(0 ,0, 0)
+BLACK = pygame.Color(0,0,0)
 WHITE = pygame.Color(255,255,255)
 FULL_RED = pygame.Color(255,0,0)
 FULL_MAGENTA = pygame.Color(255,0,255)

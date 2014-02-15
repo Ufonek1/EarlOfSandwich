@@ -8,11 +8,12 @@ import sys
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
-import game.__init__
 import core.menuCreator as menuCreator
 import core.selectionTip as selectionTip
 import core.colourPicker as colourPicker
+import game.__init__
 from core.constants import *
+
 
 pygame.init()
 
@@ -81,7 +82,10 @@ print("bottom layer of all sprites has the number " + str(allSprites.get_bottom_
 
 #default ship surface
 shipSurface = GAME_IMAGE_COLLECTION.ship.convert()
-
+#default save file (0 will create a new one)
+userSave = 0
+#some vars for further action
+playing = False
 alive = True
 while alive:
     for event in pygame.event.get():
@@ -107,11 +111,10 @@ while alive:
             4. the button gets put into the buttonToDraw one-sprite-only group
             5. buttonToDraw draws it onto the screen
             6. the display updates only on it
-            7. then the destination is outputted to core.init, which then decides based on that where
-            to go or what to do next.
-            The same thing happens when the button is mouseovered or something else,
-            only steps 7 (and/or 1) are skipped.
-            KEYWORD: OPTIMISATION
+            7. then the destination is checked, and except for two special cases, new buttons are
+            loaded from menuCreator (that is, all existing buttons removed, and new ones drawn on screen)
+            8. then we check the colourpicker. If it isn't there (we aren't in the colour picking menu)
+            nothing happens, as it's all contained in the try statement.
             '''
             for button in buttons:
                 if button.getMouseOver():
@@ -119,24 +122,24 @@ while alive:
                     button.update(event)
                     buttonToDraw.add(button)
                     buttonToDraw.draw(screen)
-                    pygame.display.update(button.rect)
-                    '''
-                    clean up the screen before leaving (like a good module!) (but only on the buttons area)
-                    '''
-                    
+                    pygame.display.update(button.rect)                   
                     if "QUIT" in button.destination:
                         '''
                         the middle bit is ripped from button.destionation to see from where it was
-                        menuOutput is always in the form of "<something>QUIT"
-                        yay! now i can use all that string indexing!
                         '''
                         print ("game closed from " + button.destination[:button.destination.find("QUIT")] + " MENU")
+                        
                         alive = False
                     elif button.destination == "GAME":
                         print ("Game button was clicked")
-                        #start the game module
-                        allSprites.empty()
-                        game.start(shipSurface)
+                        #erase and kill all existing sprites
+                        for sprite in allSprites:
+                            screen.blit(MENU_BACKGROUND, (sprite.rect.x, sprite.rect.y), sprite.rect)
+                            pygame.display.update((sprite.rect))
+                            sprite.kill()
+                        #exit loop
+                        playing = True
+                        alive = False
                     elif button.destination == "COLOUR":
                         ColorPicker, colourOutput, shipColoured, colourPickerTitle = allSprites.get_sprites_from_layer(layer = 2)
                         #grab the current image of the ship and save it to the variable
@@ -152,19 +155,11 @@ while alive:
                         print (dest + " button was clicked")
                         #clear all sprites and
                         #remove them from allSprites
-                        #this is to remove the colour
                         for sprite in allSprites:
                             screen.blit(MENU_BACKGROUND, (sprite.rect.x, sprite.rect.y), sprite.rect)
-                            try:
-                                sprite.update(event)
-                                buttonToDraw.add(sprite)
-                                buttonToDraw.draw(screen)
-                            except:
-                                print("this sprite is not a button")
                             pygame.display.update((button.rect))
                             sprite.kill()
                         #get new buttons for appropriate menu
-                        screen.blit(MENU_BACKGROUND, (0, BUTTON_COLUMN_TOP), (0, BUTTON_COLUMN_TOP, SCREEN_WIDTH, SCREEN_HEIGHT-BUTTON_COLUMN_TOP-50))
                         print("buttons were removed from group, getting new ones")
                         buttons = (menuCreator.getMenu(dest))[0]
                         allSprites.add(buttons, layer = 3)
@@ -205,6 +200,9 @@ while alive:
                     pass
                                             
         if event.type == pl.MOUSEMOTION:
+            '''
+            here we update buttons if they get mouseovered
+            '''
             for button in buttons:
                 if button.getMouseOver():
                     screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
@@ -221,8 +219,8 @@ while alive:
         clock.tick(GAME_FPS)
         #we update twice, so that the button doesn't freeze after mouseover/pressing
         '''
-        This updates the buttons as well as the tip Field
-        - if no button has the mouse on it, the tip field is cleared
+        This updates the buttons (so that they spring back after being clicked)
+        as well as the tip Field - if no button has the mouse on it, the tip field is cleared
         '''
         buttonsCursorStatus = {}
         for button in buttons:
@@ -241,10 +239,19 @@ while alive:
             pygame.display.update(TIP_FIELD_RECT)
             buttonsCursorStatus.clear()
 
+# wipe screen (sprites should be killed already)
+screen.fill(BLACK)
+pygame.display.flip()
+
+# if loop was left by "PLAY" button, we go to play:
+if playing == True:
+    
+    print("starting game")
+    game.start(screen, shipSurface, userSave)
+
 # when that is done, quit
 print(" ")
 print("Quitting, nothing left to do")
 pygame.quit()
 sys.exit()
- 
         
