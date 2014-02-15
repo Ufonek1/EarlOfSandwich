@@ -36,12 +36,12 @@ TIPDICT_PATH = os.path.join(TEXTS_PATH, 'tipDict')
 
 """----------------------------------COLOURS-------------------------------"""
 #@TODO: Add some more colours
-BLACK = pygame.Color(0,0,0)
-WHITE = pygame.Color(255,255,255)
-FULL_RED = pygame.Color(255,0,0)
-FULL_MAGENTA = pygame.Color(255,0,255)
-FULL_GREEN = pygame.Color(0,255,0)
-SHINY_CYAN = pygame.Color(100,240,255)
+BLACK = pygame.Color(0,0,0,255)
+WHITE = pygame.Color(255,255,255,255)
+FULL_RED = pygame.Color(255,0,0,255)
+FULL_MAGENTA = pygame.Color(255,0,255,255)
+FULL_GREEN = pygame.Color(0,255,0,255)
+SHINY_CYAN = pygame.Color(100,240,255,255)
 
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
 SCREEN_WIDTH = 1000

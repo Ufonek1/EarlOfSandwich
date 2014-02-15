@@ -41,7 +41,7 @@ class ColourPicker(pygame.sprite.DirtySprite):
         print("returning colour " + str(colourPicked))
         return colourPicked
     
-def setColour(colourDesired = FULL_GREEN, colourToChange = FULL_GREEN, entryImage = GAME_IMAGE_COLLECTION.ship.copy()):
+def setColour(colourDesired = FULL_GREEN, colourToChange = FULL_GREEN, entryImage = GAME_IMAGE_COLLECTION.shipalpha.copy()):
     '''setColour(pygame.Color, pygame.Color, Surface) -> Surface 
     defaults to green
     1. make entry image into PixelArray (with converting it first)
@@ -50,10 +50,10 @@ def setColour(colourDesired = FULL_GREEN, colourToChange = FULL_GREEN, entryImag
     4. set the colorkey of this surface to magenta
     5. return the surface
     '''
-    sourceShipPixels = pygame.PixelArray(entryImage.convert())
+    sourceShipPixels = pygame.PixelArray(entryImage.convert_alpha())
     sourceShipPixels.replace(colourToChange, colourDesired)
     print("The colour " + str(colourToChange) + " was replaced with " + str(colourDesired))
     outImage = sourceShipPixels.make_surface()
-    outImage.set_colorkey(FULL_MAGENTA)
+    #outImage.set_colorkey(FULL_MAGENTA)
     return outImage
     

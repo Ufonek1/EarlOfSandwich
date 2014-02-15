@@ -81,7 +81,7 @@ print("top layer of all sprites has the number " + str(allSprites.get_top_layer(
 print("bottom layer of all sprites has the number " + str(allSprites.get_bottom_layer()))
 
 #default ship surface
-shipSurface = GAME_IMAGE_COLLECTION.ship.convert()
+shipSurface = GAME_IMAGE_COLLECTION.shipalpha
 #default save file (0 will create a new one)
 userSave = 0
 #some vars for further action
