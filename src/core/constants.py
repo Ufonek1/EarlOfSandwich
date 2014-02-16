@@ -45,7 +45,9 @@ SHINY_CYAN = pygame.Color(100,240,255,255)
 
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
 SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 750
+SCREEN_HEIGHT = 800
+GAME_SCREEN_WIDTH = 800
+GAME_SCREEN_HEIGHT = 800
 #coordinates of button column in menus
 BUTTON_COLUMN_TOP = 200
 BUTTON_COLUMN_LEFT = 200

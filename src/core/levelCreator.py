@@ -40,6 +40,9 @@ def getLevel(levelNumber):
         backgroundOverlay = lines[lines.index("*background")+2]
         print("loaded level {0} from file, which is the following:".format(levelNumber))
         print(enemies, background, backgroundOverlay)
+    #now get the appropriate background images
+    background = BACKGROUND_COLLECTION.__getattr__(background)
+    backgroundOverlay = BACKGROUND_COLLECTION.__getattr__(backgroundOverlay)
     
-
+    return enemies, background, backgroundOverlay
                 

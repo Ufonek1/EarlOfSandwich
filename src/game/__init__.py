@@ -5,7 +5,7 @@ The true core of the game. This module will take care of the game itself, as the
 '''
 import pygame
 import pygame.locals as pl
-import game.levelCreator as levelCreator
+import core.levelCreator as levelCreator
 from core.constants import *
 
 def start(screen, shipSurface, userSave):
