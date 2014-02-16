@@ -252,10 +252,12 @@ while alive:
     bgDraw = backgroundDrawer()
     bgDraw.setBackground(levelbackground, increment = 1)
     
+    screen.blit(levelbackground, (0,0))
+    pygame.display.flip()
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
         # if menu loop was left by "PLAY" button, we go to play game:
-
+        rectlist = []
         for event in pygame.event.get():
             if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
                 print("game closed from game")
@@ -267,8 +269,17 @@ while alive:
                 playing = False
                 alive = False
         clock.tick(GAME_FPS)
-        screen.blit(bgDraw.updateClouds(), (0,0))
-        pygame.display.flip()
+        screen.blit(levelbackground, (0,0))
+        pygame.display.update(rectlist)
+        #update only changed rects
+        clouds, rectlist = bgDraw.updateClouds()
+        screen.blit(clouds, (0,0))
+        pygame.display.update(rectlist)
+
+    #clear screen for whatever comes next
+    screen.fill(BLACK)
+    pygame.display.flip()
+
 # when that is done, quit
 print(" ")
 print("Quitting, nothing left to do")

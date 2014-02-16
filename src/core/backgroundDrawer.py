@@ -18,7 +18,7 @@ class backgroundDrawer(object):
     cloudRects = []
     allClouds = []
     
-    def setBackground(self, backgroundName, backgroundOverlayName = "cloud", increment = 10):
+    def setBackground(self, background, backgroundOverlayName = "cloud", increment = 10):
         """
         createBackground(Surface, Surface) --> None
         loads the surfaces into the backgroundDrawer
@@ -26,7 +26,7 @@ class backgroundDrawer(object):
         #change increment if requested
         self.increment = increment
         #get image
-        self.bgSolid = BACKGROUND_COLLECTION.__getattr__(backgroundName)
+        self.bgSolid = background
         
         if backgroundOverlayName == "cloud":
             #get clouds
@@ -53,11 +53,17 @@ class backgroundDrawer(object):
         updateClouds() --> Surface
         """
         #prepare background for blitting the clouds onto
-        full_background = self.bgSolid.copy()
-        
-        # should we generate a new cloud? 0-3 yes, 4-150 no -> balance if there's too many/too little clouds
-        cloudNo = random.randint(0,150)
-        if cloudNo <= 3 and len(self.cloudRects) < MAX_CLOUDS:
+        cloud_background = pygame.Surface((GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT), flags = 1011001)
+        cloud_background.fill((0,255,0,0))
+        #prepare rectlist for display updating
+        rectlist = []
+        # should we generate a new cloud? 0-7 yes, 4-150 no -> balance if there's too many/too little clouds
+        cloudNo = random.randint(0,180)
+        if cloudNo <= 7 and len(self.cloudRects) < MAX_CLOUDS:
+            #by this we increase probability of small clouds: 0,1 = big clouds; 2,4,6 = small cloud 1 ; 3,5,7 = small cloud 2
+            while cloudNo > 3:
+                cloudNo = cloudNo - 2
+            #get appropriate rect
             newCloud = self.clouds[cloudNo]
             newRect = newCloud.get_rect()
             #move the rect for randomness and outside of screen
@@ -71,14 +77,15 @@ class backgroundDrawer(object):
             #move each cloud by increment
             rect.move_ip(0, self.increment)
             #get cloud which fits the rect's size and blit it onto the full_backgound surface
-            full_background.blit(self.clouds[rect.size], (rect))
+            cloud_background.blit(self.clouds[rect.size], (rect))
             self.cloudRects[rectindex] = rect
-            if not rect.colliderect(full_background.get_rect()) and rect.y > GAME_SCREEN_HEIGHT:
+            if not rect.colliderect(cloud_background.get_rect()) and rect.y > GAME_SCREEN_HEIGHT:
                 del self.cloudRects[rectindex]
                 print("cloud deleted")
                 print("number of clouds: {0}".format(len(self.cloudRects)))
+            rectlist.append(rect.inflate(0,2))
         
-        return full_background
+        return cloud_background, rectlist
 '''        
     def updateBackground(self):
         """

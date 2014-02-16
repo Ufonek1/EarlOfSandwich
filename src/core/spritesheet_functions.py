@@ -25,7 +25,6 @@ class SpriteSheet():
         # Create a new blank image with per pixel alphas
         image = pygame.Surface((width, height), flags = 1011001)
         image.fill((0,255,0,0))
-        print(image.get_flags())
         # Copy the sprite from the large sheet onto the smaller image
         image.blit(self.sprite_sheet, (0, 0), (x, y, width, height) , special_flags = 0)
         return image
