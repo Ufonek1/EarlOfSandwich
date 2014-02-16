@@ -42,7 +42,7 @@ def tipFieldInit():
 #default save file (0 will create a new one)
 userSave = 0
 #default ship surface
-shipSurface = GAME_IMAGE_COLLECTION.shipalpha
+shipSurface = GAME_IMAGE_COLLECTION.skyship
 
 #some vars to control further action
 playing = False

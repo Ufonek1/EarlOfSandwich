@@ -162,7 +162,7 @@ def getMenu(menuName):
         colourOutput.rect.topleft = (BUTTON_COLUMN_LEFT+30, BUTTON_COLUMN_TOP+145)
         #colour on ship:
         shipColoured = pygame.sprite.DirtySprite()
-        shipColoured.image = GAME_IMAGE_COLLECTION.shipalpha.copy()
+        shipColoured.image = GAME_IMAGE_COLLECTION.skyship.copy()
         shipColoured.rect = shipColoured.image.get_rect()
         shipColoured.rect.topleft = (BUTTON_COLUMN_LEFT+100, BUTTON_COLUMN_TOP+100)
         print("the colourkey of shipColoured.image is " + str(shipColoured.image.get_colorkey()))
