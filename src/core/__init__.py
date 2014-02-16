@@ -250,7 +250,7 @@ while alive:
     print("starting game")
     enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
     bgDraw = backgroundDrawer()
-    bgDraw.setBackground(levelbackground, backgroundOverlay, increment = 1)
+    bgDraw.setBackground(levelbackground, increment = 1)
     
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
@@ -267,7 +267,7 @@ while alive:
                 playing = False
                 alive = False
         clock.tick(GAME_FPS)
-        screen.blit(bgDraw.updateBackground(), (0,0))
+        screen.blit(bgDraw.updateClouds(), (0,0))
         pygame.display.flip()
 # when that is done, quit
 print(" ")

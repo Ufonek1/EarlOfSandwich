@@ -18,7 +18,7 @@ class SpriteSheet():
         '''
         self.sprite_sheet = GAME_IMAGE_COLLECTION.__getattr__(image_name_in_collection)
         
-    def getImage(self, x, y, width, height, colorkey):
+    def getImage(self, x, y, width, height):
         """ Grab a single image out of a larger spritesheet
            Pass in the x, y location of the sprite
            and the width and height of the sprite. """

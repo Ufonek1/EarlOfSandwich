@@ -36,22 +36,22 @@ class menuButton (pygame.sprite.DirtySprite):
         3. apply any scaling, if there is any (multiply by that scaling, round the result, and make it into an int)
         4. append to main frame array
         '''
-        image = sprite_sheet.getImage(0, 0, 450, 68, buttonColorkey)
+        image = sprite_sheet.getImage(0, 0, 450, 68)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
         image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
         
-        image = sprite_sheet.getImage(0, 68, 450, 68, buttonColorkey)
+        image = sprite_sheet.getImage(0, 68, 450, 68)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
         image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
         
-        image = sprite_sheet.getImage(0, 136, 450, 68, buttonColorkey)
+        image = sprite_sheet.getImage(0, 136, 450, 68)
         image.blit(self.button_font.render(text, True, FULL_RED), (49,7))
         image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
         
-        image = sprite_sheet.getImage(0, 204, 450, 68, buttonColorkey)
+        image = sprite_sheet.getImage(0, 204, 450, 68)
         image.blit(self.button_font.render(text, True, FULL_RED), (56,14))
         image = pygame.transform.scale(image, (int(round(450*relativescale)), int(round(68*relativescale))))
         button_frame.append(image)
