@@ -254,6 +254,8 @@ while alive:
     
     screen.blit(levelbackground, (0,0))
     pygame.display.flip()
+    
+    frame = 0
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
         # if menu loop was left by "PLAY" button, we go to play game:
@@ -269,12 +271,17 @@ while alive:
                 playing = False
                 alive = False
         clock.tick(GAME_FPS)
-        screen.blit(levelbackground, (0,0))
-        pygame.display.update(rectlist)
-        #update only changed rects
-        clouds, rectlist = bgDraw.updateClouds()
-        screen.blit(clouds, (0,0))
-        pygame.display.update(rectlist)
+        #update background only every fourth frame
+        if frame == 3:
+            screen.blit(levelbackground, (0,0))
+            pygame.display.update(rectlist)
+            #update only changed rects
+            clouds, rectlist = bgDraw.updateClouds()
+            screen.blit(clouds, (0,0))
+            pygame.display.update(rectlist)
+            frame = 0
+        else:
+            frame += 1
 
     #clear screen for whatever comes next
     screen.fill(BLACK)

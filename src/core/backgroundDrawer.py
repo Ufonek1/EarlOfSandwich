@@ -45,6 +45,9 @@ class backgroundDrawer(object):
             image = sprite_sheet.getImage(123, 110, 61, 36)
             self.clouds[image.get_size()] = image
             self.clouds[3] = image
+            image = sprite_sheet.getImage(184, 110, 15, 35)
+            self.clouds[image.get_size()] = image
+            self.clouds[4] = image
             print(self.clouds)
                     
     def updateClouds(self):
@@ -57,12 +60,12 @@ class backgroundDrawer(object):
         cloud_background.fill((0,255,0,0))
         #prepare rectlist for display updating
         rectlist = []
-        # should we generate a new cloud? 0-7 yes, 4-150 no -> balance if there's too many/too little clouds
-        cloudNo = random.randint(0,180)
-        if cloudNo <= 7 and len(self.cloudRects) < MAX_CLOUDS:
-            #by this we increase probability of small clouds: 0,1 = big clouds; 2,4,6 = small cloud 1 ; 3,5,7 = small cloud 2
-            while cloudNo > 3:
-                cloudNo = cloudNo - 2
+        # should we generate a new cloud? 0-9 yes, 11 - 250 no -> balance if there's too many/too little clouds
+        cloudNo = random.randint(0,250)
+        if cloudNo <= 9 and len(self.cloudRects) < MAX_CLOUDS:
+            #by this we increase probability of small clouds: 0,1 = big clouds; 2,5,8 = small cloud 1 ; 3,6,9 = small cloud 2; 4,7 = tiny cloud 
+            while cloudNo > 4:
+                cloudNo = cloudNo - 3
             #get appropriate rect
             newCloud = self.clouds[cloudNo]
             newRect = newCloud.get_rect()
