@@ -15,9 +15,10 @@ from core.constants import *
 
 class settingsHandler(object):
     
-    settingsFont = pygame.font.Font(MAIN_MENU_FONT_PATH, 30)
+    settingsFont = pygame.font.Font(MAIN_MENU_FONT_PATH, 25)
     settingDict = collections.OrderedDict()
     _Number2Name = ['MOVE_UP', 'MOVE_DOWN', 'MOVE_LEFT', 'MOVE_RIGHT', 'PAUSE', 'ATTACK', 'MUSIC_VOLUME', 'SOUND_VOLUME']
+    _Name2Text = {'MOVE_UP':'Up', 'MOVE_DOWN':'Down', 'MOVE_LEFT':'Left', 'MOVE_RIGHT':'Right', 'PAUSE':'Pause', 'ATTACK':'Attack', 'MUSIC_VOLUME':'Music Volume', 'SOUND_VOLUME':'Sound Volume'}
     
     def loadSettings(self):
         '''
@@ -63,7 +64,7 @@ class settingsHandler(object):
                     # convert its integer to string form
                     # get the setting we're saving to
                     # then save it to dictionary
-                    self.settingDict[self._Number2Name[settingNumber]] = pygame.key.name(event.key)
+                    self.settingDict[self._Number2Name[settingNumber]] = "K_{}".format(pygame.key.name(event.key))
                 else:
                     pass
         else:
@@ -74,12 +75,22 @@ class settingsHandler(object):
             # then save it to dictionary
             self.settingDict[self._Number2Name[settingNumber]] = settingValue
         
-    def drawSetting(self, setting = "ALL"):
+    def drawSetting(self, settingNumber = "EMPTY", colour = FULL_RED):
         '''
-        draw an existing setting into a sprite
-        drawSetting(setting) --> Sprites
+        draw an existing setting into a surface
+        drawSetting(setting) --> Surface
         '''
-        pass
+        if settingNumber == "EMPTY":
+            image = self.settingsFont.render("_", True, colour)
+        else:
+            settingName = self._Number2Name[settingNumber]
+            text = self.settingDict[settingName]
+            if text.startswith("K_"):
+                text = text.partition("K_")[2]
+            image = self.settingsFont.render(text, True, colour)
+        
+        return image
+        
     def saveSettings(self):
         '''
         save the existing settingDict to file

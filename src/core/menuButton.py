@@ -25,7 +25,6 @@ class menuButton (pygame.sprite.DirtySprite):
         #create the spritesheet
         sprite_sheet = SpriteSheet(BUTTON_SPRITESHEET_NAME)
        
-        buttonColorkey = WHITE
         button_frame = []
         '''
         load all appropriate images and write text over them
@@ -84,3 +83,17 @@ class menuButton (pygame.sprite.DirtySprite):
             return False
         
 
+class optionsButton (pygame.sprite.DirtySprite):
+    
+    setting = None
+    
+    def assignSetting(self, settingbind):
+        self.setting = settingbind
+    
+    def getMouseOver(self):
+        #simple method for getting if the mouse is on the button (for outside/public use)
+        if self.rect.collidepoint(mouse.get_pos()):
+            return True
+        else:
+            return False
+    

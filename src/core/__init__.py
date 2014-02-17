@@ -25,12 +25,16 @@ screen = pygame.display.set_mode(screensize.size)
 pygame.display.set_caption("Yet another pygame window")
 print("window fired up")
 
-#FPS control
+#FPS controls
 clock = pygame.time.Clock()
 
 """----------------------------------GLOBAL STUFF-------------------------------"""
 #group for drawing sprites
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
+#layer 0-2 backgrounds
+#layer 3 classic buttons
+#layer 4 any other buttons
+
 titleSprites = pygame.sprite.Group()
 #group for holding button to update
 buttonToDraw = pygame.sprite.GroupSingle()
@@ -162,6 +166,25 @@ while alive:
                             tipField.blit(selectionTip.getTip("SAVED"), (10,10))
                             screen.blit(tipField, (TIP_FIELD_RECT))
                             pygame.display.update(TIP_FIELD_RECT)
+                        elif button.destination == "OPTIONS":
+                            #save button.destination
+                            dest = button.destination
+                            print ("Options button was clicked")
+                            #clear all sprites and
+                            #remove them from allSprites
+                            for sprite in allSprites:
+                                screen.blit(MENU_BACKGROUND, (sprite.rect.x, sprite.rect.y), sprite.rect)
+                                pygame.display.update((button.rect))
+                                sprite.kill()
+                            #get new buttons for appropriate menu
+                            print("buttons were removed from group, getting new ones")
+                            buttons, optionButtons, optionsTitles, skyshiparrows = (menuCreator.getMenu(dest, settings))
+                            allSprites.add(buttons, layer = 3)
+                            allSprites.add(optionButtons, layer = 4)
+                            allSprites.add(optionsTitles, layer = 2)
+                            allSprites.add(skyshiparrows, layer = 2)
+                            allSprites.draw(screen)
+                            pygame.display.flip()
                         else:
                             #save button.destination
                             dest = button.destination
@@ -211,7 +234,38 @@ while alive:
                             pygame.display.update(rectlist)
                     except:
                         pass
-                                                
+                    
+                    try:
+                        #get sprites for options - changing settings
+                        optionsButtons = allSprites.get_sprites_from_layer(layer = 4)
+                        for button in optionsButtons:
+                            if button.getMouseOver():
+                                #replace with _
+                                screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
+                                button.image = settings.drawSetting()
+                                buttonToDraw.add(button)
+                                buttonToDraw.draw(screen)
+                                pygame.display.update((button.rect))
+                                #grab the next key pressed down and change setting
+                                waitingforinput = True
+                                settingNumber = button.setting
+                                settingName = settings._Number2Name[settingNumber]
+                                while waitingforinput:
+                                    event = pygame.event.wait()
+                                    if event.type == pl.KEYDOWN:
+                                        _ALLOWED_KEYS[settingNumber] = event.key
+                                        settings.settingDict[settingName] = "K_{}".format(pygame.key.name(event.key))
+                                        print("the new key for setting {0} is {1}".format(settingName, event.key))
+                                        #redraw button image
+                                        screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
+                                        button.image = settings.drawSetting(settingNumber)
+                                        buttonToDraw.add(button)
+                                        buttonToDraw.draw(screen)
+                                        pygame.display.update((button.rect))
+                                        waitingforinput = False
+                    except:
+                        pass
+                    
             if event.type == pl.MOUSEMOTION:
                 '''
                 here we update buttons if they get mouseovered
@@ -309,7 +363,7 @@ while alive:
     settings.saveSettings()
     
     #clear screen for whatever comes next
-    screen.fill(BLACK)
+    screen.fill(BLACK) 
     pygame.display.flip()
 
 # when that is done, quit
