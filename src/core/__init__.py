@@ -12,6 +12,7 @@ import core.menuCreator as menuCreator
 import core.selectionTip as selectionTip
 import core.colourPicker as colourPicker
 import core.levelCreator as levelCreator
+from core.settingsHandler import settingsHandler
 from core.backgroundDrawer import backgroundDrawer
 from core.constants import *
 
@@ -27,6 +28,7 @@ print("window fired up")
 #FPS control
 clock = pygame.time.Clock()
 
+"""----------------------------------GLOBAL STUFF-------------------------------"""
 #group for drawing sprites
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
 titleSprites = pygame.sprite.Group()
@@ -39,10 +41,17 @@ def tipFieldInit():
     x.fill(WHITE)
     return x
 
+"""----------------------------------VARIABLES THAT THE SESSION WILL CHANGE-------------------------------"""
 #default save file (0 will create a new one)
 userSave = 0
 #default ship surface
 shipSurface = GAME_IMAGE_COLLECTION.skyship
+#load settings
+settings = settingsHandler()
+settings.loadSettings()
+#after loading settings, import them and create a dict for referring to
+from core.constants import _SETTINGS
+from core.constants import _ALLOWED_KEYS
 
 #some vars to control further action
 playing = False
@@ -247,15 +256,17 @@ while alive:
     screen.fill(BLACK)
     pygame.display.flip()
     """----------------------------------GAME STUFF-------------------------------"""
-    print("starting game")
-    enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
-    bgDraw = backgroundDrawer()
-    bgDraw.setBackground(levelbackground, increment = 1)
-    
-    screen.blit(levelbackground, (0,0))
-    pygame.display.flip()
-    
-    frame = 0
+    '''this does nothing if playing is False'''
+    if playing == True:
+        print("starting game")
+        enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
+        bgDraw = backgroundDrawer()
+        bgDraw.setBackground(levelbackground, increment = 1)
+        
+        screen.blit(levelbackground, (0,0))
+        pygame.display.flip()
+        
+        frame = 0
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
         # if menu loop was left by "PLAY" button, we go to play game:
@@ -282,7 +293,21 @@ while alive:
             frame = 0
         else:
             frame += 1
-
+    waitingforinput = True
+    print(_ALLOWED_KEYS)
+    while waitingforinput:
+        event = pygame.event.wait()
+        if event.type == pl.KEYDOWN:
+            print(event.key)
+            if event.key in _ALLOWED_KEYS:
+                # find which control was pressed
+                x = _ALLOWED_KEYS.index(event.key)
+                print("you pressed the key for: {0}".format(settings._Number2Name[x]))
+                waitingforinput = False
+            else:
+                print("wrong key pressed")
+    settings.saveSettings()
+    
     #clear screen for whatever comes next
     screen.fill(BLACK)
     pygame.display.flip()

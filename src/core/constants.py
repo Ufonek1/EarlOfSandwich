@@ -5,6 +5,7 @@
 
 import pygame
 import os
+import collections
 from core.resourceLoader import ImageLoader
 
 """ This class is to make the code more readable by replacing values with names in CAPITALS
@@ -33,6 +34,7 @@ BUTTON_SPRITESHEET_PATH = os.path.join(SPRITES_PATH, 'buttonsprite.png')
 MAIN_MENU_FONT_PATH = os.path.join(FONT_PATH, 'Polentical Neon Regular.ttf')
 MAIN_MENU_BACKGROUND_PATH = os.path.join(BACKGROUND_PATH, 'IMG_2905.PNG')
 TIPDICT_PATH = os.path.join(TEXTS_PATH, 'tipDict')
+SETTINGS_PATH = os.path.join(PROJECT_PATH, "settings")
 
 """----------------------------------COLOURS-------------------------------"""
 #@TODO: Add some more colours
@@ -80,7 +82,16 @@ def gameSpritesCollectionInit():
 GAME_IMAGE_COLLECTION = gameSpritesCollectionInit()
 
 #@TODO: sound and font collections!
-
+"""----------------------------------SETTINGS - PRIVATE-------------------------------"""
+''' these are set by settingsHandler. They're empty otherwise'''
+_SETTINGS = dict(
+MUSIC_VOLUME = 100,
+SOUND_VOLUME = 100
+)
+'''
+settingNumbers: 0:MOVE_UP, 1:MOVE_DOWN, 2:MOVE_LEFT, 3:MOVE_RIGHT, 4:PAUSE, 5:ATTACK, 6:MUSIC_VOLUME, 7:SOUND_VOLUME
+'''
+_ALLOWED_KEYS = []
 """----------------------------------MISC-------------------------------"""
 #resized menu background
 MENU_BACKGROUND = pygame.transform.scale(BACKGROUND_COLLECTION.menubackground, (SCREEN_WIDTH, SCREEN_HEIGHT))
