@@ -240,32 +240,40 @@ while alive:
                         optionsButtons = allSprites.get_sprites_from_layer(layer = 4)
                         for button in optionsButtons:
                             if button.getMouseOver():
-                                #replace with _
-                                screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
-                                button.image = settings.drawSetting()
-                                buttonToDraw.add(button)
-                                buttonToDraw.draw(screen)
-                                pygame.display.update((button.rect))
-                                #grab the next key pressed down and change setting
-                                waitingforinput = True
-                                settingNumber = button.setting
-                                settingName = settings._Number2Name[settingNumber]
-                                while waitingforinput:
-                                    event = pygame.event.wait()
-                                    if event.type == pl.KEYDOWN:
-                                        _ALLOWED_KEYS[settingNumber] = event.key
-                                        settings.settingDict[settingName] = "K_{}".format(pygame.key.name(event.key))
-                                        print("the new key for setting {0} is {1}".format(settingName, event.key))
-                                        #redraw button image
-                                        screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
-                                        button.image = settings.drawSetting(settingNumber)
-                                        buttonToDraw.add(button)
-                                        buttonToDraw.draw(screen)
-                                        pygame.display.update((button.rect))
-                                        waitingforinput = False
+                                #if button is a key button:
+                                if button.setting < 6:
+                                    #replace with _
+                                    screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
+                                    button.image = settings.drawSetting()
+                                    buttonToDraw.add(button)
+                                    buttonToDraw.draw(screen)
+                                    pygame.display.update((button.rect))
+                                    #grab the next key pressed down and change setting
+                                    settingNumber = button.setting
+                                    settingName = settings._Number2Name[settingNumber]
+                                    settings.setSetting(settingNumber)
+                                    #redraw button image
+                                    screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
+                                    button.image = settings.drawSetting(settingNumber)
+                                    buttonToDraw.draw(screen)
+                                    #inflate ensures that long key names get shown as well
+                                    pygame.display.update(button.rect.inflate(200,0))
+                                    #get tip
+                                    tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
+                                    tipField.blit(selectionTip.getTip("SETTING", settingName, settings.settingDict[settings._Number2Name[settingNumber]]), (10,10))
+                                    screen.blit(tipField, (TIP_FIELD_RECT))
+                                    pygame.display.update(TIP_FIELD_RECT)
+                                    
+                                #if button is the other stuff, do nothing
+                                else:
+                                    #get tip
+                                    tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
+                                    tipField.blit(selectionTip.getTip("WHEEL"), (10,10))
+                                    screen.blit(tipField, (TIP_FIELD_RECT))
+                                    pygame.display.update(TIP_FIELD_RECT)
                     except:
                         pass
-                    
+                        
             if event.type == pl.MOUSEMOTION:
                 '''
                 here we update buttons if they get mouseovered
@@ -279,7 +287,11 @@ while alive:
                         pygame.display.update((button.rect))
                         #change tip according to button and blit it onto the tipField, then onto the screen, then update
                         tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
-                        tipField.blit(selectionTip.getTip(button.destination), (10,10))
+                        try:
+                            tipField.blit(selectionTip.getTip(button.destination), (10,10))
+                        except:
+                            # if it's not a menuButton, then no tip should be shownd
+                            pass
                         screen.blit(tipField, (TIP_FIELD_RECT))
                         pygame.display.update(TIP_FIELD_RECT)
                         
@@ -290,12 +302,16 @@ while alive:
             as well as the tip Field - if no button has the mouse on it, the tip field is cleared
             '''
             buttonsCursorStatus = {}
+                        
             for button in buttons:
                 screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
                 button.update(event)
                 buttonToDraw.add(button)
                 buttonToDraw.draw(screen)
                 pygame.display.update((button.rect))
+                buttonsCursorStatus[button] = button.getMouseOver()
+                
+            for button in allSprites.get_sprites_from_layer(layer = 4):
                 buttonsCursorStatus[button] = button.getMouseOver()
             
             if not True in buttonsCursorStatus.values():
@@ -349,6 +365,7 @@ while alive:
             frame += 1
     waitingforinput = True
     print(_ALLOWED_KEYS)
+    print(settings.settingDict)
     while waitingforinput:
         event = pygame.event.wait()
         if event.type == pl.KEYDOWN:

@@ -54,6 +54,7 @@ class settingsHandler(object):
         see constants for reference which number is which control
         '''
         if settingValue == None:
+            print("waiting for key input")
             waitingforinput = True
             while waitingforinput:
                 event = pygame.event.wait()
@@ -64,7 +65,15 @@ class settingsHandler(object):
                     # convert its integer to string form
                     # get the setting we're saving to
                     # then save it to dictionary
-                    self.settingDict[self._Number2Name[settingNumber]] = "K_{}".format(pygame.key.name(event.key))
+                    eventkeyName = pygame.key.name(event.key)
+                    if len(eventkeyName) > 1:
+                        #raise case of event name (omg pygame really sucks at this place)
+                        eventkeyName = eventkeyName.upper()
+                    
+                    print("setting {} to {}".format(self._Number2Name[settingNumber], "K_{}".format(eventkeyName)))
+                    self.settingDict[self._Number2Name[settingNumber]] = "K_{}".format(eventkeyName)
+                    
+                    waitingforinput = False
                 else:
                     pass
         else:
@@ -81,12 +90,15 @@ class settingsHandler(object):
         drawSetting(setting) --> Surface
         '''
         if settingNumber == "EMPTY":
+            print("drawing _")
             image = self.settingsFont.render("_", True, colour)
         else:
+            print("drawing new setting: ".format(settingNumber))
             settingName = self._Number2Name[settingNumber]
             text = self.settingDict[settingName]
             if text.startswith("K_"):
                 text = text.partition("K_")[2]
+            print("drew " + text)
             image = self.settingsFont.render(text, True, colour)
         
         return image

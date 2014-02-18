@@ -20,7 +20,7 @@ with open(TIPDICT_PATH) as source:
         tipDict[key] = val
 tipFont = pygame.font.Font(MAIN_MENU_FONT_PATH, 30)
 
-def getTip(buttonName, colourPicked = None):
+def getTip(buttonName, SettingName = None, SettingValue = None):
     '''
     this should get tips from the game's tip dictionary, and write them out into a surface
     getTip(String) -> Surface
@@ -38,11 +38,9 @@ def getTip(buttonName, colourPicked = None):
     # if it isn't there, return the default surface
     elif buttonName == "DEFAULT":
         return core.tipFieldInit()
-    elif buttonName == "COLOURPICKER":
-        #unused
-        #special tip for which colour was chosen
+    elif buttonName == "SETTING":
         print("looking for tip on " + buttonName)
-        text = ("The colour " + str(colourPicked) + " was picked")
+        text = "Setting for {} changed to {}".format(SettingName, SettingValue)
         tipWritten = tipFont.render(text, True, FULL_RED)
         return tipWritten
     else:
