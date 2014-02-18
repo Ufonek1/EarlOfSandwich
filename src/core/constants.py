@@ -84,10 +84,10 @@ GAME_IMAGE_COLLECTION = gameSpritesCollectionInit()
 #@TODO: sound and font collections!
 """----------------------------------SETTINGS - PRIVATE-------------------------------"""
 ''' these are set by settingsHandler. They're empty otherwise'''
-_SETTINGS = dict(
-MUSIC_VOLUME = 100,
-SOUND_VOLUME = 100
-)
+_SETTINGS = {
+'MUSIC_VOLUME':100,
+'SOUND_VOLUME':100
+}
 '''
 settingNumbers: 0:MOVE_UP, 1:MOVE_DOWN, 2:MOVE_LEFT, 3:MOVE_RIGHT, 4:PAUSE, 5:ATTACK, 6:MUSIC_VOLUME, 7:SOUND_VOLUME
 '''

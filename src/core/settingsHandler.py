@@ -53,6 +53,7 @@ class settingsHandler(object):
         replace the key/value in dictionary and in constants
         see constants for reference which number is which control
         '''
+        print(settingValue)
         if settingValue == None:
             print("waiting for key input")
             waitingforinput = True
@@ -77,13 +78,20 @@ class settingsHandler(object):
                 else:
                     pass
         else:
-            # change value of setting in constants -> this is a dict so we have to convert as well
-            core.constants._SETTINGS[self._Number2Name[settingNumber]] = settingValue
-            # convert its integer to string form
-            # get the setting we're saving to
-            # then save it to dictionary
-            self.settingDict[self._Number2Name[settingNumber]] = settingValue
-        
+            print(settingValue)
+            # limit the setting between 0 to 100 and deal with the two extremes, 0 and 100:
+            currentSettingVal = int(self.settingDict[self._Number2Name[settingNumber]])
+            if currentSettingVal in range(1,100) or (currentSettingVal == 100 and settingValue == -1) or (currentSettingVal == 0 and settingValue == 1):
+                # change value of setting in constants -> this is a dict so we have to convert as well
+                core.constants._SETTINGS[self._Number2Name[settingNumber]] = str(int(core.constants._SETTINGS[self._Number2Name[settingNumber]]) + settingValue)
+                print("setting {0} to {1}".format(self._Number2Name[settingNumber], int(core.constants._SETTINGS[self._Number2Name[settingNumber]]) + settingValue))
+                # convert its integer to string form
+                # get the setting we're saving to
+                # then save it to dictionary
+                
+                self.settingDict[self._Number2Name[settingNumber]] = str(int(self.settingDict[self._Number2Name[settingNumber]]) + settingValue)
+                print("setting {} to {}".format(self._Number2Name[settingNumber], int(self.settingDict[self._Number2Name[settingNumber]]) + settingValue))
+            
     def drawSetting(self, settingNumber = "EMPTY", colour = FULL_RED):
         '''
         draw an existing setting into a surface

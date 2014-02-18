@@ -273,7 +273,32 @@ while alive:
                                     pygame.display.update(TIP_FIELD_RECT)
                     except:
                         pass
-                        
+            if event.type == pl.MOUSEBUTTONDOWN and event.button in [4,5]:
+                try:
+                    #get sprites for options - changing settings
+                    optionsButtons = allSprites.get_sprites_from_layer(layer = 4)
+                    #get only those changeable by mouse scrolling
+                    for button in optionsButtons:
+                        if button.setting >= 6:
+                            if button.getMouseOver():
+                                print("you rolled the wheel on a button")
+                                #convert turning of mouse wheel to reduction/increase
+                                if event.button == 4:
+                                    valueChange = 1
+                                elif event.button == 5:
+                                    valueChange = -1
+                                #grab the next key pressed down and change setting
+                                settingNumber = button.setting
+                                settingName = settings._Number2Name[settingNumber]
+                                settings.setSetting(settingNumber, valueChange)
+                                #redraw button image
+                                screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
+                                button.image = settings.drawSetting(settingNumber)
+                                buttonToDraw.add(button)
+                                buttonToDraw.draw(screen)
+                                pygame.display.update(button.rect)
+                except:
+                    pass
             if event.type == pl.MOUSEMOTION:
                 '''
                 here we update buttons if they get mouseovered
