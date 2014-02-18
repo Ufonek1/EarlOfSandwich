@@ -98,6 +98,7 @@ MENU_BACKGROUND = pygame.transform.scale(BACKGROUND_COLLECTION.menubackground, (
 TIP_FIELD_RECT = pygame.Rect(0, SCREEN_HEIGHT-50, SCREEN_WIDTH, 50)
 GAME_FPS = 30
 MAX_CLOUDS = 50
+KEY_REPEAT_TIME = 10 #ms
 
 print(" ")
 

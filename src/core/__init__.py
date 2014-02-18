@@ -12,6 +12,7 @@ import core.menuCreator as menuCreator
 import core.selectionTip as selectionTip
 import core.colourPicker as colourPicker
 import core.levelCreator as levelCreator
+from core.playerShip import playerShip
 from core.settingsHandler import settingsHandler
 from core.backgroundDrawer import backgroundDrawer
 from core.constants import *
@@ -32,7 +33,7 @@ clock = pygame.time.Clock()
 #group for drawing sprites
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
 #layer 0-2 backgrounds
-#layer 3 classic buttons
+#layer 3 classic buttons & player ship
 #layer 4 any other buttons
 
 titleSprites = pygame.sprite.Group()
@@ -223,8 +224,8 @@ while alive:
                             1. Create a new surface by replacing the FULL_GREEN area of the displayed ship's image with the picked colour
                             2. Blit the surface in place of the existing shipColoured.image
                             '''
-                            shipImage = colourPicker.setColour(pickedColour)
-                            shipColoured.image.blit(shipImage, (0,0))
+                            shipSurface = colourPicker.setColour(pickedColour)
+                            shipColoured.image.blit(shipSurface, (0,0))
                             #draw background over both
                             screen.blit(MENU_BACKGROUND, colourOutput.rect.topleft, colourOutput.rect)
                             screen.blit(MENU_BACKGROUND, shipColoured.rect.topleft, shipColoured.rect)
@@ -354,14 +355,34 @@ while alive:
     '''this does nothing if playing is False'''
     if playing == True:
         print("starting game")
+        
+        pygame.key.set_repeat(KEY_REPEAT_TIME, KEY_REPEAT_TIME)
+        #load level
         enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
+        
+        #load background
         bgDraw = backgroundDrawer()
         bgDraw.setBackground(levelbackground, increment = 1)
-        
+        #draw background
         screen.blit(levelbackground, (0,0))
-        pygame.display.flip()
+        #save empty background
+        emptylevelbackground = levelbackground.copy()
         
+        #the player's ship
+        skyship = playerShip()
+        skyship.load(shipSurface)
+        skyship.rect.topleft = (400,600)
+        allSprites.add(skyship, layer = 3)
+        allSprites.draw(screen)
+        
+        #single group for drawing sprites
+        spriteToDraw = pygame.sprite.GroupSingle()
+        
+        #simple counter for stuff that doesn't update every frame
         frame = 0
+        
+        #update display
+        pygame.display.flip()
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
         # if menu loop was left by "PLAY" button, we go to play game:
@@ -376,20 +397,45 @@ while alive:
                 pygame.display.flip()
                 playing = False
                 alive = False
+            if event.type == pl.KEYDOWN and event.key in _ALLOWED_KEYS:
+                '''
+                ship behaviour goes here
+                '''
+                if _ALLOWED_KEYS.index(event.key) < 4:
+                    # if it's a direction key
+                    # translate to string form
+                    direction = settings._Number2Name[_ALLOWED_KEYS.index(event.key)]
+                    # move ship accordingly
+                    # erase from screen, but draw any clouds under the skyship as well
+                    screen.blit(levelbackground, (skyship.rect), skyship.rect)
+                    pygame.display.update(skyship.rect)
+                    skyship.move(direction)
+                    # redraw it on screen & update display
+                    spriteToDraw.add(skyship)
+                    spriteToDraw.draw(screen)
+                    pygame.display.update(skyship.rect)
         clock.tick(GAME_FPS)
         #update background only every fourth frame
         if frame == 3:
-            screen.blit(levelbackground, (0,0))
+            #clean level background
+            levelbackground.blit(emptylevelbackground, (0,0))
+            # update only places that held clouds
             pygame.display.update(rectlist)
-            #update only changed rects
+            # get new surface of clouds and their rects
             clouds, rectlist = bgDraw.updateClouds()
-            screen.blit(clouds, (0,0))
+            # blit new clouds onto level background
+            levelbackground.blit(clouds, (0,0))
+            screen.blit(levelbackground, (0,0))
+            # sprites are redrawn as well, so that clouds never end up on top of them
+            allSprites.draw(screen)
+            # however, we still update only cloud places
             pygame.display.update(rectlist)
             frame = 0
         else:
             frame += 1
     waitingforinput = True
     print(_ALLOWED_KEYS)
+    print(_SETTINGS)
     print(settings.settingDict)
     while waitingforinput:
         event = pygame.event.wait()

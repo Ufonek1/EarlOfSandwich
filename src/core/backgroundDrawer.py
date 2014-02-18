@@ -77,7 +77,7 @@ class backgroundDrawer(object):
 
         for rect in self.cloudRects:
             rectindex = self.cloudRects.index(rect)
-            #move each cloud by increment
+            #move each cloud rect by increment
             rect.move_ip(0, self.increment)
             #get cloud which fits the rect's size and blit it onto the full_backgound surface
             cloud_background.blit(self.clouds[rect.size], (rect))
