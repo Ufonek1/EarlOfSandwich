@@ -70,39 +70,38 @@ One Loop to bring them all and in the darkness bind them
 while alive:
     
     """----------------------------------MAIN MENU CREATION-------------------------------"""
+    if menuRunning == True:
+        #background from background collection
+        screen.blit(MENU_BACKGROUND, (0,0))
+        pygame.display.flip()
+        tipField = tipFieldInit()
+        screen.blit(tipField, (TIP_FIELD_RECT))
     
-    #background from background collection
-    screen.blit(MENU_BACKGROUND, (0,0))
-    pygame.display.flip()
-    tipField = tipFieldInit()
-    screen.blit(tipField, (TIP_FIELD_RECT))
-
-    # load font for title
-    title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
-    #create the title as sprites with text as their source image
-    title1 = pygame.sprite.DirtySprite() 
-    text1 = (title_font.render("THE GAME", True, FULL_RED))
-    title1.image = text1
-    title1.rect = title1.image.get_rect()
-    title1._layer = 2
-    #coordinates of title
-    title1.rect.x = 200
-    title1.rect.y = 20
-    title1.add(titleSprites)
-    print("title created and drawn on layer " + str(title1._layer))
-    # draw out titles
-    titleSprites.draw(screen)
-    
-    pygame.display.flip()
-    print ("sprites created and drawn on screen")
-    
-    #create buttons and add them to allSprites
-    buttons = menuCreator.getMenu("MAIN")[0]
-    allSprites.add(buttons, layer = 3)
-    print("top layer of all sprites has the number " + str(allSprites.get_top_layer()))
-    print("bottom layer of all sprites has the number " + str(allSprites.get_bottom_layer()))
-    
-    
+        # load font for title
+        title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
+        #create the title as sprites with text as their source image
+        title1 = pygame.sprite.DirtySprite() 
+        text1 = (title_font.render("THE GAME", True, FULL_RED))
+        title1.image = text1
+        title1.rect = title1.image.get_rect()
+        title1._layer = 2
+        #coordinates of title
+        title1.rect.x = 200
+        title1.rect.y = 20
+        title1.add(titleSprites)
+        print("title created and drawn on layer " + str(title1._layer))
+        # draw out titles
+        titleSprites.draw(screen)
+        
+        pygame.display.flip()
+        print ("sprites created and drawn on screen")
+        
+        #create buttons and add them to allSprites
+        buttons = menuCreator.getMenu("MAIN")[0]
+        allSprites.add(buttons, layer = 3)
+        print("top layer of all sprites has the number " + str(allSprites.get_top_layer()))
+        print("bottom layer of all sprites has the number " + str(allSprites.get_bottom_layer()))
+        
     """----------------------------------MAIN MENU LOOP-------------------------------"""
     while menuRunning:
         for event in pygame.event.get():
@@ -365,12 +364,12 @@ while alive:
                 pygame.display.update(TIP_FIELD_RECT)
                 buttonsCursorStatus.clear()
 
-    # wipe screen (sprites should be killed already if we're going to play)
-    screen.fill(BLACK)
-    pygame.display.flip()
     """----------------------------------GAME STUFF-------------------------------"""
     '''this does nothing if playing is False'''
     if playing == True:
+        # wipe screen first (sprites should be killed already if we're going to play), just to be sure
+        screen.fill(BLACK)
+        pygame.display.flip()
         print("starting game")
         
         pygame.key.set_repeat(KEY_REPEAT_TIME, KEY_REPEAT_TIME)
@@ -448,8 +447,17 @@ while alive:
                     spriteToDraw.draw(screen)
                     pygame.display.update(skyship.rect)
         clock.tick(GAME_FPS)
+        
+        # animate ship every third frame
+        if frame in (0,3,6,9):
+            #animate the ship
+            skyship.update()
+            spriteToDraw.add(skyship)
+            spriteToDraw.draw(screen)
+            pygame.display.update(skyship.rect)
+        
         #update background only every fourth frame
-        if frame == 3:
+        if frame in (0,4,8):
             #clean level background
             levelbackground.blit(emptylevelbackground, (0,0))
             # update only places that held clouds
@@ -463,6 +471,8 @@ while alive:
             allSprites.draw(screen)
             # however, we still update only cloud places
             pygame.display.update(rectlist)
+ 
+        if frame == 11:
             frame = 0
         else:
             frame += 1
@@ -486,6 +496,10 @@ while alive:
     #clear screen for whatever comes next
     screen.fill(BLACK) 
     pygame.display.flip()
+
+# wipe screen 
+screen.fill(BLACK)
+pygame.display.flip()
 
 # when that is done, quit
 print(" ")

@@ -43,8 +43,11 @@ SETTINGS_PATH = os.path.join(PROJECT_PATH, "settings")
 BLACK = pygame.Color(0,0,0,255)
 WHITE = pygame.Color(255,255,255,255)
 FULL_RED = pygame.Color(255,0,0,255)
-FULL_MAGENTA = pygame.Color(255,0,255,255)
 FULL_GREEN = pygame.Color(0,255,0,255)
+FULL_BLUE = pygame.Color(0,255,0,255)
+
+FULL_MAGENTA = pygame.Color(255,0,255,255)
+
 SHINY_CYAN = pygame.Color(100,240,255,255)
 
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
