@@ -5,6 +5,7 @@
 '''
 
 import sys
+import datetime
 import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
@@ -114,6 +115,22 @@ while alive:
                 pygame.display.flip()
                 menuRunning = False
                 alive = False
+            if event.type == pl.KEYDOWN and event.key == pl.K_F2:
+                '''
+                Screenshot-taking function
+                Screenshots are saved under current time
+                '''
+                #    get current display surface
+                screenshot = pygame.display.get_surface()
+                # get current time
+                now = datetime.datetime.now()
+                # replace : with - for it to be a proper filename
+                now = str(now).replace(":","-")
+                # add .png to be able to save as an image
+                now = "{}.png".format(now)
+                filepath = os.path.join(SCREENSHOT_PATH, now)
+                print("saving screenshot to {}".format(filepath))
+                pygame.image.save(screenshot, filepath)
             if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
                 '''
                 This is where the button's destination kicks in
@@ -319,7 +336,7 @@ while alive:
                             # if it's not a menuButton, then no tip should be shownd
                             pass
                         screen.blit(tipField, (TIP_FIELD_RECT))
-                        pygame.display.update(TIP_FIELD_RECT)
+                        pygame.display.update(TIP_FIELD_RECT)                    
                         
             clock.tick(GAME_FPS)
             #we update twice, so that the button doesn't freeze after mouseover/pressing
@@ -397,6 +414,22 @@ while alive:
                 pygame.display.flip()
                 playing = False
                 alive = False
+            if event.type == pl.KEYDOWN and event.key == pl.K_F2:
+                '''
+                Screenshot-taking function
+                Screenshots are saved under current time
+                '''
+                #    get current display surface
+                screenshot = pygame.display.get_surface()
+                # get current time
+                now = datetime.datetime.now()
+                # replace : with - for it to be a proper filename
+                now = str(now).replace(":","-")
+                # add .png to be able to save as an image
+                now = "{}.png".format(now)
+                filepath = os.path.join(SCREENSHOT_PATH, now)
+                print("saving screenshot to {}".format(filepath))
+                pygame.image.save(screenshot, filepath)
             if event.type == pl.KEYDOWN and event.key in _ALLOWED_KEYS:
                 '''
                 ship behaviour goes here

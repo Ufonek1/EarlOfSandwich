@@ -21,6 +21,7 @@ BUTTON_SPRITESHEET_NAME = 'buttonsprite'
 
 # general paths
 PROJECT_PATH = os.getcwd().rpartition(os.path.normcase('/src'))[0] #this splits the current directory and outputs first part of the 3-tuple
+SCREENSHOT_PATH = os.path.join(PROJECT_PATH, os.path.normcase('screenshots'))
 
 SPRITES_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/sprites'))
 FONT_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/fonts'))
@@ -28,6 +29,7 @@ BACKGROUND_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/backgro
 TEXTS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/texts'))
 SAVE_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/save'))
 LEVELS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/levels'))
+
 
 #@TODO: remove and replace with appropriate resourceLoaders
 BUTTON_SPRITESHEET_PATH = os.path.join(SPRITES_PATH, 'buttonsprite.png')

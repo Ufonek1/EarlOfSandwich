@@ -218,4 +218,5 @@ pip-log.txt
 ## Other
 #########
 
-screenshots/
+screenshots/*
+!screenshots/example.png
