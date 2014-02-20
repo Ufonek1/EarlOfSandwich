@@ -9,10 +9,7 @@ from core.constants import *
 from core.spritesheet_functions import SpriteSheet
 
 class playerShip(pygame.sprite.DirtySprite):
-    
-    #translating control names to directions
-    directionsDict = {'MOVE_UP':(0,-1), 'MOVE_DOWN':(0,1), 'MOVE_LEFT':(-1,0), 'MOVE_RIGHT':(1,0)}
-    
+       
     speed = 15
     
     frame = 0
@@ -33,13 +30,23 @@ class playerShip(pygame.sprite.DirtySprite):
         self.image = Image
         self.rect = self.image.get_rect()
         
-    def move(self, direction):
+    def move(self, directions):
+        '''
+        move([bool,bool,bool,bool]) --> None
         
-        x,y = self.directionsDict[direction]
-        # one of them equals 0, but that should be no problem
-        x = x*self.speed
-        y = y*self.speed
-        
+        if True -> rect.move():
+        up,        ( 0,-1)     
+        down,      ( 0, 1)
+        left,      (-1, 0)
+        right      ( 1, 0)
+        '''
+        up,down,left,right = directions
+        print("direction of movement: {}".format(directions))
+        # multiply by speed
+        # If opposing directions are pressed, the ship doesn't move on that axis,
+        # however, perpendicular directions are ok, the ship will move diagonally
+        y = down*self.speed - up*self.speed
+        x = right*self.speed - left*self.speed
         self.rect.move_ip(x,y)
     
     def update(self):

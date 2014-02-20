@@ -372,7 +372,11 @@ while alive:
         pygame.display.flip()
         print("starting game")
         
+        #KEYBOARD
         pygame.key.set_repeat(KEY_REPEAT_TIME, KEY_REPEAT_TIME)
+        
+        
+        
         #load level
         enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
         
@@ -429,19 +433,23 @@ while alive:
                 filepath = os.path.join(SCREENSHOT_PATH, now)
                 print("saving screenshot to {}".format(filepath))
                 pygame.image.save(screenshot, filepath)
-            if event.type == pl.KEYDOWN and event.key in _ALLOWED_KEYS:
+            if event.type == pl.KEYDOWN:
+                keyStates = []
+                # get the current state of all allowed buttons,
+                # = filter out the unbinded ones
+                for key in _ALLOWED_KEYS:
+                    keyStates.append(pygame.key.get_pressed()[key])
                 '''
                 ship behaviour goes here
                 '''
-                if _ALLOWED_KEYS.index(event.key) < 4:
-                    # if it's a direction key
-                    # translate to string form
-                    direction = settings._Number2Name[_ALLOWED_KEYS.index(event.key)]
-                    # move ship accordingly
+                if True in keyStates[:4]:
+                    # if any of the direction keys are pressed, move the ship:
+                    
                     # erase from screen, but draw any clouds under the skyship as well
                     screen.blit(levelbackground, (skyship.rect), skyship.rect)
                     pygame.display.update(skyship.rect)
-                    skyship.move(direction)
+                    # move the ship itself
+                    skyship.move(keyStates[:4])
                     # redraw it on screen & update display
                     spriteToDraw.add(skyship)
                     spriteToDraw.draw(screen)
