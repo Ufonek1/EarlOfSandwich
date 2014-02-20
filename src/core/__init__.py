@@ -433,27 +433,26 @@ while alive:
                 filepath = os.path.join(SCREENSHOT_PATH, now)
                 print("saving screenshot to {}".format(filepath))
                 pygame.image.save(screenshot, filepath)
-            if event.type == pl.KEYDOWN:
-                keyStates = []
-                # get the current state of all allowed buttons,
-                # = filter out the unbinded ones
-                for key in _ALLOWED_KEYS:
-                    keyStates.append(pygame.key.get_pressed()[key])
-                '''
-                ship behaviour goes here
-                '''
-                if True in keyStates[:4]:
-                    # if any of the direction keys are pressed, move the ship:
-                    
-                    # erase from screen, but draw any clouds under the skyship as well
-                    screen.blit(levelbackground, (skyship.rect), skyship.rect)
-                    pygame.display.update(skyship.rect)
-                    # move the ship itself
-                    skyship.move(keyStates[:4])
-                    # redraw it on screen & update display
-                    spriteToDraw.add(skyship)
-                    spriteToDraw.draw(screen)
-                    pygame.display.update(skyship.rect)
+        keyStates = []
+        # get the current state of all allowed buttons,
+        # = filter out the unbinded ones
+        for key in _ALLOWED_KEYS:
+            keyStates.append(pygame.key.get_pressed()[key])
+        '''
+        ship behaviour goes here
+        '''
+        if True in keyStates[:4]:
+            # if any of the direction keys are pressed, move the ship:
+            
+            # draw background with clouds over ship
+            screen.blit(levelbackground, (skyship.rect), skyship.rect)
+            pygame.display.update(skyship.rect)
+            # move the ship itself
+            skyship.move(keyStates[:4])
+            # redraw it on screen & update display
+            spriteToDraw.add(skyship)
+            spriteToDraw.draw(screen)
+            pygame.display.update(skyship.rect)
         clock.tick(GAME_FPS)
         
         # animate ship every third frame
