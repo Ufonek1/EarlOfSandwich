@@ -70,7 +70,8 @@ class backgroundDrawer(object):
             newCloud = self.clouds[cloudNo]
             newRect = newCloud.get_rect()
             #move the rect for randomness and outside of screen
-            newRect.move_ip(random.randint(-50,GAME_SCREEN_WIDTH),-178 - self.increment)
+            newRect.move_ip(random.randint(GAME_SCREEN_LEFT-50,GAME_SCREEN_LEFT+GAME_SCREEN_WIDTH),GAME_SCREEN_TOP-178 - self.increment)
+            print(newRect)
             self.cloudRects.append(newRect)
             print("created new cloud")
             print("number of clouds: {0}".format(len(self.cloudRects)))
@@ -79,10 +80,11 @@ class backgroundDrawer(object):
             rectindex = self.cloudRects.index(rect)
             #move each cloud rect by increment
             rect.move_ip(0, self.increment)
-            #get cloud which fits the rect's size and blit it onto the full_backgound surface
-            cloud_background.blit(self.clouds[rect.size], (rect))
+            #get cloud which fits the rect's size and blit it onto the full_backgound surface, but reduce it first
+            zeroedrect = rect.move(-GAME_SCREEN_LEFT,-GAME_SCREEN_TOP)
+            cloud_background.blit(self.clouds[rect.size], (zeroedrect))
             self.cloudRects[rectindex] = rect
-            if not rect.colliderect(cloud_background.get_rect()) and rect.y > GAME_SCREEN_HEIGHT:
+            if not rect.colliderect(cloud_background.get_rect().move(GAME_SCREEN_RECT.topleft)) and rect.y > GAME_SCREEN_TOP + GAME_SCREEN_HEIGHT:
                 del self.cloudRects[rectindex]
                 print("cloud deleted")
                 print("number of clouds: {0}".format(len(self.cloudRects)))

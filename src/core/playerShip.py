@@ -10,7 +10,7 @@ from core.spritesheet_functions import SpriteSheet
 
 class playerShip(pygame.sprite.DirtySprite):
        
-    speed = 15
+    speed = 10
     
     frame = 0
     

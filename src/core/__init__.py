@@ -61,6 +61,7 @@ from core.constants import _ALLOWED_KEYS
 
 #some vars to control further action
 playing = False
+startGame = False
 menuRunning = True
 alive = True
 '''
@@ -70,6 +71,7 @@ One Loop to bring them all and in the darkness bind them
 while alive:
     
     """----------------------------------MAIN MENU CREATION-------------------------------"""
+    """this does nothing if menuRunning is False"""
     if menuRunning == True:
         #background from background collection
         screen.blit(MENU_BACKGROUND, (0,0))
@@ -172,7 +174,7 @@ while alive:
                                 pygame.display.update((sprite.rect))
                                 sprite.kill()
                             #exit loop
-                            playing = True
+                            startGame = True
                             menuRunning = False
                         elif button.destination == "COLOUR":
                             ColorPicker, colourOutput, shipColoured, colourPickerTitle = allSprites.get_sprites_from_layer(layer = 2)
@@ -269,12 +271,17 @@ while alive:
                                     settingNumber = button.setting
                                     settingName = settings._Number2Name[settingNumber]
                                     settings.setSetting(settingNumber)
-                                    #redraw button image
+                                    #----redraw button image and change rect----
                                     screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
+                                    oldrect = button.rect
                                     button.image = settings.drawSetting(settingNumber)
+                                    #get new rect (100 is wider than 1)
+                                    button.rect = button.image.get_rect()
+                                    #move the rect to the old position
+                                    button.rect.topleft = oldrect.topleft
+                                    buttonToDraw.add(button)
                                     buttonToDraw.draw(screen)
-                                    #inflate ensures that long key names get shown as well
-                                    pygame.display.update(button.rect.inflate(200,0))
+                                    pygame.display.update([oldrect, button.rect])
                                     #get tip
                                     tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
                                     tipField.blit(selectionTip.getTip("SETTING", settingName, settings.settingDict[settings._Number2Name[settingNumber]]), (10,10))
@@ -308,12 +315,17 @@ while alive:
                                 settingNumber = button.setting
                                 settingName = settings._Number2Name[settingNumber]
                                 settings.setSetting(settingNumber, valueChange)
-                                #redraw button image
+                                #----redraw button image and change rect----
                                 screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
+                                oldrect = button.rect
                                 button.image = settings.drawSetting(settingNumber)
+                                #get new rect (100 is wider than 1)
+                                button.rect = button.image.get_rect()
+                                #move the rect to the old position
+                                button.rect.topleft = oldrect.topleft
                                 buttonToDraw.add(button)
                                 buttonToDraw.draw(screen)
-                                pygame.display.update(button.rect)
+                                pygame.display.update([oldrect, button.rect])
                 except:
                     pass
             if event.type == pl.MOUSEMOTION:
@@ -365,8 +377,8 @@ while alive:
                 buttonsCursorStatus.clear()
 
     """----------------------------------GAME STUFF-------------------------------"""
-    '''this does nothing if playing is False'''
-    if playing == True:
+    '''this does nothing if startGame is False'''
+    if startGame == True:
         # wipe screen first (sprites should be killed already if we're going to play), just to be sure
         screen.fill(BLACK)
         pygame.display.flip()
@@ -384,18 +396,20 @@ while alive:
         bgDraw = backgroundDrawer()
         bgDraw.setBackground(levelbackground, increment = 1)
         #draw background
-        screen.blit(levelbackground, (0,0))
+        screen.blit(levelbackground, (GAME_SCREEN_RECT))
         #save empty background
         emptylevelbackground = levelbackground.copy()
         
         #the player's ship
         skyship = playerShip()
         skyship.load(shipSurface)
-        skyship.rect.topleft = (400,600)
+        skyship.rect.centerx = GAME_SCREEN_RECT.centerx
+        #draw to bottom of game screen
+        skyship.rect.y = GAME_SCREEN_RECT.height - skyship.rect.height
         allSprites.add(skyship, layer = 3)
         allSprites.draw(screen)
         
-        #single group for drawing sprites
+        #single group for drawing spritesd
         spriteToDraw = pygame.sprite.GroupSingle()
         
         #simple counter for stuff that doesn't update every frame
@@ -403,6 +417,8 @@ while alive:
         
         #update display
         pygame.display.flip()
+        
+        playing = True
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
         # if menu loop was left by "PLAY" button, we go to play game:
@@ -444,8 +460,9 @@ while alive:
         if True in keyStates[:4]:
             # if any of the direction keys are pressed, move the ship:
             
-            # draw background with clouds over ship
-            screen.blit(levelbackground, (skyship.rect), skyship.rect)
+            # draw background with clouds over ship but move it according to where the game screen is - reduce the game screen offset
+            screen.blit(levelbackground, skyship.rect, (skyship.rect.move(-GAME_SCREEN_LEFT, -GAME_SCREEN_TOP)))
+            print(skyship.rect)
             pygame.display.update(skyship.rect)
             # move the ship itself
             skyship.move(keyStates[:4])
@@ -453,10 +470,11 @@ while alive:
             spriteToDraw.add(skyship)
             spriteToDraw.draw(screen)
             pygame.display.update(skyship.rect)
+    
         clock.tick(GAME_FPS)
         
         # animate ship every third frame
-        if frame in (0,3,6,9):
+        if frame % 3 == 0 or frame == 0:
             #animate the ship
             skyship.update()
             spriteToDraw.add(skyship)
@@ -464,16 +482,19 @@ while alive:
             pygame.display.update(skyship.rect)
         
         #update background only every fourth frame
-        if frame in (0,4,8):
+        if frame % 4 == 0 or frame == 0:
+            # create new bg
+            new_background = levelbackground.copy()
             #clean level background
-            levelbackground.blit(emptylevelbackground, (0,0))
+            new_background.blit(emptylevelbackground, (0,0))
             # update only places that held clouds
-            pygame.display.update(rectlist)
+            
             # get new surface of clouds and their rects
             clouds, rectlist = bgDraw.updateClouds()
             # blit new clouds onto level background
-            levelbackground.blit(clouds, (0,0))
-            screen.blit(levelbackground, (0,0))
+            new_background.blit(clouds, (0,0))
+            levelbackground.blit(new_background, (0,0))
+            screen.blit(new_background, GAME_SCREEN_RECT)
             # sprites are redrawn as well, so that clouds never end up on top of them
             allSprites.draw(screen)
             # however, we still update only cloud places
@@ -487,17 +508,7 @@ while alive:
     print(_ALLOWED_KEYS)
     print(_SETTINGS)
     print(settings.settingDict)
-    while waitingforinput:
-        event = pygame.event.wait()
-        if event.type == pl.KEYDOWN:
-            print(event.key)
-            if event.key in _ALLOWED_KEYS:
-                # find which control was pressed
-                x = _ALLOWED_KEYS.index(event.key)
-                print("you pressed the key for: {0}".format(settings._Number2Name[x]))
-                waitingforinput = False
-            else:
-                print("wrong key pressed")
+
     settings.saveSettings()
     
     #clear screen for whatever comes next
