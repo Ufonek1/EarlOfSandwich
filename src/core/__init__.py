@@ -62,6 +62,7 @@ from core.constants import _ALLOWED_KEYS
 #some vars to control further action
 playing = False
 startGame = False
+paused = False
 menuRunning = True
 alive = True
 '''
@@ -349,7 +350,6 @@ while alive:
                         screen.blit(tipField, (TIP_FIELD_RECT))
                         pygame.display.update(TIP_FIELD_RECT)                    
                         
-            clock.tick(GAME_FPS)
             #we update twice, so that the button doesn't freeze after mouseover/pressing
             '''
             This updates the buttons (so that they spring back after being clicked)
@@ -375,6 +375,8 @@ while alive:
                 screen.blit(tipField, TIP_FIELD_RECT)
                 pygame.display.update(TIP_FIELD_RECT)
                 buttonsCursorStatus.clear()
+            
+            clock.tick(GAME_FPS)
 
     """----------------------------------GAME STUFF-------------------------------"""
     '''this does nothing if startGame is False'''
@@ -385,7 +387,7 @@ while alive:
         print("starting game")
         
         #KEYBOARD
-        pygame.key.set_repeat(KEY_REPEAT_TIME, KEY_REPEAT_TIME)
+        #pygame.key.set_repeat(KEY_REPEAT_TIME, KEY_REPEAT_TIME)
         
         
         
@@ -418,6 +420,8 @@ while alive:
         #update display
         pygame.display.flip()
         
+        # pass the game further
+        startGame = False
         playing = True
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
@@ -449,6 +453,10 @@ while alive:
                 filepath = os.path.join(SCREENSHOT_PATH, now)
                 print("saving screenshot to {}".format(filepath))
                 pygame.image.save(screenshot, filepath)
+            if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
+                # stop game loop
+                paused = True
+                playing = False
         keyStates = []
         # get the current state of all allowed buttons,
         # = filter out the unbinded ones
@@ -462,7 +470,7 @@ while alive:
             
             # draw background with clouds over ship but move it according to where the game screen is - reduce the game screen offset
             screen.blit(levelbackground, skyship.rect, (skyship.rect.move(-GAME_SCREEN_LEFT, -GAME_SCREEN_TOP)))
-            print(skyship.rect)
+
             pygame.display.update(skyship.rect)
             # move the ship itself
             skyship.move(keyStates[:4])
@@ -471,7 +479,7 @@ while alive:
             spriteToDraw.draw(screen)
             pygame.display.update(skyship.rect)
     
-        clock.tick(GAME_FPS)
+        
         
         # animate ship every third frame
         if frame % 3 == 0 or frame == 0:
@@ -504,16 +512,48 @@ while alive:
             frame = 0
         else:
             frame += 1
-    waitingforinput = True
-    print(_ALLOWED_KEYS)
-    print(_SETTINGS)
-    print(settings.settingDict)
-
-    settings.saveSettings()
+            
+        
+        clock.tick(GAME_FPS)
+        print(clock.get_fps())
     
-    #clear screen for whatever comes next
-    screen.fill(BLACK) 
-    pygame.display.flip()
+    """----------------------------------PAUSE PREPARATION-------------------------------"""    
+    if paused:
+        # cover the screen with a transparent surface and some text
+        cover = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), flags = 1011001)
+        cover.fill(TRANSPARENT_BLACK)
+        screen.blit(cover, (0,0))
+        #create paused sign
+        text = "Paused"
+        sign = title_font.render(text, True, FULL_RED)
+        # get its size and position it right
+        width, height = sign.get_size()
+        textrect = pygame.Rect(0,0,width,height)
+        textrect.centerx = GAME_SCREEN_RECT.centerx
+        textrect.top = GAME_SCREEN_RECT.top + 50
+        #blit it onto screen
+        screen.blit(sign, (textrect))
+        
+        pygame.display.flip()
+    """----------------------------------PAUSE LOOP-------------------------------"""    
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
+                # return to game loop
+                screen.blit(levelbackground,(GAME_SCREEN_RECT))
+                pygame.display.flip()
+                paused = False
+                playing = True
+        
+print(_ALLOWED_KEYS)
+print(_SETTINGS)
+print(settings.settingDict)
+
+settings.saveSettings()
+
+#clear screen for whatever comes next
+screen.fill(BLACK) 
+pygame.display.flip()
 
 # wipe screen 
 screen.fill(BLACK)

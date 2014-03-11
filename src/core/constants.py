@@ -41,6 +41,7 @@ SETTINGS_PATH = os.path.join(PROJECT_PATH, "settings")
 """----------------------------------COLOURS-------------------------------"""
 #@TODO: Add some more colours
 BLACK = pygame.Color(0,0,0,255)
+TRANSPARENT_BLACK = pygame.Color(0,0,0,155)
 WHITE = pygame.Color(255,255,255,255)
 FULL_RED = pygame.Color(255,0,0,255)
 FULL_GREEN = pygame.Color(0,255,0,255)
