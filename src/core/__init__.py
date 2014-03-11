@@ -30,7 +30,11 @@ print("window fired up")
 #FPS controls
 clock = pygame.time.Clock()
 
-"""----------------------------------GLOBAL STUFF-------------------------------"""
+"""----------------------------------GLOBAL, CONSTANT STUFF-------------------------------"""
+# load fonts
+title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
+small_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 40)
+
 #group for drawing sprites
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
 #layer 0-2 backgrounds
@@ -80,8 +84,7 @@ while alive:
         tipField = tipFieldInit()
         screen.blit(tipField, (TIP_FIELD_RECT))
     
-        # load font for title
-        title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
+        
         #create the title as sprites with text as their source image
         title1 = pygame.sprite.DirtySprite() 
         text1 = (title_font.render("THE GAME", True, FULL_RED))
@@ -515,7 +518,7 @@ while alive:
             
         
         clock.tick(GAME_FPS)
-        print(clock.get_fps())
+
     
     """----------------------------------PAUSE PREPARATION-------------------------------"""    
     if paused:
@@ -523,7 +526,7 @@ while alive:
         cover = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), flags = 1011001)
         cover.fill(TRANSPARENT_BLACK)
         screen.blit(cover, (0,0))
-        #create paused sign
+        # create title
         text = "Paused"
         sign = title_font.render(text, True, FULL_RED)
         # get its size and position it right
@@ -533,27 +536,81 @@ while alive:
         textrect.top = GAME_SCREEN_RECT.top + 50
         #blit it onto screen
         screen.blit(sign, (textrect))
-        
+        # do the same with the second text
+        # get the key for pause
+        text = "press {} to return to game".format(pygame.key.name(_ALLOWED_KEYS[4]))
+        sign = small_font.render(text, True, FULL_RED)
+        # get its size and position it right
+        width, height = sign.get_size()
+        textrect = pygame.Rect(0,0,width,height)
+        textrect.centerx = GAME_SCREEN_RECT.centerx
+        textrect.top = GAME_SCREEN_RECT.top + 200
+        #blit it onto screen
+        screen.blit(sign, (textrect))
+        # do the same with the third text
+        # get the key for pause
+        text = "or press {} to return to main menu".format(pygame.key.name(_ALLOWED_KEYS[5]))
+        sign = small_font.render(text, True, FULL_RED)
+        # get its size and position it right
+        width, height = sign.get_size()
+        textrect = pygame.Rect(0,0,width,height)
+        textrect.centerx = GAME_SCREEN_RECT.centerx
+        textrect.top = GAME_SCREEN_RECT.top + 260
+        #blit it onto screen
+        screen.blit(sign, (textrect))
         pygame.display.flip()
     """----------------------------------PAUSE LOOP-------------------------------"""    
     while paused:
         for event in pygame.event.get():
+            # classic quit and screenshot stuff
+            if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
+                print("game closed from paused game")
+                '''
+                clean up the screen before leaving (like a good module!)
+                '''
+                screen.fill(BLACK)
+                pygame.display.flip()
+                # leave loop
+                paused = False
+                alive = False
+            if event.type == pl.KEYDOWN and event.key == pl.K_F2:
+                '''
+                Screenshot-taking function
+                Screenshots are saved under current time
+                '''
+                #    get current display surface
+                screenshot = pygame.display.get_surface()
+                # get current time
+                now = datetime.datetime.now()
+                # replace : with - for it to be a proper filename
+                now = str(now).replace(":","-")
+                # add .png to be able to save as an image
+                now = "{}.png".format(now)
+                filepath = os.path.join(SCREENSHOT_PATH, now)
+                print("saving screenshot to {}".format(filepath))
+                pygame.image.save(screenshot, filepath)
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
-                # return to game loop
+                # return to game loop (clear screen and redraw needed stuff)
+                screen.fill(BLACK)
                 screen.blit(levelbackground,(GAME_SCREEN_RECT))
+                allSprites.draw(screen)
                 pygame.display.flip()
                 paused = False
                 playing = True
-        
+            if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[5]:
+                # return to menu loop (clear screen and kill all sprites and redraw needed stuff)
+                screen.fill(BLACK)
+                for sprite in allSprites:
+                    sprite.kill()
+                pygame.display.flip()
+                paused = False
+                menuRunning = True
+
 print(_ALLOWED_KEYS)
 print(_SETTINGS)
 print(settings.settingDict)
 
 settings.saveSettings()
-
-#clear screen for whatever comes next
-screen.fill(BLACK) 
-pygame.display.flip()
 
 # wipe screen 
 screen.fill(BLACK)
