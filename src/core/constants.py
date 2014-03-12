@@ -29,7 +29,7 @@ BACKGROUND_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/backgro
 TEXTS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/texts'))
 SAVE_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/save'))
 LEVELS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/levels'))
-
+SOUNDS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/sfx'))
 
 #@TODO: remove and replace with appropriate resourceLoaders
 BUTTON_SPRITESHEET_PATH = os.path.join(SPRITES_PATH, 'buttonsprite.png')
@@ -63,8 +63,11 @@ GAME_SCREEN_HEIGHT = GAME_SCREEN_RECT.height
 #coordinates of button column in menus
 BUTTON_COLUMN_TOP = 200
 BUTTON_COLUMN_LEFT = 200
+"""----------------------------------SOUNDS-------------------------------"""
+SFX_SELECT = pygame.mixer.Sound(os.path.join(SOUNDS_PATH, 'select1.wav'))
+SFX_CLICK = pygame.mixer.Sound(os.path.join(SOUNDS_PATH, 'click.wav'))
 
-"""----------------------------------RESOURCES-------------------------------"""
+"""----------------------------------RESOURCES COLLECTIONS-------------------------------"""
 def backgroundCollectionInit():
     print ("creating background collection...")
     backgroundCollection = ImageLoader()

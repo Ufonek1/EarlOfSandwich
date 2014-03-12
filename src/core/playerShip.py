@@ -30,9 +30,9 @@ class playerShip(pygame.sprite.DirtySprite):
         self.image = Image
         self.rect = self.image.get_rect()
         
-    def move(self, directions):
+    def move(self, directions, screen, levelbackground):
         '''
-        move([bool,bool,bool,bool]) --> None
+        move([bool,bool,bool,bool], Surface) --> None
         
         if True -> rect.move():
         up,        ( 0,-1)     
@@ -41,13 +41,27 @@ class playerShip(pygame.sprite.DirtySprite):
         right      ( 1, 0)
         '''
         up,down,left,right = directions
-        print("direction of movement: {}".format(directions))
-        # multiply by speed
         # If opposing directions are pressed, the ship doesn't move on that axis,
         # however, perpendicular directions are ok, the ship will move diagonally
-        y = down*self.speed - up*self.speed
-        x = right*self.speed - left*self.speed
-        self.rect.move_ip(x,y)
+        # calculate directions
+        x = right - left
+        y = down - up
+        # exit to save resources if we don't move
+        if x == 0 and y == 0:
+            pass
+        else:
+            #smooth movement here
+            i = 0
+            while i < self.speed:
+                # blit background over ship
+                screen.blit(levelbackground, self.rect, (self.rect.move(-GAME_SCREEN_LEFT, -GAME_SCREEN_TOP)))
+                pygame.display.update(self.rect)
+                # move rect
+                self.rect.move_ip(x,y)
+                # blit the ship's image on new location
+                screen.blit(self.image,(self.rect))
+                pygame.display.update(self.rect)
+                i += 1
     
     def update(self):
         

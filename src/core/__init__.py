@@ -157,6 +157,8 @@ while alive:
                 '''
                 for button in buttons:
                     if button.getMouseOver():
+                        SFX_CLICK.play()
+                        # redraw button to on-clicked image
                         screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
                         button.update(event)
                         buttonToDraw.add(button)
@@ -302,6 +304,7 @@ while alive:
                     except:
                         pass
             if event.type == pl.MOUSEBUTTONDOWN and event.button in [4,5]:
+                #if the mouse wheel is scrolled:
                 try:
                     #get sprites for options - changing settings
                     optionsButtons = allSprites.get_sprites_from_layer(layer = 4)
@@ -470,19 +473,7 @@ while alive:
         '''
         if True in keyStates[:4]:
             # if any of the direction keys are pressed, move the ship:
-            
-            # draw background with clouds over ship but move it according to where the game screen is - reduce the game screen offset
-            screen.blit(levelbackground, skyship.rect, (skyship.rect.move(-GAME_SCREEN_LEFT, -GAME_SCREEN_TOP)))
-
-            pygame.display.update(skyship.rect)
-            # move the ship itself
-            skyship.move(keyStates[:4])
-            # redraw it on screen & update display
-            spriteToDraw.add(skyship)
-            spriteToDraw.draw(screen)
-            pygame.display.update(skyship.rect)
-    
-        
+            skyship.move(keyStates[:4], screen, levelbackground)
         
         # animate ship every third frame
         if frame % 3 == 0 or frame == 0:
