@@ -52,6 +52,7 @@ FULL_MAGENTA = pygame.Color(255,0,255,255)
 SHINY_CYAN = pygame.Color(100,240,255,255)
 
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
+SCREEN_RECT = (0,0,1200,1000)
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 1000
 GAME_SCREEN_RECT = pygame.Rect(200,100,800,800)
@@ -68,7 +69,7 @@ SFX_SELECT = pygame.mixer.Sound(os.path.join(SOUNDS_PATH, 'select1.wav'))
 SFX_CLICK = pygame.mixer.Sound(os.path.join(SOUNDS_PATH, 'click.wav'))
 
 """----------------------------------RESOURCES COLLECTIONS-------------------------------"""
-def backgroundCollectionInit():
+def _backgroundCollectionInit():
     print ("creating background collection...")
     backgroundCollection = ImageLoader()
     # find all backgrounds and add them to collection
@@ -79,9 +80,9 @@ def backgroundCollectionInit():
     print(backgroundCollection.names)
     return backgroundCollection
 
-BACKGROUND_COLLECTION = backgroundCollectionInit()
+BACKGROUND_COLLECTION = _backgroundCollectionInit()
 
-def gameSpritesCollectionInit():
+def _gameSpritesCollectionInit():
     print ("creating spritesheet collection...")
     gameSpritesCollection = ImageLoader()
     # find all spritesheets and add them to collection
@@ -92,7 +93,7 @@ def gameSpritesCollectionInit():
     print(gameSpritesCollection.names)
     return gameSpritesCollection
     
-GAME_IMAGE_COLLECTION = gameSpritesCollectionInit()
+GAME_IMAGE_COLLECTION = _gameSpritesCollectionInit()
 
 #@TODO: sound and font collections!
 """----------------------------------SETTINGS - PRIVATE-------------------------------"""

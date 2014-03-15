@@ -15,7 +15,7 @@ import core.colourPicker as colourPicker
 import core.levelCreator as levelCreator
 from core.playerShip import playerShip
 from core.settingsHandler import settingsHandler
-from core.backgroundDrawer import backgroundDrawer
+from core.cloudDrawer import cloudDrawer
 from core.constants import *
 
 
@@ -255,8 +255,7 @@ while alive:
                             screen.blit(MENU_BACKGROUND, shipColoured.rect.topleft, shipColoured.rect)
                             #redraw both and update display
                             colourPickShow.draw(screen)
-                            rectlist = [colourOutput.rect, shipColoured.rect]
-                            pygame.display.update(rectlist)
+                            pygame.display.update([colourOutput.rect, shipColoured.rect])
                     except:
                         pass
                     
@@ -385,7 +384,8 @@ while alive:
             clock.tick(GAME_FPS)
 
     """----------------------------------GAME STUFF-------------------------------"""
-    '''this does nothing if startGame is False'''
+    '''this does nothing if startGame is False -> startGame is true only when we start a new level,
+    if we pause, then startGame remains False'''
     if startGame == True:
         # wipe screen first (sprites should be killed already if we're going to play), just to be sure
         screen.fill(BLACK)
@@ -398,11 +398,13 @@ while alive:
         
         
         #load level
+        print("loading level")
         enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
         
         #load background
-        bgDraw = backgroundDrawer()
-        bgDraw.setBackground(levelbackground, increment = 1)
+        print("creating cloud drawer instance")
+        cloudDraw = cloudDrawer()
+        cloudDraw.load(increment = 1)
         #draw background
         screen.blit(levelbackground, (GAME_SCREEN_RECT))
         #save empty background
@@ -414,11 +416,17 @@ while alive:
         skyship.rect.centerx = GAME_SCREEN_RECT.centerx
         #draw to bottom of game screen
         skyship.rect.y = GAME_SCREEN_RECT.height - skyship.rect.height
+        
+        skyship.dirty = 2
+        
         allSprites.add(skyship, layer = 3)
         allSprites.draw(screen)
         
         #single group for drawing spritesd
         spriteToDraw = pygame.sprite.GroupSingle()
+        
+        #group for all sprites
+        GameSprites = pygame.sprite.RenderUpdates()
         
         #simple counter for stuff that doesn't update every frame
         frame = 0
@@ -432,7 +440,7 @@ while alive:
     """----------------------------------GAME LOOP-------------------------------"""
     while playing:
         # if menu loop was left by "PLAY" button, we go to play game:
-        rectlist = []
+            
         for event in pygame.event.get():
             if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
                 print("game closed from game")
@@ -459,10 +467,16 @@ while alive:
                 filepath = os.path.join(SCREENSHOT_PATH, now)
                 print("saving screenshot to {}".format(filepath))
                 pygame.image.save(screenshot, filepath)
+            if event.type == pl.KEYDOWN and event.key == pl.K_F3:
+                '''
+                debugging function
+                '''
+                print("cool")
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
                 # stop game loop
                 paused = True
                 playing = False
+        
         keyStates = []
         # get the current state of all allowed buttons,
         # = filter out the unbinded ones
@@ -471,46 +485,38 @@ while alive:
         '''
         ship behaviour goes here
         '''
+        oldshiprect = None
         if True in keyStates[:4]:
-            # if any of the direction keys are pressed, move the ship:
-            skyship.move(keyStates[:4], screen, levelbackground)
+            # if any of the direction keys are pressed, move and redraw:
+            moving, oldshiprect = skyship.move(keyStates[:4])
+
         
+        rectlist = []
         # animate ship every third frame
         if frame % 3 == 0 or frame == 0:
             #animate the ship
             skyship.update()
-            spriteToDraw.add(skyship)
-            spriteToDraw.draw(screen)
-            pygame.display.update(skyship.rect)
         
         #update background only every fourth frame
+
+        cloudoldrectlist = []
         if frame % 4 == 0 or frame == 0:
-            # create new bg
-            new_background = levelbackground.copy()
-            #clean level background
-            new_background.blit(emptylevelbackground, (0,0))
-            # update only places that held clouds
             
             # get new surface of clouds and their rects
-            clouds, rectlist = bgDraw.updateClouds()
-            # blit new clouds onto level background
-            new_background.blit(clouds, (0,0))
-            levelbackground.blit(new_background, (0,0))
-            screen.blit(new_background, GAME_SCREEN_RECT)
-            # sprites are redrawn as well, so that clouds never end up on top of them
-            allSprites.draw(screen)
-            # however, we still update only cloud places
-            pygame.display.update(rectlist)
- 
+            clouds, cloudoldrectlist = cloudDraw.update(allSprites)
+        
         if frame == 11:
             frame = 0
         else:
             frame += 1
-            
         
+        rectlist = cloudoldrectlist + [skyship.rect.inflate(skyship.speed*2,skyship.speed*2), oldshiprect]
+        screen.blit(levelbackground,(GAME_SCREEN_RECT))
+        allSprites.draw(screen)
+        # update display
+        pygame.display.update(rectlist)
         clock.tick(GAME_FPS)
 
-    
     """----------------------------------PAUSE PREPARATION-------------------------------"""    
     if paused:
         # cover the screen with a transparent surface and some text

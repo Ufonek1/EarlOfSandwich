@@ -48,7 +48,7 @@ class backgroundDrawer(object):
             image = sprite_sheet.getImage(184, 110, 15, 35)
             self.clouds[image.get_size()] = image
             self.clouds[4] = image
-            print(self.clouds)
+            print("everything loadeed")
                     
     def updateClouds(self):
         """

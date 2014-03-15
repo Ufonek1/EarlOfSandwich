@@ -11,7 +11,7 @@ from core.colourPicker import ColourPicker
 from core.menuButton import menuButton, optionsButton
 from core.constants import *
 
-def getMenu(menuName, settings = None):
+def getMenu(menuName, settings = None, shipSurface = None):
     
     if menuName == "MAIN":
         """----------------------------------MAIN MENU-------------------------------"""
@@ -300,7 +300,6 @@ def getMenu(menuName, settings = None):
         shipColoured.image = GAME_IMAGE_COLLECTION.skyship.copy()
         shipColoured.rect = shipColoured.image.get_rect()
         shipColoured.rect.topleft = (BUTTON_COLUMN_LEFT+100, BUTTON_COLUMN_TOP+100)
-        print("the colourkey of shipColoured.image is " + str(shipColoured.image.get_colorkey()))
         #colour picker subtitle
         # load font
         title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 30)

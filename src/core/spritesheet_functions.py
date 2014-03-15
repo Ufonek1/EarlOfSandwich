@@ -22,7 +22,7 @@ class SpriteSheet():
         """ Grab a single image out of a larger spritesheet
            Pass in the x, y location of the sprite
            and the width and height of the sprite. """
-        # Create a new blank image with per pixel alphas
+        # Create a new blank, transparent image with per pixel alphas
         image = pygame.Surface((width, height), flags = 1011001)
         image.fill((0,255,0,0))
         # Copy the sprite from the large sheet onto the smaller image
