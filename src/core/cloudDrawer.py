@@ -48,7 +48,7 @@ class cloudDrawer(object):
             
             image = sprite_sheet.getImage(184, 110, 15, 35)
             cloudsImages.append(image)
-            print("spritesheet loaded successfully")
+            print("clouds spritesheet loaded successfully")
             
             self.cloudsImages = cloudsImages
 

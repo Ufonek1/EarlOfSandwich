@@ -311,7 +311,6 @@ while alive:
                     for button in optionsButtons:
                         if button.setting >= 6:
                             if button.getMouseOver():
-                                print("you rolled the wheel on a button")
                                 #convert turning of mouse wheel to reduction/increase
                                 if event.button == 4:
                                     valueChange = 1
@@ -395,20 +394,17 @@ while alive:
         #KEYBOARD
         #pygame.key.set_repeat(KEY_REPEAT_TIME, KEY_REPEAT_TIME)
         
-        
-        
         #load level
-        print("loading level")
         enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
         
         #load background
-        print("creating cloud drawer instance")
         cloudDraw = cloudDrawer()
         cloudDraw.load(increment = 1)
         #draw background
         screen.blit(levelbackground, (GAME_SCREEN_RECT))
         #create full screen background
         Screenbackground = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        Screenbackground.fill(BLACK)
         Screenbackground.blit(levelbackground,(GAME_SCREEN_RECT))
         
         #the player's ship
@@ -417,9 +413,7 @@ while alive:
         skyship.rect.centerx = GAME_SCREEN_RECT.centerx
         #draw to bottom of game screen
         skyship.rect.y = GAME_SCREEN_RECT.height - skyship.rect.height
-        
-        skyship.dirty = 2
-        
+               
         allSprites.add(skyship, layer = 3)
         allSprites.draw(screen)
         
@@ -517,8 +511,8 @@ while alive:
         # update display
         RectsToUpdate = []
         RectsToUpdate = cloudoldrectlist + cloudnewrectlist + [newshiprect, oldshiprect, skyship.rect]
-        
         pygame.display.update(RectsToUpdate)
+        
         clock.tick(GAME_FPS)
 
     """----------------------------------PAUSE PREPARATION-------------------------------"""    
@@ -529,37 +523,47 @@ while alive:
         screen.blit(cover, (0,0))
         # create title
         text = "Paused"
-        sign = title_font.render(text, True, FULL_RED)
+        image = title_font.render(text, True, FULL_RED)
+        title = pygame.sprite.DirtySprite()
         # get its size and position it right
-        width, height = sign.get_size()
-        textrect = pygame.Rect(0,0,width,height)
-        textrect.centerx = GAME_SCREEN_RECT.centerx
-        textrect.top = GAME_SCREEN_RECT.top + 50
-        #blit it onto screen
-        screen.blit(sign, (textrect))
+        title.image = image
+        title.rect = title.image.get_rect()
+        title.rect.centerx = GAME_SCREEN_RECT.centerx
+        title.rect.top = GAME_SCREEN_RECT.top + 50
+        #add to sprites
+        allSprites.add(title, layer = PAUSE_LAYER)
+        RectsToUpdate.append(title.rect.copy())
         # do the same with the second text
         # get the key for pause
         text = "press {} to return to game".format(pygame.key.name(_ALLOWED_KEYS[4]))
-        sign = small_font.render(text, True, FULL_RED)
+        image = small_font.render(text, True, FULL_RED)
+        Gamereturn = pygame.sprite.DirtySprite()
         # get its size and position it right
-        width, height = sign.get_size()
-        textrect = pygame.Rect(0,0,width,height)
-        textrect.centerx = GAME_SCREEN_RECT.centerx
-        textrect.top = GAME_SCREEN_RECT.top + 200
-        #blit it onto screen
-        screen.blit(sign, (textrect))
+        Gamereturn.image = image
+        Gamereturn.rect = Gamereturn.image.get_rect()
+        Gamereturn.rect.centerx = GAME_SCREEN_RECT.centerx
+        Gamereturn.rect.top = GAME_SCREEN_RECT.top + 200
+        #add to sprites
+        allSprites.add(Gamereturn, layer = PAUSE_LAYER)
+        RectsToUpdate.append(Gamereturn.rect.copy())
         # do the same with the third text
         # get the key for pause
         text = "or press {} to return to main menu".format(pygame.key.name(_ALLOWED_KEYS[5]))
-        sign = small_font.render(text, True, FULL_RED)
+        image = small_font.render(text, True, FULL_RED)
+        Menureturn = pygame.sprite.DirtySprite()
         # get its size and position it right
-        width, height = sign.get_size()
-        textrect = pygame.Rect(0,0,width,height)
-        textrect.centerx = GAME_SCREEN_RECT.centerx
-        textrect.top = GAME_SCREEN_RECT.top + 260
-        #blit it onto screen
-        screen.blit(sign, (textrect))
-        pygame.display.flip()
+        Menureturn.image = image
+        Menureturn.rect = Menureturn.image.get_rect()
+        Menureturn.rect.centerx = GAME_SCREEN_RECT.centerx
+        Menureturn.rect.top = GAME_SCREEN_RECT.top + 260
+        #add to sprites
+        allSprites.add(Menureturn, layer = PAUSE_LAYER)
+        RectsToUpdate.append(Menureturn.rect.copy())
+        
+        RectsToUpdate.append(GAME_SCREEN_RECT)
+        PauseSprites = pygame.sprite.Group(allSprites.get_sprites_from_layer(PAUSE_LAYER))
+        PauseSprites.draw(screen)
+        pygame.display.update(RectsToUpdate)
     """----------------------------------PAUSE LOOP-------------------------------"""    
     while paused:
         for event in pygame.event.get():
@@ -592,10 +596,15 @@ while alive:
                 pygame.image.save(screenshot, filepath)
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
                 # return to game loop (clear screen and redraw needed stuff)
-                screen.fill(BLACK)
-                screen.blit(levelbackground,(GAME_SCREEN_RECT))
+                screen.blit(Screenbackground, (0,0))
+                allSprites.clear(screen, Screenbackground)
+                for sprite in allSprites.get_sprites_from_layer(PAUSE_LAYER):
+                    RectsToUpdate.append(sprite.rect.copy())
+                    #remove pause overlay sprites
+                    sprite.kill()
                 allSprites.draw(screen)
-                pygame.display.flip()
+                RectsToUpdate.append(GAME_SCREEN_RECT)
+                pygame.display.update(RectsToUpdate)
                 paused = False
                 playing = True
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[5]:

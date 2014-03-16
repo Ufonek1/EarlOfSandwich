@@ -31,7 +31,6 @@ def getTip(buttonName, SettingName = None, SettingValue = None):
         buttonName = "QUIT"
     # look for it in the tipDict
     if buttonName in tipDict.keys():
-        print("looking for tip on " + buttonName)
         text = tipDict[buttonName]
         tipWritten = tipFont.render(text, True, FULL_RED)
         return tipWritten
@@ -39,7 +38,6 @@ def getTip(buttonName, SettingName = None, SettingValue = None):
     elif buttonName == "DEFAULT":
         return core.tipFieldInit()
     elif buttonName == "SETTING":
-        print("looking for tip on " + buttonName)
         text = "Setting for {} changed to {}".format(SettingName, SettingValue)
         tipWritten = tipFont.render(text, True, FULL_RED)
         return tipWritten

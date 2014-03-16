@@ -50,6 +50,9 @@ FULL_BLUE = pygame.Color(0,255,0,255)
 FULL_MAGENTA = pygame.Color(255,0,255,255)
 
 SHINY_CYAN = pygame.Color(100,240,255,255)
+"""----------------------------------LEYRZ-LAYERS-------------------------------"""
+
+PAUSE_LAYER = 4
 
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
 SCREEN_RECT = (0,0,1200,1000)
