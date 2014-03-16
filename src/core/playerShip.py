@@ -51,25 +51,16 @@ class playerShip(pygame.sprite.DirtySprite):
         y = (down - up)*self.speed
         # exit to save resources if we don't move
         if x == 0 and y == 0:
-            return False, oldrect
+            return False, oldrect, self.rect
         else:
             self.rect.move_ip(x,y)
-            self.rect = self.rect.clamp(SCREEN_RECT)
-            return True, oldrect
-            '''
-            #smooth movement here
-            i = 0
-            while i < self.speed:
-                # blit background over ship
-                screen.blit(levelbackground, self.rect, (self.rect.move(-GAME_SCREEN_LEFT, -GAME_SCREEN_TOP)))
-                pygame.display.update(self.rect)
-                # move rect
-                self.rect.move_ip(x,y)
-                # blit the ship's image on new location
-                screen.blit(self.image,(self.rect))
-                pygame.display.update(self.rect)
-                i += 1
-            '''
+            self.rect = self.rect.clamp(GAME_SCREEN_RECT)
+            newrect = self.rect.copy()
+            #inflate, but clamp
+            newrect.inflate_ip(self.speed*2, self.speed*2)
+            newrect.clamp_ip(GAME_SCREEN_RECT)
+            return True, oldrect, newrect
+
     def update(self):
         
         # update animation frame

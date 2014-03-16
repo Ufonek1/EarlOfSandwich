@@ -407,8 +407,9 @@ while alive:
         cloudDraw.load(increment = 1)
         #draw background
         screen.blit(levelbackground, (GAME_SCREEN_RECT))
-        #save empty background
-        emptylevelbackground = levelbackground.copy()
+        #create full screen background
+        Screenbackground = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        Screenbackground.blit(levelbackground,(GAME_SCREEN_RECT))
         
         #the player's ship
         skyship = playerShip()
@@ -486,35 +487,38 @@ while alive:
         ship behaviour goes here
         '''
         oldshiprect = None
+        newshiprect = None
         if True in keyStates[:4]:
-            # if any of the direction keys are pressed, move and redraw:
-            moving, oldshiprect = skyship.move(keyStates[:4])
+            # if any of the direction keys are pressed, move the ship:
+            moving, oldshiprect, newshiprect = skyship.move(keyStates[:4])
 
-        
-        rectlist = []
         # animate ship every third frame
         if frame % 3 == 0 or frame == 0:
             #animate the ship
             skyship.update()
         
         #update background only every fourth frame
-
         cloudoldrectlist = []
-        if frame % 4 == 0 or frame == 0:
-            
-            # get new surface of clouds and their rects
-            clouds, cloudoldrectlist = cloudDraw.update(allSprites)
+        cloudnewrectlist = []
+        if frame % 10 == 0 or frame == 0:
+            # get new surface of clouds and their updating rects - these are chopped off so that clouds don't leak out of the game screen
+            clouds, cloudoldrectlist, cloudnewrectlist = cloudDraw.update(allSprites)
         
-        if frame == 11:
+        # frame counter
+        if frame == 59:
             frame = 0
         else:
             frame += 1
         
-        rectlist = cloudoldrectlist + [skyship.rect.inflate(skyship.speed*2,skyship.speed*2), oldshiprect]
-        screen.blit(levelbackground,(GAME_SCREEN_RECT))
+        #draw everything
+        allSprites.clear(screen, Screenbackground)
         allSprites.draw(screen)
+        
         # update display
-        pygame.display.update(rectlist)
+        RectsToUpdate = []
+        RectsToUpdate = cloudoldrectlist + cloudnewrectlist + [newshiprect, oldshiprect, skyship.rect]
+        
+        pygame.display.update(RectsToUpdate)
         clock.tick(GAME_FPS)
 
     """----------------------------------PAUSE PREPARATION-------------------------------"""    

@@ -57,8 +57,6 @@ class cloudDrawer(object):
         cloud updater
         updateClouds() --> [DirtySprite, DirtySprite, ...], [Rect, Rect, ...]
         """
-        #prepare returning stuff
-        oldrectlist = []
 
         # should we generate a new cloud? 0-9 yes, 11 - 250 no -> balance if there's too many/too little clouds
         cloudNumber = random.randint(0,250)
@@ -76,24 +74,32 @@ class cloudDrawer(object):
             print("created new cloud")
             print("number of clouds: {0}".format(len(self.allClouds)))
         
-
+        #prepare returning stuff
+        oldrectlist = []
+        newrectlist = []
+        
         for cloud in self.allClouds:
+            #chop off places that are outside the game screen
+            oldrect = cloud.rect.clip(GAME_SCREEN_RECT)
             #save old rect for later display updating
+            oldrectlist.append(oldrect)
             
-            oldrectlist.append(cloud.rect.copy())
-            
-            #move each cloud rect by increment
+            #move cloud rect by increment
             cloud.move(self.increment)
-            #get backgroun which fits the rect's size and blit it onto the full_backgound surface, but reduce it first
-            #zeroedrect = Cloud.rect.move(-GAME_SCREEN_LEFT,-GAME_SCREEN_TOP)
-
+            
+            #chop off places that are outside the game screen
+            newrect = cloud.rect.clip(GAME_SCREEN_RECT)
+            #save old rect for later display updating
+            newrectlist.append(newrect)
+            
+            #is the cloud outside the game screen? If so, delete it
             if not cloud.rect.colliderect(GAME_SCREEN_RECT) and cloud.rect.y > GAME_SCREEN_TOP + GAME_SCREEN_HEIGHT:
                 cloud.kill()
                 del self.allClouds[self.allClouds.index(cloud)]
                 print("cloud deleted")
                 print("number of clouds: {0}".format(len(self.allClouds)))
 
-        return self.allClouds, oldrectlist
+        return self.allClouds, oldrectlist, newrectlist
             
 class Cloud(pygame.sprite.DirtySprite):
     # which size is the cloud? (see sprite sheet
