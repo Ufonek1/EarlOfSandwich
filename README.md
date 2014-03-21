@@ -28,9 +28,7 @@ http://grandchaos9000.deviantart.com/#/art/Polentical-Neon-v1-2-366711112?hf=1
 Default controls:
 Menu		use the mouse
 
-Game 		W,S,A,D for movement,
-
-        not working yet:(P for pause, SPACE for attack)
+Game 		W,S,A,D for movement, P for pause, SPACE for attack, F3 to show FPS
 
 Screenshot	F2
 

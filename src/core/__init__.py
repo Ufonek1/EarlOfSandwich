@@ -34,22 +34,34 @@ clock = pygame.time.Clock()
 # load fonts
 title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
 small_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 40)
+tiny_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 25)
 
-#group for drawing sprites
+# sprite groups
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
+#layers (see constants)
 #layer 0-2 backgrounds
 #layer 3 classic buttons & player ship
 #layer 4 any other buttons
-
+#layer 5 debugging
+debugSprites = pygame.sprite.Group()
 titleSprites = pygame.sprite.Group()
 #group for holding button to update
 buttonToDraw = pygame.sprite.GroupSingle()
 
-#Create bottom tip field
+#Create blank bottom tip field
 def tipFieldInit():
     x = pygame.Surface(TIP_FIELD_RECT.size)
     x.fill(WHITE)
     return x
+
+"""----------------------------------DEBUGGING-------------------------------"""
+fpsdisplay = pygame.sprite.DirtySprite()
+text = "FPS: 60"
+image = tiny_font.render(text, True, FULL_RED)
+fpsdisplay.image = image
+fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
+
+debugSprites.add(fpsdisplay)
 
 """----------------------------------VARIABLES THAT THE SESSION WILL CHANGE-------------------------------"""
 #default save file (0 will create a new one)
@@ -69,6 +81,8 @@ startGame = False
 paused = False
 menuRunning = True
 alive = True
+DEBUG_MODE = False
+CLEAR_DEBUG = False
 '''
 One Loop to rule them all, One Loop to find them,
 One Loop to bring them all and in the darkness bind them
@@ -136,6 +150,19 @@ while alive:
                 filepath = os.path.join(SCREENSHOT_PATH, now)
                 print("saving screenshot to {}".format(filepath))
                 pygame.image.save(screenshot, filepath)
+            if event.type == pl.KEYDOWN and event.key == pl.K_F3:
+                '''
+                debugging function
+                '''
+                if DEBUG_MODE:
+                    DEBUG_MODE = False
+                    CLEAR_DEBUG = True
+                    allSprites.remove(fpsdisplay)
+                    print("debug mode off")
+                else:
+                    DEBUG_MODE = True
+                    allSprites.add(fpsdisplay, layer = DEBUG_LAYER)
+                    print("debug mode on")
             if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
                 '''
                 This is where the button's destination kicks in
@@ -380,6 +407,27 @@ while alive:
                 pygame.display.update(TIP_FIELD_RECT)
                 buttonsCursorStatus.clear()
             
+            fpsdisplayoldrect = None
+            if DEBUG_MODE == True:
+                fpsdisplayoldrect = fpsdisplay.rect.copy()
+                text = "FPS: {}".format(int(round(clock.get_fps())))
+                image = tiny_font.render(text, True, FULL_RED)
+                fpsdisplay.image = image
+                fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
+                rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
+            else:
+                rectlist = []
+            
+            if CLEAR_DEBUG == True:
+                # clear off debugging sprites (but only once)
+                debugSprites.clear(screen, MENU_BACKGROUND)
+                rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
+                CLEAR_DEBUG = False
+            
+            allSprites.clear(screen, MENU_BACKGROUND)
+            allSprites.draw(screen)
+            pygame.display.update(rectlist)
+            
             clock.tick(GAME_FPS)
 
     """----------------------------------GAME STUFF-------------------------------"""
@@ -416,13 +464,7 @@ while alive:
                
         allSprites.add(skyship, layer = 3)
         allSprites.draw(screen)
-        
-        #single group for drawing spritesd
-        spriteToDraw = pygame.sprite.GroupSingle()
-        
-        #group for all sprites
-        GameSprites = pygame.sprite.RenderUpdates()
-        
+
         #simple counter for stuff that doesn't update every frame
         frame = 0
         
@@ -466,7 +508,15 @@ while alive:
                 '''
                 debugging function
                 '''
-                print("cool")
+                if DEBUG_MODE:
+                    DEBUG_MODE = False
+                    CLEAR_DEBUG = True
+                    allSprites.remove(fpsdisplay)
+                    print("debug mode off")
+                else:
+                    DEBUG_MODE = True
+                    allSprites.add(fpsdisplay, layer = DEBUG_LAYER)
+                    print("debug mode on")
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
                 # stop game loop
                 paused = True
@@ -482,6 +532,7 @@ while alive:
         '''
         oldshiprect = None
         newshiprect = None
+        RectsToUpdate = []
         if True in keyStates[:4]:
             # if any of the direction keys are pressed, move the ship:
             moving, oldshiprect, newshiprect = skyship.move(keyStates[:4])
@@ -498,19 +549,32 @@ while alive:
             # get new surface of clouds and their updating rects - these are chopped off so that clouds don't leak out of the game screen
             clouds, cloudoldrectlist, cloudnewrectlist = cloudDraw.update(allSprites)
         
+        fpsdisplayoldrect = None
+        if DEBUG_MODE == True:
+            fpsdisplayoldrect = fpsdisplay.rect.copy()
+            text = "FPS: {}".format(int(round(clock.get_fps())))
+            image = tiny_font.render(text, True, FULL_RED)
+            fpsdisplay.image = image
+            fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
+            
         # frame counter
         if frame == 59:
             frame = 0
         else:
             frame += 1
         
+        if CLEAR_DEBUG == True:
+            # clear off debugging sprites
+            debugSprites.clear(screen, Screenbackground)
+            RectsToUpdate = [fpsdisplayoldrect, fpsdisplay.rect]
+            CLEAR_DEBUG = False
+        
         #draw everything
         allSprites.clear(screen, Screenbackground)
         allSprites.draw(screen)
         
         # update display
-        RectsToUpdate = []
-        RectsToUpdate = cloudoldrectlist + cloudnewrectlist + [newshiprect, oldshiprect, skyship.rect]
+        RectsToUpdate = RectsToUpdate + cloudoldrectlist + cloudnewrectlist + [newshiprect, oldshiprect, skyship.rect, fpsdisplayoldrect, fpsdisplay.rect]
         pygame.display.update(RectsToUpdate)
         
         clock.tick(GAME_FPS)
@@ -594,6 +658,19 @@ while alive:
                 filepath = os.path.join(SCREENSHOT_PATH, now)
                 print("saving screenshot to {}".format(filepath))
                 pygame.image.save(screenshot, filepath)
+            if event.type == pl.KEYDOWN and event.key == pl.K_F3:
+                '''
+                debugging function
+                '''
+                if DEBUG_MODE:
+                    DEBUG_MODE = False
+                    CLEAR_DEBUG = True
+                    allSprites.remove(fpsdisplay)
+                    print("debug mode off")
+                else:
+                    DEBUG_MODE = True
+                    allSprites.add(fpsdisplay, layer = DEBUG_LAYER)
+                    print("debug mode on")
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
                 # return to game loop (clear screen and redraw needed stuff)
                 screen.blit(Screenbackground, (0,0))
@@ -615,6 +692,29 @@ while alive:
                 pygame.display.flip()
                 paused = False
                 menuRunning = True
+                
+        fpsdisplayoldrect = None
+        if DEBUG_MODE == True:
+            fpsdisplayoldrect = fpsdisplay.rect.copy()
+            text = "FPS: {}".format(int(round(clock.get_fps())))
+            image = tiny_font.render(text, True, FULL_RED)
+            fpsdisplay.image = image
+            fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
+            rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
+        else:
+            rectlist = []
+        
+        if CLEAR_DEBUG == True:
+            # clear off debugging sprites (but only once)
+            debugSprites.clear(screen, Screenbackground)
+            rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
+            CLEAR_DEBUG = False
+        
+        allSprites.clear(screen, Screenbackground)
+        allSprites.draw(screen)
+        pygame.display.update(rectlist)
+        
+        clock.tick(GAME_FPS)
 
 print(_ALLOWED_KEYS)
 print(_SETTINGS)
