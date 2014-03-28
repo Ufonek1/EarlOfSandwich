@@ -67,7 +67,7 @@ class menuButton (pygame.sprite.DirtySprite):
         print ("created menuButton with destination " + str(self.destination))
 
     def update(self, event):
-        if self.rect.collidepoint(mouse.get_pos()):
+        if self.getMouseOver():
             if event.type == pl.MOUSEBUTTONDOWN and mouse.get_pressed()[0]:
                 self.image = self.button_frame[3]
             else:

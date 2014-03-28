@@ -10,12 +10,12 @@ import pygame
 import pygame.locals as pl
 import pygame.mouse as mouse
 import core.menuCreator as menuCreator
-import core.selectionTip as selectionTip
 import core.colourPicker as colourPicker
 import core.levelCreator as levelCreator
 from core.playerShip import playerShip
 from core.settingsHandler import settingsHandler
 from core.cloudDrawer import cloudDrawer
+from core.selectionTip import tipField
 from core.constants import *
 
 
@@ -39,22 +39,17 @@ tiny_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 25)
 # sprite groups
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
 #layers (see constants)
-#layer 0-2 backgrounds
+#layer 0-1 background
+#layer 2 tip field
 #layer 3 classic buttons & player ship
 #layer 4 any other buttons
 #layer 5 debugging
 debugSprites = pygame.sprite.Group()
 titleSprites = pygame.sprite.Group()
-#group for holding button to update
-buttonToDraw = pygame.sprite.GroupSingle()
 
-#Create blank bottom tip field
-def tipFieldInit():
-    x = pygame.Surface(TIP_FIELD_RECT.size)
-    x.fill(WHITE)
-    return x
 
-"""----------------------------------DEBUGGING-------------------------------"""
+
+"""----------------------------------GLOBAL DEBUGGING-------------------------------"""
 fpsdisplay = pygame.sprite.DirtySprite()
 text = "FPS: 60"
 image = tiny_font.render(text, True, FULL_RED)
@@ -95,9 +90,13 @@ while alive:
         #background from background collection
         screen.blit(MENU_BACKGROUND, (0,0))
         pygame.display.flip()
-        tipField = tipFieldInit()
-        screen.blit(tipField, (TIP_FIELD_RECT))
-    
+        
+        #create tip field
+        TipField = tipField()
+        allSprites.add(TipField, layer = 0)
+        
+        #create dict for storing button mouseovers
+        buttonsCursorStatus = {}
         
         #create the title as sprites with text as their source image
         title1 = pygame.sprite.DirtySprite() 
@@ -109,11 +108,8 @@ while alive:
         title1.rect.x = 200
         title1.rect.y = 20
         title1.add(titleSprites)
-        print("title created and drawn on layer " + str(title1._layer))
-        # draw out titles
-        titleSprites.draw(screen)
-        
-        pygame.display.flip()
+        print("title created and drawn on layer " + str(title1._layer))        
+
         print ("sprites created and drawn on screen")
         
         #create buttons and add them to allSprites
@@ -121,17 +117,21 @@ while alive:
         allSprites.add(buttons, layer = 3)
         print("top layer of all sprites has the number " + str(allSprites.get_top_layer()))
         print("bottom layer of all sprites has the number " + str(allSprites.get_bottom_layer()))
+        # draw out titles and other sprites
+        titleSprites.draw(screen)
+        allSprites.draw(screen)
+        pygame.display.flip()
         
     """----------------------------------MAIN MENU LOOP-------------------------------"""
     while menuRunning:
+        # refresh stuff
+        RectsToUpdate = []
         for event in pygame.event.get():
             if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
                 print("game closed from menu")
                 '''
                 clean up the screen before leaving (like a good module!)
                 '''
-                screen.blit(MENU_BACKGROUND, (0,0))
-                pygame.display.flip()
                 menuRunning = False
                 alive = False
             if event.type == pl.KEYDOWN and event.key == pl.K_F2:
@@ -188,8 +188,6 @@ while alive:
                         # redraw button to on-clicked image
                         screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
                         button.update(event)
-                        buttonToDraw.add(button)
-                        buttonToDraw.draw(screen)
                         pygame.display.update(button.rect)                   
                         if "QUIT" in button.destination:
                             '''
@@ -203,9 +201,10 @@ while alive:
                             print ("Game button was clicked")
                             #erase and kill all existing sprites
                             for sprite in allSprites:
-                                screen.blit(MENU_BACKGROUND, (sprite.rect.x, sprite.rect.y), sprite.rect)
-                                pygame.display.update((sprite.rect))
+                                RectsToUpdate.append(sprite.rect.copy())
                                 sprite.kill()
+                            #add debugger back
+                            allSprites.add(debugSprites, layer = 5)
                             #exit loop
                             startGame = True
                             menuRunning = False
@@ -213,20 +212,19 @@ while alive:
                             ColorPicker, colourOutput, shipColoured, colourPickerTitle = allSprites.get_sprites_from_layer(layer = 2)
                             #grab the current image of the ship and save it to the variable
                             shipSurface = shipColoured.image
-                            #change tip according to button and blit it onto the tipField, then onto the screen, then update
-                            tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
-                            tipField.blit(selectionTip.getTip("SAVED"), (10,10))
-                            screen.blit(tipField, (TIP_FIELD_RECT))
-                            pygame.display.update(TIP_FIELD_RECT)
+                            """
+                            TODO - figure this out once we get to campaign saving
+                            """
+                            #change tip according to button and blit it onto the TipField, then onto the screen
+                            TipField.getTip("SAVED")
+                            #add rect to update
+                            RectsToUpdate.append(TIP_FIELD_RECT)
                         elif button.destination == "OPTIONS":
                             #save button.destination
                             dest = button.destination
                             print ("Options button was clicked")
-                            #clear all sprites and
                             #remove them from allSprites
                             for sprite in allSprites:
-                                screen.blit(MENU_BACKGROUND, (sprite.rect.x, sprite.rect.y), sprite.rect)
-                                pygame.display.update((button.rect))
                                 sprite.kill()
                             #get new buttons for appropriate menu
                             print("buttons were removed from group, getting new ones")
@@ -235,8 +233,11 @@ while alive:
                             allSprites.add(optionButtons, layer = 4)
                             allSprites.add(optionsTitles, layer = 2)
                             allSprites.add(skyshiparrows, layer = 2)
-                            allSprites.draw(screen)
-                            pygame.display.flip()
+                            #add debugger and TipField back
+                            allSprites.add(debugSprites, layer = 5)
+                            allSprites.add(TipField, layer = 0)
+                            #update whole screen, it's a lot of stuff
+                            RectsToUpdate.append(SCREEN_RECT)
                         else:
                             #save button.destination
                             dest = button.destination
@@ -251,14 +252,13 @@ while alive:
                             print("buttons were removed from group, getting new ones")
                             buttons = (menuCreator.getMenu(dest))[0]
                             allSprites.add(buttons, layer = 3)
+                            #add debugger and TipField back
+                            allSprites.add(debugSprites, layer = 5)
+                            allSprites.add(TipField, layer = 0)
                             
                             if dest == "NEW":
-                                #load colourPicker
+                                #load colourPicker and related stuff
                                 allSprites.add(menuCreator.getMenu(dest)[1:], layer = 2)
-                                allSprites.draw(screen)
-                            else:
-                                allSprites.draw(screen)
-                            pygame.display.flip()
                             break
                     try:
                         # get sprites for colourpicker - this should equal the colourPicker sprites found there
@@ -277,22 +277,24 @@ while alive:
                             '''
                             shipSurface = colourPicker.setColour(pickedColour)
                             shipColoured.image.blit(shipSurface, (0,0))
-                            #draw background over both
-                            screen.blit(MENU_BACKGROUND, colourOutput.rect.topleft, colourOutput.rect)
-                            screen.blit(MENU_BACKGROUND, shipColoured.rect.topleft, shipColoured.rect)
-                            #redraw both and update display
-                            colourPickShow.draw(screen)
-                            pygame.display.update([colourOutput.rect, shipColoured.rect])
+                            #add for redrawing and updating
+                            allSprites.add(colourPickShow)
+                            RectsToUpdate = RectsToUpdate + [colourOutput.rect, shipColoured.rect]
                     except:
                         pass
                     
                     try:
                         #get sprites for options - changing settings
                         optionsButtons = allSprites.get_sprites_from_layer(layer = 4)
+                        # single group for redrawing the one options button
+                        buttonToDraw = pygame.sprite.GroupSingle()
                         for button in optionsButtons:
                             if button.getMouseOver():
                                 #if button is a key button:
                                 if button.setting < 6:
+                                    """
+                                    Here it's okay to be messy, as the game is paused when we're waiting for input
+                                    """
                                     #replace with _
                                     screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
                                     button.image = settings.drawSetting()
@@ -315,18 +317,14 @@ while alive:
                                     buttonToDraw.draw(screen)
                                     pygame.display.update([oldrect, button.rect])
                                     #get tip
-                                    tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
-                                    tipField.blit(selectionTip.getTip("SETTING", settingName, settings.settingDict[settings._Number2Name[settingNumber]]), (10,10))
-                                    screen.blit(tipField, (TIP_FIELD_RECT))
-                                    pygame.display.update(TIP_FIELD_RECT)
+                                    TipField.getTip("SETTING")
+                                    RectsToUpdate.append(TIP_FIELD_RECT)
                                     
                                 #if button is the other stuff, do nothing
                                 else:
                                     #get tip
-                                    tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
-                                    tipField.blit(selectionTip.getTip("WHEEL"), (10,10))
-                                    screen.blit(tipField, (TIP_FIELD_RECT))
-                                    pygame.display.update(TIP_FIELD_RECT)
+                                    TipField.getTip("WHEEL")
+                                    RectsToUpdate.append(TIP_FIELD_RECT)
                     except:
                         pass
             if event.type == pl.MOUSEBUTTONDOWN and event.button in [4,5]:
@@ -365,70 +363,52 @@ while alive:
                 here we update buttons if they get mouseovered
                 '''
                 for button in buttons:
-                    if button.getMouseOver():
-                        screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
-                        button.update(event)
-                        buttonToDraw.add(button)
-                        buttonToDraw.draw(screen)
-                        pygame.display.update((button.rect))
-                        #change tip according to button and blit it onto the tipField, then onto the screen, then update
-                        tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
-                        try:
-                            tipField.blit(selectionTip.getTip(button.destination), (10,10))
-                        except:
-                            # if it's not a menuButton, then no tip should be shownd
-                            pass
-                        screen.blit(tipField, (TIP_FIELD_RECT))
-                        pygame.display.update(TIP_FIELD_RECT)                    
+                    # update (change frame)
+                    button.update(event)
+                    MouseOver = button.getMouseOver()
+                    buttonsCursorStatus[button] = MouseOver
+                    if MouseOver:
+                        RectsToUpdate.append(button.rect.copy())
+                        #change tip according to button and blit it onto the TipField
+                        TipField.getTip(button.destination)
+                        RectsToUpdate.append(TIP_FIELD_RECT)                    
                         
-            #we update twice, so that the button doesn't freeze after mouseover/pressing
-            '''
-            This updates the buttons (so that they spring back after being clicked)
-            as well as the tip Field - if no button has the mouse on it, the tip field is cleared
-            '''
-            buttonsCursorStatus = {}
-                        
-            for button in buttons:
-                screen.blit(MENU_BACKGROUND, (button.rect.x, button.rect.y), button.rect)
-                button.update(event)
-                buttonToDraw.add(button)
-                buttonToDraw.draw(screen)
-                pygame.display.update((button.rect))
-                buttonsCursorStatus[button] = button.getMouseOver()
-                
-            for button in allSprites.get_sprites_from_layer(layer = 4):
-                buttonsCursorStatus[button] = button.getMouseOver()
-            
-            if not True in buttonsCursorStatus.values():
-                #basically, if no button has the cursor on it, the tipField is cleared.
-                screen.blit(MENU_BACKGROUND, (TIP_FIELD_RECT), TIP_FIELD_RECT)
-                tipField.blit((selectionTip.getTip("DEFAULT")), (0,0))
-                screen.blit(tipField, TIP_FIELD_RECT)
-                pygame.display.update(TIP_FIELD_RECT)
-                buttonsCursorStatus.clear()
-            
-            fpsdisplayoldrect = None
-            if DEBUG_MODE == True:
-                fpsdisplayoldrect = fpsdisplay.rect.copy()
-                text = "FPS: {}".format(int(round(clock.get_fps())))
-                image = tiny_font.render(text, True, FULL_RED)
-                fpsdisplay.image = image
-                fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
-                rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
-            else:
-                rectlist = []
-            
-            if CLEAR_DEBUG == True:
-                # clear off debugging sprites (but only once)
-                debugSprites.clear(screen, MENU_BACKGROUND)
-                rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
-                CLEAR_DEBUG = False
-            
-            allSprites.clear(screen, MENU_BACKGROUND)
-            allSprites.draw(screen)
-            pygame.display.update(rectlist)
-            
-            clock.tick(GAME_FPS)
+        '''
+        this updates the tip Field - if no button has the mouse on it, the tip field is cleared
+        '''           
+        if not True in buttonsCursorStatus.values():
+            #basically, if no button has the cursor on it, the TipField is cleared:
+            # get default blank surface
+            TipField.getTip("DEFAULT")
+            #add rect for updating
+            RectsToUpdate.append(TIP_FIELD_RECT)
+            buttonsCursorStatus.clear()
+        
+        fpsdisplayoldrect = None
+
+        if DEBUG_MODE == True:
+            # update debugger
+            fpsdisplayoldrect = fpsdisplay.rect.copy()
+            text = "FPS: {}".format(int(round(clock.get_fps())))
+            image = tiny_font.render(text, True, FULL_RED)
+            fpsdisplay.image = image
+            fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
+            rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
+        
+        if CLEAR_DEBUG == True:
+            # clear off debugging sprites (but only once)
+            debugSprites.clear(screen, MENU_BACKGROUND)
+            rectlist = rectlist + [fpsdisplayoldrect, fpsdisplay.rect]
+            CLEAR_DEBUG = False
+        
+        """
+        this is okay, we can afford lower fps in menu
+        """
+        screen.blit(MENU_BACKGROUND, (0,0))
+        allSprites.draw(screen)
+        pygame.display.flip()
+        
+        clock.tick(GAME_FPS)
 
     """----------------------------------GAME STUFF-------------------------------"""
     '''this does nothing if startGame is False -> startGame is true only when we start a new level,
@@ -700,19 +680,17 @@ while alive:
             image = tiny_font.render(text, True, FULL_RED)
             fpsdisplay.image = image
             fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
-            rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
-        else:
-            rectlist = []
+            RectsToUpdate = RectsToUpdate + [fpsdisplayoldrect, fpsdisplay.rect]
         
         if CLEAR_DEBUG == True:
             # clear off debugging sprites (but only once)
             debugSprites.clear(screen, Screenbackground)
-            rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
+            RectsToUpdate = RectsToUpdate + [fpsdisplayoldrect, fpsdisplay.rect]
             CLEAR_DEBUG = False
         
         allSprites.clear(screen, Screenbackground)
         allSprites.draw(screen)
-        pygame.display.update(rectlist)
+        pygame.display.update(RectsToUpdate)
         
         clock.tick(GAME_FPS)
 

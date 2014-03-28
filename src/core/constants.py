@@ -110,6 +110,11 @@ _SETTINGS = {
 settingNumbers: 0:MOVE_UP, 1:MOVE_DOWN, 2:MOVE_LEFT, 3:MOVE_RIGHT, 4:PAUSE, 5:ATTACK, 6:MUSIC_VOLUME, 7:SOUND_VOLUME
 '''
 _ALLOWED_KEYS = []
+"""----------------------------------EXCEPTIONS-------------------------------"""
+class TipException(Exception):
+    pass
+class ExceptionalException(Exception):
+    pass
 """----------------------------------MISC-------------------------------"""
 #resized menu background
 MENU_BACKGROUND = pygame.transform.scale(BACKGROUND_COLLECTION.menubackground, (SCREEN_WIDTH, SCREEN_HEIGHT))

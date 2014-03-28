@@ -61,6 +61,11 @@ class settingsHandler(object):
                 event = pygame.event.wait()
                 if event.type == pl.KEYDOWN:
                     print(event.key)
+                    '''
+                    if event.key in core.constants._ALLOWED_KEYS:
+                        # if this key is bound already, remove the existing bond
+                        _ALLOWED_KEYS[_ALLOWED_KEYS.index(event.key)] = 
+                    '''
                     # if a key is pressed, assign it to the control in constants
                     core.constants._ALLOWED_KEYS[settingNumber] = event.key
                     # convert its integer to string form

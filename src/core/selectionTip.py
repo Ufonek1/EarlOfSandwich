@@ -20,27 +20,37 @@ with open(TIPDICT_PATH) as source:
         tipDict[key] = val
 tipFont = pygame.font.Font(MAIN_MENU_FONT_PATH, 30)
 
-def getTip(buttonName, SettingName = None, SettingValue = None):
-    '''
-    this should get tips from the game's tip dictionary, and write them out into a surface
-    getTip(String) -> Surface
-    if there's nothing, return empty tip field
-    '''
-    # convert all the QUIT destinations into one
-    if "QUIT" in buttonName:
-        buttonName = "QUIT"
-    # look for it in the tipDict
-    if buttonName in tipDict.keys():
-        text = tipDict[buttonName]
-        tipWritten = tipFont.render(text, True, FULL_RED)
-        return tipWritten
-    # if it isn't there, return the default surface
-    elif buttonName == "DEFAULT":
-        return core.tipFieldInit()
-    elif buttonName == "SETTING":
-        text = "Setting for {} changed to {}".format(SettingName, SettingValue)
-        tipWritten = tipFont.render(text, True, FULL_RED)
-        return tipWritten
-    else:
-        print("this button doesn't have a tooltip in tipDict")
-        return core.tipFieldInit()
+class tipField(pygame.sprite.DirtySprite):
+    
+    def __init__(self):
+        self.image = pygame.Surface(TIP_FIELD_RECT.size)
+        self.image.fill(WHITE)
+        self.rect = TIP_FIELD_RECT
+        pygame.sprite.DirtySprite.__init__(self)
+    
+    def getTip(self, buttonName, SettingName = None, SettingValue = None):
+        '''
+        this should get tips from the game's tip dictionary, and change the tip field's image according to that
+        getTip(String) -> None
+        '''
+        #get current image
+        newTip = self.image.copy()
+        #clear the current image
+        newTip.fill(WHITE)
+        # convert all the QUIT destinations into one
+        if "QUIT" in buttonName:
+            buttonName = "QUIT"
+        # look for it in the tipDict
+        if buttonName in tipDict.keys():
+            text = tipDict[buttonName]
+            newTip.blit(tipFont.render(text, True, FULL_RED), (10,10))
+        elif buttonName == "DEFAULT":
+            # do nothing, the image is already cleared
+            pass
+        elif buttonName == "SETTING":
+            text = "Setting for {} changed to {}".format(SettingName, SettingValue, (10,10))
+            newTip.blit(tipFont.render(text, True, FULL_RED))
+        else:
+            raise TipException("Tip for this button not found in tipDict")
+        #set new image
+        self.image = newTip

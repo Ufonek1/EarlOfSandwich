@@ -19,15 +19,18 @@ class playerShip(pygame.sprite.DirtySprite):
     def load(self, Image):
         
         propellers_sprite_sheet = SpriteSheet('propellers')
-        
+        # load propellers spritesheet
         picture = propellers_sprite_sheet.getImage(0, 0, 100, 100)
         self.propellersFrame.append(picture)
         picture = propellers_sprite_sheet.getImage(100, 0, 100, 100)
         self.propellersFrame.append(picture)
         
+        #set the starting frame
         self.frame = 0
+        # blit that frame onto self.image
         Image.blit(self.propellersFrame[0], (0,0))
         self.image = Image
+        #return rects and stuff
         self.rect = self.image.get_rect()
         
     def move(self, directions):
