@@ -85,6 +85,8 @@ class menuButton (pygame.sprite.DirtySprite):
 
 class optionsButton (pygame.sprite.DirtySprite):
     
+    #this is for the tipField
+    destination = -1
     setting = None
     
     def assignSetting(self, settingbind):

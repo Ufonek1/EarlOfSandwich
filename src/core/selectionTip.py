@@ -33,6 +33,9 @@ class tipField(pygame.sprite.DirtySprite):
         this should get tips from the game's tip dictionary, and change the tip field's image according to that
         getTip(String) -> None
         '''
+        #this is for options buttons or other buttons that don't have a tip and don't need updating of the tip field
+        if buttonName == -1:
+            return None
         #get current image
         newTip = self.image.copy()
         #clear the current image

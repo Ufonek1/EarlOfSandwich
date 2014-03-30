@@ -199,12 +199,14 @@ while alive:
                             alive = False
                         elif button.destination == "GAME":
                             print ("Game button was clicked")
+                            #remove debug sprites and tipfield
+                            Debug = allSprites.remove_sprites_of_layer(DEBUG_LAYER)
                             #erase and kill all existing sprites
                             for sprite in allSprites:
                                 RectsToUpdate.append(sprite.rect.copy())
                                 sprite.kill()
                             #add debugger back
-                            allSprites.add(debugSprites, layer = 5)
+                            allSprites.add(Debug, layer = DEBUG_LAYER)
                             #exit loop
                             startGame = True
                             menuRunning = False
@@ -223,8 +225,12 @@ while alive:
                             #save button.destination
                             dest = button.destination
                             print ("Options button was clicked")
+                            #remove debug sprites and tipfield
+                            Debug = allSprites.remove_sprites_of_layer(DEBUG_LAYER)
+                            TF = allSprites.remove_sprites_of_layer(0)
                             #remove them from allSprites
                             for sprite in allSprites:
+                                RectsToUpdate.append(sprite.rect.copy())
                                 sprite.kill()
                             #get new buttons for appropriate menu
                             print("buttons were removed from group, getting new ones")
@@ -234,27 +240,28 @@ while alive:
                             allSprites.add(optionsTitles, layer = 2)
                             allSprites.add(skyshiparrows, layer = 2)
                             #add debugger and TipField back
-                            allSprites.add(debugSprites, layer = 5)
-                            allSprites.add(TipField, layer = 0)
+                            allSprites.add(Debug, layer = DEBUG_LAYER)
+                            allSprites.add(TF, layer = 0)
                             #update whole screen, it's a lot of stuff
-                            RectsToUpdate.append(SCREEN_RECT)
                         else:
                             #save button.destination
                             dest = button.destination
                             print (dest + " button was clicked")
                             #clear all sprites and
+                            Debug = allSprites.remove_sprites_of_layer(DEBUG_LAYER)
+                            TF = allSprites.remove_sprites_of_layer(0)
                             #remove them from allSprites
                             for sprite in allSprites:
                                 screen.blit(MENU_BACKGROUND, (sprite.rect.x, sprite.rect.y), sprite.rect)
-                                pygame.display.update((button.rect))
+                                RectsToUpdate.append(sprite.rect.copy())
                                 sprite.kill()
                             #get new buttons for appropriate menu
                             print("buttons were removed from group, getting new ones")
                             buttons = (menuCreator.getMenu(dest))[0]
                             allSprites.add(buttons, layer = 3)
                             #add debugger and TipField back
-                            allSprites.add(debugSprites, layer = 5)
-                            allSprites.add(TipField, layer = 0)
+                            allSprites.add(Debug, layer = DEBUG_LAYER)
+                            allSprites.add(TF, layer = 0)
                             
                             if dest == "NEW":
                                 #load colourPicker and related stuff
@@ -358,20 +365,20 @@ while alive:
                                 pygame.display.update([oldrect, button.rect])
                 except:
                     pass
-            if event.type == pl.MOUSEMOTION:
-                '''
-                here we update buttons if they get mouseovered
-                '''
-                for button in buttons:
-                    # update (change frame)
-                    button.update(event)
-                    MouseOver = button.getMouseOver()
-                    buttonsCursorStatus[button] = MouseOver
-                    if MouseOver:
-                        RectsToUpdate.append(button.rect.copy())
-                        #change tip according to button and blit it onto the TipField
-                        TipField.getTip(button.destination)
-                        RectsToUpdate.append(TIP_FIELD_RECT)                    
+        '''
+        here we update buttons and check if they are mouseovered
+        '''
+        #get regular buttons and options buttons
+        for button in allSprites.get_sprites_from_layer(layer = 3) + allSprites.get_sprites_from_layer(layer = 4):
+            # update (change frame)
+            button.update(event)
+            MouseOver = button.getMouseOver()
+            buttonsCursorStatus[button] = MouseOver
+            if MouseOver:
+                RectsToUpdate.append(button.rect.copy())
+                #change tip according to button and blit it onto the TipField
+                TipField.getTip(button.destination)
+                RectsToUpdate.append(TIP_FIELD_RECT)                    
                         
         '''
         this updates the tip Field - if no button has the mouse on it, the tip field is cleared
@@ -384,8 +391,11 @@ while alive:
             RectsToUpdate.append(TIP_FIELD_RECT)
             buttonsCursorStatus.clear()
         
+        #clear buttons states
+        buttonsCursorStatus.clear()
+        
+        """----------------------------------DEBUGGING-------------------------------"""
         fpsdisplayoldrect = None
-
         if DEBUG_MODE == True:
             # update debugger
             fpsdisplayoldrect = fpsdisplay.rect.copy()
@@ -393,20 +403,19 @@ while alive:
             image = tiny_font.render(text, True, FULL_RED)
             fpsdisplay.image = image
             fpsdisplay.rect = fpsdisplay.image.get_rect().move(10,10)
-            rectlist = [fpsdisplayoldrect, fpsdisplay.rect]
-        
+            RectsToUpdate = RectsToUpdate + [fpsdisplayoldrect, fpsdisplay.rect]
         if CLEAR_DEBUG == True:
             # clear off debugging sprites (but only once)
             debugSprites.clear(screen, MENU_BACKGROUND)
-            rectlist = rectlist + [fpsdisplayoldrect, fpsdisplay.rect]
+            RectsToUpdate = RectsToUpdate + [fpsdisplayoldrect, fpsdisplay.rect]
             CLEAR_DEBUG = False
         
         """
         this is okay, we can afford lower fps in menu
         """
         screen.blit(MENU_BACKGROUND, (0,0))
-        allSprites.draw(screen)
-        pygame.display.flip()
+        RectsToUpdate = RectsToUpdate + allSprites.draw(screen)
+        pygame.display.update(RectsToUpdate)
         
         clock.tick(GAME_FPS)
 
@@ -666,10 +675,15 @@ while alive:
                 playing = True
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[5]:
                 # return to menu loop (clear screen and kill all sprites and redraw needed stuff)
+                # remove the debugsprites
+                Debug = allSprites.remove_sprites_of_layer(DEBUG_LAYER)
+                #clear screen and kill everything
                 screen.fill(BLACK)
                 for sprite in allSprites:
                     sprite.kill()
                 pygame.display.flip()
+                # readd the debugsprites
+                allSprites.add(Debug, layer = DEBUG_LAYER)
                 paused = False
                 menuRunning = True
                 
