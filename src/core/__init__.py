@@ -619,6 +619,8 @@ while alive:
         pygame.display.update(RectsToUpdate)
     """----------------------------------PAUSE LOOP-------------------------------"""    
     while paused:
+        #refresh stuff
+        RectsToUpdate = []
         for event in pygame.event.get():
             # classic quit and screenshot stuff
             if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
