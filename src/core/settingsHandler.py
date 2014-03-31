@@ -53,7 +53,6 @@ class settingsHandler(object):
         replace the key/value in dictionary and in constants
         see constants for reference which number is which control
         '''
-        print(settingValue)
         if settingValue == None:
             print("waiting for key input")
             waitingforinput = True
@@ -80,6 +79,7 @@ class settingsHandler(object):
                     self.settingDict[self._Number2Name[settingNumber]] = "K_{}".format(eventkeyName)
                     
                     waitingforinput = False
+                    return self.settingDict[self._Number2Name[settingNumber]]
                 else:
                     pass
         else:

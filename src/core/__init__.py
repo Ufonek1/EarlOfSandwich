@@ -311,7 +311,7 @@ while alive:
                                     #grab the next key pressed down and change setting
                                     settingNumber = button.setting
                                     settingName = settings._Number2Name[settingNumber]
-                                    settings.setSetting(settingNumber)
+                                    settingValue = settings.setSetting(settingNumber)
                                     #----redraw button image and change rect----
                                     screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
                                     oldrect = button.rect
@@ -324,7 +324,7 @@ while alive:
                                     buttonToDraw.draw(screen)
                                     pygame.display.update([oldrect, button.rect])
                                     #get tip
-                                    TipField.getTip("SETTING")
+                                    TipField.getTip("SETTING", settingName, settingValue)
                                     RectsToUpdate.append(TIP_FIELD_RECT)
                                     
                                 #if button is the other stuff, do nothing

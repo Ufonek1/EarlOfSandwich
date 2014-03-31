@@ -46,13 +46,14 @@ class tipField(pygame.sprite.DirtySprite):
         # look for it in the tipDict
         if buttonName in tipDict.keys():
             text = tipDict[buttonName]
+            # draw out the new tip
             newTip.blit(tipFont.render(text, True, FULL_RED), (10,10))
         elif buttonName == "DEFAULT":
             # do nothing, the image is already cleared
             pass
         elif buttonName == "SETTING":
-            text = "Setting for {} changed to {}".format(SettingName, SettingValue, (10,10))
-            newTip.blit(tipFont.render(text, True, FULL_RED))
+            text = "Setting for {} changed to {}".format(SettingName, SettingValue)
+            newTip.blit(tipFont.render(text, True, FULL_RED), (10,10))
         else:
             raise TipException("Tip for this button not found in tipDict")
         #set new image
