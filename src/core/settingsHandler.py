@@ -34,8 +34,8 @@ class settingsHandler(object):
                 
             #self.settingDict = collections.OrderedDict(readdict)
         
-        print(self.settingDict)
-        print("settings loaded from file and written up to constants:")
+        print("Loaded settings: \n {}".format(self.settingDict))
+        print("Writing up to constants:")
         
         for setting in self.settingDict:
             if self.settingDict[setting].startswith('K_'):

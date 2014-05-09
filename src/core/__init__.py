@@ -301,6 +301,7 @@ while alive:
                                 if button.setting < 6:
                                     """
                                     Here it's okay to be messy, as the game is paused when we're waiting for input
+                                    It's also gonna look cool when the background animation stops while you're setting your keys :3
                                     """
                                     #replace with _
                                     screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
@@ -371,8 +372,7 @@ while alive:
         #get regular buttons and options buttons
         for button in allSprites.get_sprites_from_layer(layer = 3) + allSprites.get_sprites_from_layer(layer = 4):
             # update (change frame)
-            button.update(event)
-            MouseOver = button.getMouseOver()
+            MouseOver = button.update(event)
             buttonsCursorStatus[button] = MouseOver
             if MouseOver:
                 RectsToUpdate.append(button.rect.copy())
