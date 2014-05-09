@@ -1,4 +1,4 @@
-Homunculus Readme
+Earl of Sandwich readme
 ============================================
 
 ##Contents:
@@ -10,8 +10,7 @@ Homunculus Readme
 ##[0] : Introduction
 This is a Python project for my programming class.
 
-When it is finished, it should look something like a space invaders clone with a campaign and possibly even tech trees and customisable weapons.
-
+I will tell you more when the time comes. :P
 
 ##[1] : Acknowledgements
 Code that comes from others is acknowledged in code comments.
@@ -34,4 +33,4 @@ Screenshot	F2
 
 
 ##[3] : Tips
-When you take a screenshot, it is saved under the current time into the Homunculus/screenshots directory. Only the in window display is saved, nothing outside.
+When you take a screenshot, it is saved under the current time into the EarlOfSandwich/screenshots directory. Only the in window display is saved, nothing outside.
