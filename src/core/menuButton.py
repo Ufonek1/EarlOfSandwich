@@ -21,7 +21,7 @@ class menuButton (pygame.sprite.DirtySprite):
     # font of buttons
     button_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 35)
 
-    def start(self, text, destination, relativescale = 1):
+    def __init__(self, text, destination, relativescale = 1):
         #create the spritesheet
         sprite_sheet = SpriteSheet(BUTTON_SPRITESHEET_NAME)
        
@@ -64,7 +64,10 @@ class menuButton (pygame.sprite.DirtySprite):
         #set them up as the button's properties (so that they don't stay stucked in the function only)
         self.button_frame = button_frame
         self.destination = destination
+        
+        pygame.sprite.DirtySprite.__init__(self)
         print ("created menuButton with destination " + str(self.destination))
+        
 
     def update(self, event):
         MouseOver = self.getMouseOver()
