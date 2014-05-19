@@ -20,26 +20,22 @@ def getMenu(menuName, settings = None, shipSurface = None):
         buttons = pygame.sprite.Group()
            
         #create all the buttons
-        button1 = menuButton()
-        button1.start("Play", "PLAY")
+        button1 = menuButton("Play", "PLAY")
         button1.rect.x  = (BUTTON_COLUMN_LEFT)
         button1.rect.y = (BUTTON_COLUMN_TOP)
         button1.add(buttons)
         
-        button2 = menuButton()
-        button2.start("Options", "OPTIONS")
+        button2 = menuButton("Options", "OPTIONS")
         button2.rect.x  = (BUTTON_COLUMN_LEFT)
         button2.rect.y = (BUTTON_COLUMN_TOP + 100)
         button2.add(buttons)
         
-        button3 = menuButton()
-        button3.start("Extras", "EXTRAS")
+        button3 = menuButton("Extras", "EXTRAS")
         button3.rect.x  = (BUTTON_COLUMN_LEFT)
         button3.rect.y = (BUTTON_COLUMN_TOP + 200)
         button3.add(buttons)
         
-        button4 = menuButton()
-        button4.start("Exit", "MAINQUIT")
+        button4 = menuButton("Exit", "MAINQUIT")
         button4.rect.x  = (BUTTON_COLUMN_LEFT)
         button4.rect.y = (BUTTON_COLUMN_TOP + 300)
         button4.add(buttons)
@@ -55,20 +51,17 @@ def getMenu(menuName, settings = None, shipSurface = None):
         buttons = pygame.sprite.Group()   
         
         #create all the buttons
-        button1 = menuButton()
-        button1.start("New Game", "NEW")
+        button1 = menuButton("New Game", "NEW")
         button1.rect.x  = (BUTTON_COLUMN_LEFT)
         button1.rect.y = (BUTTON_COLUMN_TOP)
         button1.add(buttons)
         
-        button2 = menuButton()
-        button2.start("Load Game", "LOAD")
+        button2 = menuButton("Load Game", "LOAD")
         button2.rect.x  = (BUTTON_COLUMN_LEFT)
         button2.rect.y = (BUTTON_COLUMN_TOP + 100)
         button2.add(buttons)
 
-        button4 = menuButton()
-        button4.start("Back to menu", "MAIN")
+        button4 = menuButton("Back to menu", "MAIN")
         button4.rect.x  = (BUTTON_COLUMN_LEFT)
         button4.rect.y = (BUTTON_COLUMN_TOP + 200)
         button4.add(buttons)
@@ -216,8 +209,7 @@ def getMenu(menuName, settings = None, shipSurface = None):
         control7.add(optionButtons)
         
         #classic button
-        button4 = menuButton()
-        button4.start("Back to menu", "MAIN")
+        button4 = menuButton("Back to menu", "MAIN")
         button4.rect.x = (BUTTON_COLUMN_LEFT)
         button4.rect.y = (BUTTON_COLUMN_TOP + 300)
         button4.add(buttons)
@@ -234,8 +226,7 @@ def getMenu(menuName, settings = None, shipSurface = None):
         #buttons tuple
         buttons = pygame.sprite.Group()
         
-        button4 = menuButton()
-        button4.start("Back to menu", "MAIN")
+        button4 = menuButton("Back to menu", "MAIN")
         button4.rect.x  = (BUTTON_COLUMN_LEFT)
         button4.rect.y = (BUTTON_COLUMN_TOP + 300)
         button4.add(buttons)
@@ -250,8 +241,7 @@ def getMenu(menuName, settings = None, shipSurface = None):
         #buttons group
         buttons = pygame.sprite.Group()
         
-        button4 = menuButton()
-        button4.start("Back to menu", "MAIN")
+        button4 = menuButton("Back to menu", "MAIN")
         button4.rect.x  = (BUTTON_COLUMN_LEFT)
         button4.rect.y = (BUTTON_COLUMN_TOP + 300)
         button4.add(buttons)
@@ -266,20 +256,17 @@ def getMenu(menuName, settings = None, shipSurface = None):
         #buttons group
         buttons = pygame.sprite.Group()
         
-        button1 = menuButton()
-        button1.start("Start game!", "GAME")
+        button1 = menuButton("Start game!", "GAME")
         button1.rect.x  = (BUTTON_COLUMN_LEFT)
         button1.rect.y = (BUTTON_COLUMN_TOP + 300)
         button1.add(buttons)
         
-        button3 = menuButton()
-        button3.start("Save colour", "COLOUR", 0.5)
+        button3 = menuButton("Save colour", "COLOUR", 0.5)
         button3.rect.x  = (BUTTON_COLUMN_LEFT + 30)
         button3.rect.y = (BUTTON_COLUMN_TOP + 230)
         button3.add(buttons)
 
-        button4 = menuButton()
-        button4.start("Back to menu", "MAIN")
+        button4 = menuButton("Back to menu", "MAIN")
         button4.rect.x  = (BUTTON_COLUMN_LEFT)
         button4.rect.y = (BUTTON_COLUMN_TOP + 400)
         button4.add(buttons)
