@@ -56,7 +56,11 @@ PAUSE_LAYER = 4
 DEBUG_LAYER = 6
 
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
-SCREEN_RECT = (0,0,1200,1000)
+RES_MENU_WIDTH = 1000
+RES_MENU_HEIGHT = 800
+SCREEN_RECT_1 = pygame.Rect(0,0,1200,1000)
+SCREEN_RECT_2 = pygame.Rect(0,0,1280,1024)
+SCREEN_RECT_3 = pygame.Rect(0,0,1920,1080)
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 1000
 GAME_SCREEN_RECT = pygame.Rect(200,100,800,800)

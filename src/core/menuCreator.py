@@ -13,7 +13,31 @@ from core.constants import *
 
 def getMenu(menuName, settings = None, shipSurface = None):
     
-    if menuName == "MAIN":
+    if menuName == "RESOLUTION":
+        """----------------------------------RESOLUTION MENU-------------------------------"""
+    
+        buttons = pygame.sprite.Group()
+        #create all the buttons (they have the resolution in their destination - see constants for concrete data)
+        button1 = menuButton("Windowed {}*{}".format(SCREEN_WIDTH, SCREEN_HEIGHT), (SCREEN_RECT_1,False))
+        button1.rect.x  = (BUTTON_COLUMN_LEFT)
+        button1.rect.y = (BUTTON_COLUMN_TOP)
+        button1.add(buttons)
+        
+        button2 = menuButton("Fullscreen {}*{}".format(1280, 1024), (SCREEN_RECT_2,True))
+        button2.rect.x  = (BUTTON_COLUMN_LEFT)
+        button2.rect.y = (BUTTON_COLUMN_TOP + 100)
+        button2.add(buttons)
+        
+        button3 = menuButton("Fullscreen {}*{}".format(1920, 1080), (SCREEN_RECT_3,True))
+        button3.rect.x  = (BUTTON_COLUMN_LEFT)
+        button3.rect.y = (BUTTON_COLUMN_TOP + 200)
+        button3.add(buttons)
+        
+        #add it to tuple
+        tupleOfSprites = ((buttons),None)
+        return tupleOfSprites
+        
+    elif menuName == "MAIN":
         """----------------------------------MAIN MENU-------------------------------"""
                 
         #buttons tuple

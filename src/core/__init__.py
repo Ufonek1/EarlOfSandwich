@@ -21,14 +21,53 @@ from core.constants import *
 
 pygame.init()
 
-# start up the window
-screensize = pl.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
-screen = pygame.display.set_mode(screensize.size) 
-pygame.display.set_caption("Yet another pygame window")
-print("window fired up")
-
 #FPS controls
 clock = pygame.time.Clock()
+
+"""----------------------------------RESOLUTION PICKING WINDOW-------------------------------"""
+# start up the window
+
+screensize = pl.Rect(0,0,RES_MENU_WIDTH,RES_MENU_HEIGHT)
+screen = pygame.display.set_mode(screensize.size) 
+pygame.display.set_caption("Yet another pygame window")
+print("resolution window fired up")
+
+resbuttons, nothing = menuCreator.getMenu("RESOLUTION")
+resbuttons.draw(screen)
+pygame.display.flip()
+
+ResNotPicked = True
+
+# wait for user to pick resolution
+while ResNotPicked:
+    for event in pygame.event.get():
+        if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
+            print("game closed from res menu")
+            '''
+            clean up the screen before leaving (like a good module!)
+            '''
+            ResNotPicked = False
+            alive = False
+        if event.type == pl.MOUSEBUTTONDOWN:
+            # if mouse is clicked, see which button was clicked on
+            for button in resbuttons:
+                if button.getMouseOver() == True:
+                    ResNotPicked = False
+                    #set resolution (see constants for each)
+                    Resolution, fullscreen = button.destination
+                    
+    clock.tick(GAME_FPS)
+
+
+#start up normal window
+if fullscreen == True:
+    screen = pygame.display.set_mode(Resolution.size, pygame.FULLSCREEN)
+else:
+    screen = pygame.display.set_mode(Resolution.size, 0)
+pygame.display.set_caption("Yet another pygame window")
+print("main window fired up")
+
+
 
 """----------------------------------GLOBAL, CONSTANT STUFF-------------------------------"""
 # load fonts
