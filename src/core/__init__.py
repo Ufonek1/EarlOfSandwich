@@ -24,50 +24,6 @@ pygame.init()
 #FPS controls
 clock = pygame.time.Clock()
 
-"""----------------------------------RESOLUTION PICKING WINDOW-------------------------------"""
-# start up the window
-
-screensize = pl.Rect(0,0,RES_MENU_WIDTH,RES_MENU_HEIGHT)
-screen = pygame.display.set_mode(screensize.size) 
-pygame.display.set_caption("Yet another pygame window")
-print("resolution window fired up")
-
-resbuttons, nothing = menuCreator.getMenu("RESOLUTION")
-resbuttons.draw(screen)
-pygame.display.flip()
-
-ResNotPicked = True
-
-# wait for user to pick resolution
-while ResNotPicked:
-    for event in pygame.event.get():
-        if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
-            print("game closed from res menu")
-            '''
-            clean up the screen before leaving (like a good module!)
-            '''
-            ResNotPicked = False
-            alive = False
-        if event.type == pl.MOUSEBUTTONDOWN:
-            # if mouse is clicked, see which button was clicked on
-            for button in resbuttons:
-                if button.getMouseOver() == True:
-                    ResNotPicked = False
-                    #set resolution (see constants for each)
-                    Resolution, fullscreen = button.destination
-                    
-    clock.tick(GAME_FPS)
-
-
-#start up normal window
-if fullscreen == True:
-    screen = pygame.display.set_mode(Resolution.size, pygame.FULLSCREEN)
-else:
-    screen = pygame.display.set_mode(Resolution.size, 0)
-pygame.display.set_caption("Yet another pygame window")
-print("main window fired up")
-
-
 
 """----------------------------------GLOBAL, CONSTANT STUFF-------------------------------"""
 # load fonts
@@ -117,6 +73,89 @@ menuRunning = True
 alive = True
 DEBUG_MODE = False
 CLEAR_DEBUG = False
+
+"""----------------------------------RESOLUTION PICKING WINDOW-------------------------------"""
+# start up the window
+
+screensize = pl.Rect(0,0,RES_MENU_WIDTH,RES_MENU_HEIGHT)
+screen = pygame.display.set_mode(screensize.size) 
+pygame.display.set_caption("Yet another pygame window")
+print("resolution window fired up")
+
+resbuttons, nothing = menuCreator.getMenu("RESOLUTION")
+allSprites.add(resbuttons, layer = 2)
+resbuttons.draw(screen)
+pygame.display.flip()
+
+ResNotPicked = True
+
+# wait for user to pick resolution
+while ResNotPicked:
+    RectsToUpdate = []
+    for event in pygame.event.get():
+        if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
+            print("game closed from res menu")
+            '''
+            clean up the screen before leaving (like a good module!)
+            '''
+            ResNotPicked = False
+            alive = False
+        if event.type == pl.KEYDOWN and event.key == pl.K_F2:
+            '''
+            Screenshot-taking function
+            Screenshots are saved under current time
+            '''
+            #    get current display surface
+            screenshot = pygame.display.get_surface()
+            # get current time
+            now = datetime.datetime.now()
+            # replace : with - for it to be a proper filename
+            now = str(now).replace(":","-")
+            # add .png to be able to save as an image
+            now = "{}.png".format(now)
+            filepath = os.path.join(SCREENSHOT_PATH, now)
+            print("saving screenshot to {}".format(filepath))
+            pygame.image.save(screenshot, filepath)
+        if event.type == pl.KEYDOWN and event.key == pl.K_F3:
+            '''
+            debugging function
+            '''
+            if DEBUG_MODE:
+                DEBUG_MODE = False
+                CLEAR_DEBUG = True
+                allSprites.remove(fpsdisplay)
+                print("debug mode off")
+            else:
+                DEBUG_MODE = True
+                allSprites.add(fpsdisplay, layer = DEBUG_LAYER)
+                print("debug mode on")                               
+        if event.type == pl.MOUSEBUTTONUP:
+            # if mouse is clicked, see which button was clicked on
+            for button in resbuttons:
+                if button.getMouseOver() == True:
+                    button.update(event)
+                    pygame.display.update(button.rect)
+                    ResNotPicked = False
+                    #set resolution (see constants for explanation)
+                    Resolution, fullscreen = button.destination
+    for button in resbuttons:
+        button.update(event)
+        RectsToUpdate.append(button.rect)      
+    
+    #classic procedure
+    screen.fill(BLACK)
+    pygame.display.update(allSprites.draw(screen))
+    clock.tick(GAME_FPS)
+
+
+#start up normal window
+if fullscreen == True:
+    screen = pygame.display.set_mode(Resolution.size, pygame.FULLSCREEN)
+else:
+    screen = pygame.display.set_mode(Resolution.size, 0)
+pygame.display.set_caption("Yet another pygame window")
+print("main window fired up")
+
 '''
 One Loop to rule them all, One Loop to find them,
 One Loop to bring them all and in the darkness bind them
