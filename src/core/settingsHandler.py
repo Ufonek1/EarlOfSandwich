@@ -113,8 +113,8 @@ class settingsHandler(object):
                 text = text.partition("K_")[2]
             print("drew " + text)
             image = self.settingsFont.render(text, True, colour)
-        
         return image
+        
         
     def saveSettings(self):
         '''

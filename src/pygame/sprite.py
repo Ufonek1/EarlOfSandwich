@@ -205,10 +205,10 @@ class Sprite(object):
         """
         return list(self.__g)
 
-    def alive(self):
+    def Alive(self):
         """does the sprite belong to any groups
 
-        Sprite.alive(): return bool
+        Sprite.Alive(): return bool
 
         Returns True when the Sprite belongs to one or more Groups.
         """

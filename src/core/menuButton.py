@@ -98,6 +98,11 @@ class optionsButton (pygame.sprite.DirtySprite):
     def assignSetting(self, settingbind):
         self.setting = settingbind
     
+    #duplicate method to allow other buttons to update
+    def update(self, event):
+        MouseOver = self.getMouseOver()       
+        return MouseOver
+    
     def getMouseOver(self):
         #simple method for getting if the mouse is on the button (for outside/public use)
         if self.rect.collidepoint(mouse.get_pos()):

@@ -33,7 +33,8 @@ SOUNDS_PATH = os.path.join(PROJECT_PATH, os.path.normcase('resources/sfx'))
 
 #@TODO: remove and replace with appropriate resourceLoaders
 BUTTON_SPRITESHEET_PATH = os.path.join(SPRITES_PATH, 'buttonsprite.png')
-MAIN_MENU_FONT_PATH = os.path.join(FONT_PATH, 'Polentical Neon Regular.ttf')
+MAIN_MENU_FONT_PATH = os.path.join(FONT_PATH, 'Smilecomix.ttf')
+MAIN_TITLE_FONT_PATH = os.path.join(FONT_PATH, 'njnaruto.ttf')
 MAIN_MENU_BACKGROUND_PATH = os.path.join(BACKGROUND_PATH, 'IMG_2905.PNG')
 TIPDICT_PATH = os.path.join(TEXTS_PATH, 'tipDict')
 SETTINGS_PATH = os.path.join(PROJECT_PATH, "settings")

@@ -11,11 +11,17 @@ from core.colourPicker import ColourPicker
 from core.menuButton import menuButton, optionsButton
 from core.constants import *
 
-def getMenu(menuName, settings = None, shipSurface = None):
+def getMenu(menuName, settings = None):
     
     if menuName == "RESOLUTION":
         """----------------------------------RESOLUTION MENU-------------------------------"""
-    
+        title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 60)
+        resTitle = pygame.sprite.DirtySprite()
+        resTitle.image = title_font.render("Select Resolution:", True, WHITE)
+        resTitle.rect = resTitle.image.get_rect()
+        resTitle.rect.x = 100
+        resTitle.rect.y = 50
+        
         buttons = pygame.sprite.Group()
         #create all the buttons (they have the resolution in their destination - see constants for concrete data)
         button1 = menuButton("Windowed {}*{}".format(SCREEN_WIDTH, SCREEN_HEIGHT), (SCREEN_RECT_1,False))
@@ -34,7 +40,7 @@ def getMenu(menuName, settings = None, shipSurface = None):
         button3.add(buttons)
         
         #add it to tuple
-        tupleOfSprites = ((buttons),None)
+        tupleOfSprites = ((buttons),resTitle)
         return tupleOfSprites
         
     elif menuName == "MAIN":
@@ -183,14 +189,14 @@ def getMenu(menuName, settings = None, shipSurface = None):
         
         
         '''NON-DIRECTION TITLES'''
-        titles = pygame.Surface((200,120), flags = 1011001)
+        titles = pygame.Surface((200,200), flags = 1011001)
         #fill with empty alpha
         titles.fill((0,255,0,0))
         #write options names onto the surface
         titles.blit(setting_font.render("Pause", True, FULL_RED), (0,0))
-        titles.blit(setting_font.render("Attack", True, FULL_RED), (0,30))
-        titles.blit(setting_font.render("Sound Volume", True, FULL_RED), (0,60))
-        titles.blit(setting_font.render("Music Volume", True, FULL_RED), (0,90))
+        titles.blit(setting_font.render("Attack", True, FULL_RED), (0,50))
+        titles.blit(setting_font.render("Sound Volume", True, FULL_RED), (0,100))
+        titles.blit(setting_font.render("Music Volume", True, FULL_RED), (0,150))
         settingTitles = pygame.sprite.DirtySprite()
         settingTitles.image = titles
         settingTitles.rect = settingTitles.image.get_rect()
@@ -213,23 +219,25 @@ def getMenu(menuName, settings = None, shipSurface = None):
         control5.image = settings.drawSetting(5)
         control5.rect = control5.image.get_rect()
         control5.rect.left = settingTitles.rect.right + 10
-        control5.rect.y = BUTTON_COLUMN_TOP + 80
+        control5.rect.y = BUTTON_COLUMN_TOP + 100
         control5.add(optionButtons)
         '''MUSIC VOLUME'''
         control6 = optionsButton()
         control6.assignSetting(6)
         control6.image = settings.drawSetting(6)
-        control6.rect = control6.image.get_rect()
+        w, h = settings.settingsFont.size("100")
+        hundredrect = pygame.Rect(0,0,w,h)
+        control6.rect = hundredrect
         control6.rect.left = settingTitles.rect.right + 10
-        control6.rect.y = BUTTON_COLUMN_TOP + 110
+        control6.rect.y = BUTTON_COLUMN_TOP + 150
         control6.add(optionButtons)
         '''SOUND VOLUME'''
         control7 = optionsButton()
         control7.assignSetting(7)
         control7.image = settings.drawSetting(7)
-        control7.rect = control7.image.get_rect()
+        control7.rect = hundredrect.copy() 
         control7.rect.left = settingTitles.rect.right + 10
-        control7.rect.y = BUTTON_COLUMN_TOP + 140
+        control7.rect.y = BUTTON_COLUMN_TOP + 200
         control7.add(optionButtons)
         
         #classic button

@@ -30,6 +30,7 @@ clock = pygame.time.Clock()
 title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 100)
 small_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 40)
 tiny_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 25)
+main_title_font = pygame.font.Font(MAIN_TITLE_FONT_PATH, 100)
 
 # sprite groups
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
@@ -66,28 +67,29 @@ from core.constants import _SETTINGS
 from core.constants import _ALLOWED_KEYS
 
 #some vars to control further action
-playing = False
-startGame = False
-paused = False
-menuRunning = True
-alive = True
+ResNotPicked = True
+Playing = False
+StartGame = False
+Paused = False
+MenuRunning = True
+Alive = True
 DEBUG_MODE = False
 CLEAR_DEBUG = False
 
 """----------------------------------RESOLUTION PICKING WINDOW-------------------------------"""
 # start up the window
 
-screensize = pl.Rect(0,0,RES_MENU_WIDTH,RES_MENU_HEIGHT)
-screen = pygame.display.set_mode(screensize.size) 
+screen = pygame.display.set_mode((RES_MENU_WIDTH,RES_MENU_HEIGHT)) 
 pygame.display.set_caption("Yet another pygame window")
 print("resolution window fired up")
 
-resbuttons, nothing = menuCreator.getMenu("RESOLUTION")
+resbuttons, resTitle = menuCreator.getMenu("RESOLUTION")
 allSprites.add(resbuttons, layer = 2)
-resbuttons.draw(screen)
+allSprites.add(resTitle, layer = 3)
+allSprites.draw(screen)
 pygame.display.flip()
 
-ResNotPicked = True
+
 
 # wait for user to pick resolution
 while ResNotPicked:
@@ -99,7 +101,7 @@ while ResNotPicked:
             clean up the screen before leaving (like a good module!)
             '''
             ResNotPicked = False
-            alive = False
+            Alive = False
         if event.type == pl.KEYDOWN and event.key == pl.K_F2:
             '''
             Screenshot-taking function
@@ -156,15 +158,21 @@ else:
 pygame.display.set_caption("Yet another pygame window")
 print("main window fired up")
 
+# delete resolution stuff
+del resbuttons, resTitle
+
+# wipe allSprites
+allSprites = pygame.sprite.LayeredUpdates()
+
 '''
 One Loop to rule them all, One Loop to find them,
 One Loop to bring them all and in the darkness bind them
 '''
-while alive:
+while Alive:
     
     """----------------------------------MAIN MENU CREATION-------------------------------"""
-    """this does nothing if menuRunning is False"""
-    if menuRunning == True:
+    """this does nothing if MenuRunning is False"""
+    if MenuRunning == True:
         #background from background collection
         screen.blit(MENU_BACKGROUND, (0,0))
         pygame.display.flip()
@@ -178,7 +186,7 @@ while alive:
         
         #create the title as sprites with text as their source image
         title1 = pygame.sprite.DirtySprite() 
-        text1 = (title_font.render("THE GAME", True, FULL_RED))
+        text1 = (main_title_font.render("The Earl Of Sandwich", True, FULL_RED))
         title1.image = text1
         title1.rect = title1.image.get_rect()
         title1._layer = 2
@@ -201,7 +209,7 @@ while alive:
         pygame.display.flip()
         
     """----------------------------------MAIN MENU LOOP-------------------------------"""
-    while menuRunning:
+    while MenuRunning:
         # refresh stuff
         RectsToUpdate = []
         for event in pygame.event.get():
@@ -210,8 +218,8 @@ while alive:
                 '''
                 clean up the screen before leaving (like a good module!)
                 '''
-                menuRunning = False
-                alive = False
+                MenuRunning = False
+                Alive = False
             if event.type == pl.KEYDOWN and event.key == pl.K_F2:
                 '''
                 Screenshot-taking function
@@ -273,8 +281,8 @@ while alive:
                             '''
                             print ("game closed from " + button.destination[:button.destination.find("QUIT")] + " MENU")
                             
-                            menuRunning = False
-                            alive = False
+                            MenuRunning = False
+                            Alive = False
                         elif button.destination == "GAME":
                             print ("Game button was clicked")
                             #remove debug sprites and tipfield
@@ -286,8 +294,8 @@ while alive:
                             #add debugger back
                             allSprites.add(Debug, layer = DEBUG_LAYER)
                             #exit loop
-                            startGame = True
-                            menuRunning = False
+                            StartGame = True
+                            MenuRunning = False
                         elif button.destination == "COLOUR":
                             ColorPicker, colourOutput, shipColoured, colourPickerTitle = allSprites.get_sprites_from_layer(layer = 2)
                             #grab the current image of the ship and save it to the variable
@@ -378,7 +386,7 @@ while alive:
                                 #if button is a key button:
                                 if button.setting < 6:
                                     """
-                                    Here it's okay to be messy, as the game is paused when we're waiting for input
+                                    Here it's okay to be messy, as the game is Paused when we're waiting for input
                                     It's also gonna look cool when the background animation stops while you're setting your keys :3
                                     """
                                     #replace with _
@@ -433,12 +441,15 @@ while alive:
                                 settings.setSetting(settingNumber, valueChange)
                                 #----redraw button image and change rect----
                                 screen.blit(MENU_BACKGROUND, (button.rect), button.rect)
-                                oldrect = button.rect
-                                button.image = settings.drawSetting(settingNumber)
-                                #get new rect (100 is wider than 1)
-                                button.rect = button.image.get_rect()
-                                #move the rect to the old position
-                                button.rect.topleft = oldrect.topleft
+                                if button.setting < 6:
+                                    oldrect = button.rect
+                                    button.image = settings.drawSetting(settingNumber)
+                                    #get new rect (100 is wider than 1)
+                                    button.rect = button.image.get_rect()
+                                    #move the rect to the old position
+                                    button.rect.topleft = oldrect.topleft
+                                else:
+                                    button.image = settings.drawSetting(settingNumber)
                                 buttonToDraw.add(button)
                                 buttonToDraw.draw(screen)
                                 pygame.display.update([oldrect, button.rect])
@@ -449,15 +460,15 @@ while alive:
         '''
         #get regular buttons and options buttons
         for button in allSprites.get_sprites_from_layer(layer = 3) + allSprites.get_sprites_from_layer(layer = 4):
-            # update (change frame)
+            # update (change frame) and save mouseover
             MouseOver = button.update(event)
             buttonsCursorStatus[button] = MouseOver
             if MouseOver:
                 RectsToUpdate.append(button.rect.copy())
                 #change tip according to button and blit it onto the TipField
                 TipField.getTip(button.destination)
-                RectsToUpdate.append(TIP_FIELD_RECT)                    
-                        
+                RectsToUpdate.append(TIP_FIELD_RECT)                
+                     
         '''
         this updates the tip Field - if no button has the mouse on it, the tip field is cleared
         '''           
@@ -498,9 +509,9 @@ while alive:
         clock.tick(GAME_FPS)
 
     """----------------------------------GAME STUFF-------------------------------"""
-    '''this does nothing if startGame is False -> startGame is true only when we start a new level,
-    if we pause, then startGame remains False'''
-    if startGame == True:
+    '''this does nothing if StartGame is False -> StartGame is true only when we start a new level,
+    if we pause, then StartGame remains False'''
+    if StartGame == True:
         # wipe screen first (sprites should be killed already if we're going to play), just to be sure
         screen.fill(BLACK)
         pygame.display.flip()
@@ -539,10 +550,10 @@ while alive:
         pygame.display.flip()
         
         # pass the game further
-        startGame = False
-        playing = True
+        StartGame = False
+        Playing = True
     """----------------------------------GAME LOOP-------------------------------"""
-    while playing:
+    while Playing:
         # if menu loop was left by "PLAY" button, we go to play game:
             
         for event in pygame.event.get():
@@ -553,8 +564,8 @@ while alive:
                 '''
                 screen.fill(BLACK)
                 pygame.display.flip()
-                playing = False
-                alive = False
+                Playing = False
+                Alive = False
             if event.type == pl.KEYDOWN and event.key == pl.K_F2:
                 '''
                 Screenshot-taking function
@@ -586,8 +597,8 @@ while alive:
                     print("debug mode on")
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[4]:
                 # stop game loop
-                paused = True
-                playing = False
+                Paused = True
+                Playing = False
         
         keyStates = []
         # get the current state of all allowed buttons,
@@ -647,7 +658,7 @@ while alive:
         clock.tick(GAME_FPS)
 
     """----------------------------------PAUSE PREPARATION-------------------------------"""    
-    if paused:
+    if Paused:
         # cover the screen with a transparent surface and some text
         cover = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), flags = 1011001)
         cover.fill(TRANSPARENT_BLACK)
@@ -696,21 +707,21 @@ while alive:
         PauseSprites.draw(screen)
         pygame.display.update(RectsToUpdate)
     """----------------------------------PAUSE LOOP-------------------------------"""    
-    while paused:
+    while Paused:
         #refresh stuff
         RectsToUpdate = []
         for event in pygame.event.get():
             # classic quit and screenshot stuff
             if event.type == pl.QUIT or (event.type == pl.KEYDOWN and event.key == pl.K_ESCAPE):
-                print("game closed from paused game")
+                print("game closed from Paused game")
                 '''
                 clean up the screen before leaving (like a good module!)
                 '''
                 screen.fill(BLACK)
                 pygame.display.flip()
                 # leave loop
-                paused = False
-                alive = False
+                Paused = False
+                Alive = False
             if event.type == pl.KEYDOWN and event.key == pl.K_F2:
                 '''
                 Screenshot-taking function
@@ -751,8 +762,8 @@ while alive:
                 allSprites.draw(screen)
                 RectsToUpdate.append(GAME_SCREEN_RECT)
                 pygame.display.update(RectsToUpdate)
-                paused = False
-                playing = True
+                Paused = False
+                Playing = True
             if event.type == pl.KEYDOWN and event.key == _ALLOWED_KEYS[5]:
                 # return to menu loop (clear screen and kill all sprites and redraw needed stuff)
                 # remove the debugsprites
@@ -764,8 +775,8 @@ while alive:
                 pygame.display.flip()
                 # readd the debugsprites
                 allSprites.add(Debug, layer = DEBUG_LAYER)
-                paused = False
-                menuRunning = True
+                Paused = False
+                MenuRunning = True
                 
         fpsdisplayoldrect = None
         if DEBUG_MODE == True:
