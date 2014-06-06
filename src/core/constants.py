@@ -59,9 +59,11 @@ DEBUG_LAYER = 6
 """----------------------------------RESOLUTION & RELATED-------------------------------"""
 RES_MENU_WIDTH = 1000
 RES_MENU_HEIGHT = 800
-SCREEN_RECT_1 = pygame.Rect(0,0,1200,1000)
-SCREEN_RECT_2 = pygame.Rect(0,0,1280,1024)
-SCREEN_RECT_3 = pygame.Rect(0,0,1920,1080)
+SCREEN_RECT_W1 = pygame.Rect(0,0,1200,1000)
+SCREEN_RECT_W2 = pygame.Rect(0,0,1600,1000)
+SCREEN_RECT_F1 = pygame.Rect(0,0,1280,1024)
+SCREEN_RECT_F2 = pygame.Rect(0,0,1920,1080)
+SCREEN_RECT_F3 = pygame.Rect(0,0,1920,1200)
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 1000
 GAME_SCREEN_RECT = pygame.Rect(200,100,800,800)
@@ -121,8 +123,7 @@ class TipException(Exception):
 class ExceptionalException(Exception):
     pass
 """----------------------------------MISC-------------------------------"""
-#resized menu background
-MENU_BACKGROUND = pygame.transform.scale(BACKGROUND_COLLECTION.menubackground, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
 TIP_FIELD_RECT = pygame.Rect(0, SCREEN_HEIGHT-50, SCREEN_WIDTH, 50)
 GAME_FPS = 60
 MAX_CLOUDS = 50

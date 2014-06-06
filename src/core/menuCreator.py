@@ -16,31 +16,57 @@ def getMenu(menuName, settings = None):
     if menuName == "RESOLUTION":
         """----------------------------------RESOLUTION MENU-------------------------------"""
         title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 60)
+        small_title_font = pygame.font.Font(MAIN_MENU_FONT_PATH, 30)
+        
         resTitle = pygame.sprite.DirtySprite()
         resTitle.image = title_font.render("Select Resolution:", True, WHITE)
         resTitle.rect = resTitle.image.get_rect()
-        resTitle.rect.x = 100
-        resTitle.rect.y = 50
+        resTitle.rect.x = BUTTON_COLUMN_LEFT - 100
+        resTitle.rect.y = BUTTON_COLUMN_TOP - 150
+
+        windowTitle = pygame.sprite.DirtySprite()
+        windowTitle.image = small_title_font.render("Windowed:", True, WHITE)
+        windowTitle.rect = resTitle.image.get_rect()
+        windowTitle.rect.x = BUTTON_COLUMN_LEFT - 100
+        windowTitle.rect.y = BUTTON_COLUMN_TOP - 50
+        
+        fullscreenTitle = pygame.sprite.DirtySprite()
+        fullscreenTitle.image = small_title_font.render("Fullscreen:", True, WHITE)
+        fullscreenTitle.rect = resTitle.image.get_rect()
+        fullscreenTitle.rect.x = BUTTON_COLUMN_LEFT - 100
+        fullscreenTitle.rect.y = BUTTON_COLUMN_TOP + 200
+        
+        resTitles = pygame.sprite.Group(resTitle, windowTitle,fullscreenTitle)
         
         buttons = pygame.sprite.Group()
         #create all the buttons (they have the resolution in their destination - see constants for concrete data)
-        button1 = menuButton("Windowed {}*{}".format(SCREEN_WIDTH, SCREEN_HEIGHT), (SCREEN_RECT_1,False))
+        button1 = menuButton("{}*{}".format(SCREEN_RECT_W1.w, SCREEN_RECT_W1.h), (SCREEN_RECT_W1,False))
         button1.rect.x  = (BUTTON_COLUMN_LEFT)
         button1.rect.y = (BUTTON_COLUMN_TOP)
         button1.add(buttons)
         
-        button2 = menuButton("Fullscreen {}*{}".format(1280, 1024), (SCREEN_RECT_2,True))
+        button1 = menuButton("{}*{}".format(SCREEN_RECT_W2.w, SCREEN_RECT_W2.h), (SCREEN_RECT_W2,False))
+        button1.rect.x  = (BUTTON_COLUMN_LEFT)
+        button1.rect.y = (BUTTON_COLUMN_TOP + 100)
+        button1.add(buttons)
+        
+        button2 = menuButton("{}*{}".format(SCREEN_RECT_F1.w, SCREEN_RECT_F1.h), (SCREEN_RECT_F1,True))
         button2.rect.x  = (BUTTON_COLUMN_LEFT)
-        button2.rect.y = (BUTTON_COLUMN_TOP + 100)
+        button2.rect.y = (BUTTON_COLUMN_TOP + 250)
         button2.add(buttons)
         
-        button3 = menuButton("Fullscreen {}*{}".format(1920, 1080), (SCREEN_RECT_3,True))
+        button3 = menuButton("{}*{}".format(SCREEN_RECT_F2.w, SCREEN_RECT_F2.h), (SCREEN_RECT_F2,True))
         button3.rect.x  = (BUTTON_COLUMN_LEFT)
-        button3.rect.y = (BUTTON_COLUMN_TOP + 200)
+        button3.rect.y = (BUTTON_COLUMN_TOP + 350)
         button3.add(buttons)
         
+        button4 = menuButton("{}*{}".format(SCREEN_RECT_F3.w, SCREEN_RECT_F3.h), (SCREEN_RECT_F3,True))
+        button4.rect.x  = (BUTTON_COLUMN_LEFT)
+        button4.rect.y = (BUTTON_COLUMN_TOP + 450)
+        button4.add(buttons)
+        
         #add it to tuple
-        tupleOfSprites = ((buttons),resTitle)
+        tupleOfSprites = ((buttons),resTitles)
         return tupleOfSprites
         
     elif menuName == "MAIN":

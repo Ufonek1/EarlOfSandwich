@@ -83,9 +83,9 @@ screen = pygame.display.set_mode((RES_MENU_WIDTH,RES_MENU_HEIGHT))
 pygame.display.set_caption("Yet another pygame window")
 print("resolution window fired up")
 
-resbuttons, resTitle = menuCreator.getMenu("RESOLUTION")
+resbuttons, resTitles = menuCreator.getMenu("RESOLUTION")
 allSprites.add(resbuttons, layer = 2)
-allSprites.add(resTitle, layer = 3)
+allSprites.add(resTitles, layer = 3)
 allSprites.draw(screen)
 pygame.display.flip()
 
@@ -102,6 +102,8 @@ while ResNotPicked:
             '''
             ResNotPicked = False
             Alive = False
+            # exit game - it's ok here, nothing has happened yet
+            sys.exit()
         if event.type == pl.KEYDOWN and event.key == pl.K_F2:
             '''
             Screenshot-taking function
@@ -138,8 +140,9 @@ while ResNotPicked:
                     button.update(event)
                     pygame.display.update(button.rect)
                     ResNotPicked = False
-                    #set resolution (see constants for explanation)
+                    #set resolution (see menuCreator and constants for explanation)
                     Resolution, fullscreen = button.destination
+                    # int, bool <-- (int, bool)
     for button in resbuttons:
         button.update(event)
         RectsToUpdate.append(button.rect)      
@@ -159,7 +162,14 @@ pygame.display.set_caption("Yet another pygame window")
 print("main window fired up")
 
 # delete resolution stuff
-del resbuttons, resTitle
+del resbuttons, resTitles
+
+#get size of display
+SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
+
+#resized menu background
+MENU_BACKGROUND = pygame.transform.scale(BACKGROUND_COLLECTION.menubackground, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
 
 # wipe allSprites
 allSprites = pygame.sprite.LayeredUpdates()
@@ -186,12 +196,12 @@ while Alive:
         
         #create the title as sprites with text as their source image
         title1 = pygame.sprite.DirtySprite() 
-        text1 = (main_title_font.render("The Earl Of Sandwich", True, FULL_RED))
+        text1 = (main_title_font.render("The Game", True, FULL_RED))
         title1.image = text1
         title1.rect = title1.image.get_rect()
         title1._layer = 2
         #coordinates of title
-        title1.rect.x = 200
+        title1.rect.x = 20
         title1.rect.y = 20
         title1.add(titleSprites)
         print("title created and drawn on layer " + str(title1._layer))        
