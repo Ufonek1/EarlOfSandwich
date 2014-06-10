@@ -34,7 +34,7 @@ main_title_font = pygame.font.Font(MAIN_TITLE_FONT_PATH, 100)
 
 # sprite groups
 allSprites = pygame.sprite.LayeredUpdates(layer = 0)
-#layers (see constants)
+#layers (see constants)w
 #layer 0-1 background
 #layer 2 tip field
 #layer 3 classic buttons & player ship
@@ -141,7 +141,7 @@ while ResNotPicked:
                     pygame.display.update(button.rect)
                     ResNotPicked = False
                     #set resolution (see menuCreator and constants for explanation)
-                    Resolution, fullscreen = button.destination
+                    DisplayRect, fullscreen = button.destination
                     # int, bool <-- (int, bool)
     for button in resbuttons:
         button.update(event)
@@ -155,15 +155,16 @@ while ResNotPicked:
 
 #start up normal window
 if fullscreen == True:
-    screen = pygame.display.set_mode(Resolution.size, pygame.FULLSCREEN)
+    screen = pygame.display.set_mode(DisplayRect.size, pygame.FULLSCREEN)
 else:
-    screen = pygame.display.set_mode(Resolution.size, 0)
+    screen = pygame.display.set_mode(DisplayRect.size, 0)
 pygame.display.set_caption("Yet another pygame window")
 print("main window fired up")
 
 # delete resolution stuff
 del resbuttons, resTitles
 
+# SET UP SCREEN
 #get size of display
 SCREEN_WIDTH, SCREEN_HEIGHT = pygame.display.get_surface().get_size()
 
@@ -345,7 +346,7 @@ while Alive:
                             print (dest + " button was clicked")
                             #clear all sprites and
                             Debug = allSprites.remove_sprites_of_layer(DEBUG_LAYER)
-                            TF = allSprites.remove_sprites_of_layer(0)
+                            TipF = allSprites.remove_sprites_of_layer(0)
                             #remove them from allSprites
                             for sprite in allSprites:
                                 screen.blit(MENU_BACKGROUND, (sprite.rect.x, sprite.rect.y), sprite.rect)
@@ -357,7 +358,7 @@ while Alive:
                             allSprites.add(buttons, layer = 3)
                             #add debugger and TipField back
                             allSprites.add(Debug, layer = DEBUG_LAYER)
-                            allSprites.add(TF, layer = 0)
+                            allSprites.add(TipF, layer = 0)
                             
                             if dest == "NEW":
                                 #load colourPicker and related stuff
@@ -530,6 +531,13 @@ while Alive:
         #KEYBOARD
         #pygame.key.set_repeat(KEY_REPEAT_TIME, KEY_REPEAT_TIME)
         
+        #position game
+        GAME_SCREEN_RECT.centerx = DisplayRect.centerx - 150
+        GAME_SCREEN_RECT.centery = DisplayRect.centery
+        PLAYABLE_RECT.center = GAME_SCREEN_RECT.center
+        # move to bottom part of screen
+        PLAYABLE_RECT.y = PLAYABLE_RECT.y + 250
+        
         #load level
         enemies, levelbackground, backgroundOverlay = levelCreator.getLevel(0)
         
@@ -539,16 +547,16 @@ while Alive:
         #draw background
         screen.blit(levelbackground, (GAME_SCREEN_RECT))
         #create full screen background
-        Screenbackground = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        Screenbackground = pygame.Surface(DisplayRect.size)
         Screenbackground.fill(BLACK)
         Screenbackground.blit(levelbackground,(GAME_SCREEN_RECT))
         
         #the player's ship
         skyship = playerShip()
         skyship.load(shipSurface)
-        skyship.rect.centerx = GAME_SCREEN_RECT.centerx
+        skyship.rect.centerx = PLAYABLE_RECT.centerx
         #draw to bottom of game screen
-        skyship.rect.y = GAME_SCREEN_RECT.height - skyship.rect.height
+        skyship.rect.y = PLAYABLE_RECT.bottom - skyship.rect.height
                
         allSprites.add(skyship, layer = 3)
         allSprites.draw(screen)

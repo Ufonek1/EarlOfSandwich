@@ -67,7 +67,7 @@ class cloudDrawer(object):
             #create new cloud
             self.allClouds.append(Cloud(cloudNumber, self.cloudsImages[cloudNumber]))
             # move to random place above game screen
-            self.allClouds[-1].rect.move_ip(random.randint(GAME_SCREEN_LEFT-50,GAME_SCREEN_LEFT+GAME_SCREEN_WIDTH),GAME_SCREEN_TOP - self.allClouds[-1].rect.height - self.increment)
+            self.allClouds[-1].rect.move_ip(random.randint(GAME_SCREEN_RECT.left-50,GAME_SCREEN_RECT.left+GAME_SCREEN_RECT.width),GAME_SCREEN_RECT.top - self.allClouds[-1].rect.height - self.increment)
             #add to cloud list
             allSprites.add(self.allClouds[-1], layer = 1)
 
@@ -93,7 +93,7 @@ class cloudDrawer(object):
             newrectlist.append(newrect)
             
             #is the cloud outside the game screen? If so, delete it
-            if not cloud.rect.colliderect(GAME_SCREEN_RECT) and cloud.rect.y > GAME_SCREEN_TOP + GAME_SCREEN_HEIGHT:
+            if not cloud.rect.colliderect(GAME_SCREEN_RECT) and cloud.rect.y > GAME_SCREEN_RECT.top + GAME_SCREEN_RECT.height:
                 cloud.kill()
                 del self.allClouds[self.allClouds.index(cloud)]
                 print("cloud deleted")

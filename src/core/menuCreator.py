@@ -69,7 +69,7 @@ def getMenu(menuName, settings = None):
         tupleOfSprites = ((buttons),resTitles)
         return tupleOfSprites
         
-    elif menuName == "MAIN":
+    if menuName == "MAIN":
         """----------------------------------MAIN MENU-------------------------------"""
                 
         #buttons tuple
@@ -100,7 +100,7 @@ def getMenu(menuName, settings = None):
         tupleOfSprites = ((buttons),None)
         return tupleOfSprites
     
-    elif menuName == "PLAY":
+    if menuName == "PLAY":
         """----------------------------------PREGAME MENU-------------------------------"""
 
         #buttons tuple
@@ -126,7 +126,7 @@ def getMenu(menuName, settings = None):
         tupleOfSprites = ((buttons),None)
         return tupleOfSprites
     
-    elif menuName == "OPTIONS":
+    if menuName == "OPTIONS":
         """----------------------------------OPTIONS MENU-------------------------------"""
         """simply:
         create rows -> descr
@@ -278,7 +278,7 @@ def getMenu(menuName, settings = None):
         tupleOfSprites = ((buttons),(optionButtons),(optionsTitles),skyshiparrows)
         return tupleOfSprites
     
-    elif menuName == "EXTRAS":
+    if menuName == "EXTRAS":
         """----------------------------------EXTRAS MENU-------------------------------"""
         
         #buttons tuple
@@ -293,7 +293,7 @@ def getMenu(menuName, settings = None):
         tupleOfSprites = ((buttons),None)
         return tupleOfSprites
     
-    elif menuName == "LOAD":
+    if menuName == "LOAD":
         """----------------------------------LOAD CAMPAIGN MENU-------------------------------"""
         
         #buttons group
@@ -308,7 +308,7 @@ def getMenu(menuName, settings = None):
         tupleOfSprites = ((buttons),None)
         return tupleOfSprites
     
-    elif menuName == "NEW":
+    if menuName == "NEW":
         """----------------------------------NEW CAMPAIGN MENU-------------------------------"""
                         
         #buttons group
@@ -361,6 +361,8 @@ def getMenu(menuName, settings = None):
         tupleOfSprites = ((buttons), ColorPicker, colourOutput, shipColoured, colourPickerTitle)
         
         return tupleOfSprites 
-    
+    '''
     else:
         print("there is no valid menu for this destination")
+    '''
+    

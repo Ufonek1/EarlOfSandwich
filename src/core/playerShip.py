@@ -57,11 +57,11 @@ class playerShip(pygame.sprite.DirtySprite):
             return False, oldrect, self.rect
         else:
             self.rect.move_ip(x,y)
-            self.rect = self.rect.clamp(GAME_SCREEN_RECT)
+            self.rect = self.rect.clamp(PLAYABLE_RECT)
             newrect = self.rect.copy()
             #inflate, but clamp
             newrect.inflate_ip(self.speed*2, self.speed*2)
-            newrect.clamp_ip(GAME_SCREEN_RECT)
+            newrect.clamp_ip(PLAYABLE_RECT)
             return True, oldrect, newrect
 
     def update(self):
